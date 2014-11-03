@@ -2560,6 +2560,7 @@ $packages["ninchatclient"] = (function() {
 					longPollClose(s, url);
 					return gotOnline;
 				}
+				/* continue; */ $s = 1; continue;
 			} else if (_selection[0] === 3) {
 				longPollClose(s, url);
 				return gotOnline;

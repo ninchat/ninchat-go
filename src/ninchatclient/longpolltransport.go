@@ -145,6 +145,8 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 				return
 			}
 
+			continue
+
 		case <-s.closeNotify:
 			longPollClose(s, url)
 			return
