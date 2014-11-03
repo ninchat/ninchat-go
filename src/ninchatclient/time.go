@@ -55,33 +55,6 @@ func (timer *Timer) Stop() {
 	}
 }
 
-/*
-// Ticker
-type Ticker struct {
-	C chan bool
-
-	id js.Object
-}
-
-func NewTicker(interval Duration) (ticker *Ticker) {
-	ticker = &Ticker{
-		C: make(chan bool),
-	}
-
-	ticker.id = SetInterval(func() {
-		go func() {
-			ticker.C <- true
-		}()
-	}, interval)
-
-	return
-}
-
-func (ticker *Ticker) Stop() {
-	ClearInterval(ticker.id)
-}
-*/
-
 // Sleep
 func Sleep(delay Duration) {
 	<-NewTimer(delay).C

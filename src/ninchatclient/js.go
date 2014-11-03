@@ -78,11 +78,3 @@ func SetTimeout(callback func(), timeout Duration) (id js.Object) {
 func ClearTimeout(id js.Object) {
 	js.Global.Call("clearTimeout", id)
 }
-
-func SetInterval(callback func(), interval Duration) (id js.Object) {
-	return js.Global.Call("setInterval", callback, interval)
-}
-
-func ClearInterval(id js.Object) {
-	js.Global.Call("clearInterval", id)
-}
