@@ -126,6 +126,7 @@ func (s *Session) SetAddress(address js.Object) {
 	s.address = GetAddress(address)
 }
 
+// Open implements the Session.open() JavaScript API.
 func (s *Session) Open() {
 	if s.sendNotify != nil {
 		panic("session already initialized")
