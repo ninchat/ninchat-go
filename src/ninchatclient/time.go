@@ -1,0 +1,88 @@
+package main
+
+import (
+	"github.com/gopherjs/gopherjs/js"
+)
+
+// Duration
+type Duration int64
+
+const (
+	Millisecond Duration = 1
+	Second               = Millisecond * 1000
+	Minute               = Second * 60
+)
+
+// Timer
+type Timer struct {
+	C chan bool
+
+	id js.Object
+}
+
+func NewTimer(timeout Duration) (timer *Timer) {
+	timer = &Timer{
+		C: make(chan bool),
+	}
+
+	if timeout >= 0 {
+		timer.Reset(timeout)
+	}
+
+	return
+}
+
+func (timer *Timer) Active() bool {
+	return timer.id != nil
+}
+
+func (timer *Timer) Reset(timeout Duration) {
+	timer.Stop()
+
+	timer.id = SetTimeout(func() {
+		timer.id = nil
+
+		go func() {
+			timer.C <- true
+		}()
+	}, timeout)
+}
+
+func (timer *Timer) Stop() {
+	if timer.id != nil {
+		ClearTimeout(timer.id)
+		timer.id = nil
+	}
+}
+
+/*
+// Ticker
+type Ticker struct {
+	C chan bool
+
+	id js.Object
+}
+
+func NewTicker(interval Duration) (ticker *Ticker) {
+	ticker = &Ticker{
+		C: make(chan bool),
+	}
+
+	ticker.id = SetInterval(func() {
+		go func() {
+			ticker.C <- true
+		}()
+	}, interval)
+
+	return
+}
+
+func (ticker *Ticker) Stop() {
+	ClearInterval(ticker.id)
+}
+*/
+
+// Sleep
+func Sleep(delay Duration) {
+	<-NewTimer(delay).C
+}
