@@ -139,6 +139,12 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 			sender = nil
 			sendingId = 0
 
+		case sending := <-s.sendNotify:
+			if !sending {
+				longPollClose(s, url)
+				return
+			}
+
 		case <-s.closeNotify:
 			longPollClose(s, url)
 			return

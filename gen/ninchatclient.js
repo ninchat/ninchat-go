@@ -2494,7 +2494,7 @@ $packages["ninchatclient"] = (function() {
 		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); return [connWorked, gotOnline]; } }; $f.$blocking = true; return $f;
 	};
 	longPollTransfer = function(s, url, $b) {
-		var $this = this, $args = arguments, gotOnline = false, $r, $s = 0, poller, sender, sendingId, timeouts, err, header, _tuple, x, x$1, action, json, _tuple$1, object, err$1, _tuple$2, channel, err$2, x$2, array, _selection, _r, i, header$1, payload, object$1, _tuple$3, json$1, err$3, _tuple$4, ackedActionId, ok;
+		var $this = this, $args = arguments, gotOnline = false, $r, $s = 0, poller, sender, sendingId, timeouts, err, header, _tuple, x, x$1, action, json, _tuple$1, object, err$1, _tuple$2, channel, err$2, x$2, array, _selection, _r, sending, i, header$1, payload, object$1, _tuple$3, json$1, err$3, _tuple$4, ackedActionId, ok;
 		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
 		poller = ($chanType(js.Object, false, true)).nil;
 		sender = ($chanType(js.Object, false, true)).nil;
@@ -2537,7 +2537,7 @@ $packages["ninchatclient"] = (function() {
 				}
 			}
 			array = $ifaceNil;
-			_r = $select([[poller], [sender], [s.closeNotify]], true); /* */ $s = 3; case 3: if (_r && _r.$blocking) { _r = _r(); }
+			_r = $select([[poller], [sender], [s.sendNotify], [s.closeNotify]], true); /* */ $s = 3; case 3: if (_r && _r.$blocking) { _r = _r(); }
 			_selection = _r;
 			if (_selection[0] === 0) {
 				array = _selection[1][0];
@@ -2555,6 +2555,12 @@ $packages["ninchatclient"] = (function() {
 				sender = ($chanType(js.Object, false, true)).nil;
 				sendingId = new $Uint64(0, 0);
 			} else if (_selection[0] === 2) {
+				sending = _selection[1][0];
+				if (!sending) {
+					longPollClose(s, url);
+					return gotOnline;
+				}
+			} else if (_selection[0] === 3) {
 				longPollClose(s, url);
 				return gotOnline;
 			}
