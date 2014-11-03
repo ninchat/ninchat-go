@@ -7,6 +7,7 @@ Points of interest:
 - `gen/ninchatclient.js` contains JavaScript sources generated with GopherJS.
   Regenerate with `make` (requires Go).
 - `doc/ninchatclient.js` contains API documentation.
+- `example/test.js` demonstrates usage.
 
 The library API hasn't been stabilized, so it's best to only depend on a
 specific Git commit for now.
