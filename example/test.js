@@ -46,6 +46,10 @@ function test() {
 		print("STATE: " + state);
 	});
 
+	session.onConnActive(function() {
+		print("ACTIVITY");
+	});
+
 	session.onLog(function(message) {
 		print("LOG: " + message);
 	});

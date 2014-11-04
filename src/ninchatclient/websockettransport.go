@@ -121,6 +121,7 @@ func webSocketHandshake(s *Session, ws *WebSocket) (gotOnline, hostHealthy bool)
 
 		gotOnline = true
 		hostHealthy = true
+		s.connActive()
 	}
 
 	fail := make(chan bool, 1)
@@ -260,6 +261,7 @@ func webSocketReceive(s *Session, ws *WebSocket, fail chan bool) (gotEvents, hos
 				}
 
 				watchdog.Reset(JitterDuration(minReceiveTimeout, 0.7))
+				s.connActive()
 
 				text := StringifyFrame(data)
 				if len(text) == 0 {

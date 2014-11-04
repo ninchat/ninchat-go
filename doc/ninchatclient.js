@@ -75,7 +75,7 @@ function Session() {
 
 	/**
 	 * Set an optional connection state change monitor.  It will be called with
-	 * one of the following strings at a time:
+	 * one of the following strings:
 	 *
 	 * - "connecting"
 	 * - "connected"
@@ -84,6 +84,14 @@ function Session() {
 	 * @param {function}  callback
 	 */
 	this.onConnState = function(callback) {}
+
+	/**
+	 * Set an optional connection activity monitor.  It will be called whenever
+	 * data has been received on the connection.
+	 *
+	 * @param {function}  callback
+	 */
+	this.onConnActive = function(callback) {}
 
 	/**
 	 * Set an optional message logger.  It will be called with a single string

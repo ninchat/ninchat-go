@@ -53,6 +53,7 @@ func LongPollTransport(s *Session, host string) (connWorked, gotOnline bool) {
 
 		gotOnline = true
 		s.connState("connected")
+		s.connActive()
 	} else {
 		s.log("session resumption")
 
@@ -138,6 +139,7 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 			}
 
 			poller = nil
+			s.connActive()
 
 		case array = <-sender:
 			if array == nil {

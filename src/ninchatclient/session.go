@@ -20,6 +20,7 @@ const (
 	sessionSessionEventInvocationName = namespace + ".Session onSessionEvent callback"
 	sessionEventInvocationName        = namespace + ".Session onEvent callback"
 	sessionConnStateInvocationName    = namespace + ".Session onConnState callback"
+	sessionConnActiveInvocationName   = namespace + ".Session onConnActive callback"
 	sessionLogInvocationName          = namespace + ".Session onLog callback"
 )
 
@@ -36,6 +37,7 @@ type Session struct {
 	onSessionEvent  js.Object
 	onEvent         js.Object
 	onConnState     js.Object
+	onConnActive    js.Object
 	onLog           js.Object
 	address         string
 	forceLongPoll   bool
@@ -67,6 +69,7 @@ func NewSession() map[string]interface{} {
 		"onSessionEvent":  s.OnSessionEvent,
 		"onEvent":         s.OnEvent,
 		"onConnState":     s.OnConnState,
+		"onConnActive":    s.OnConnActive,
 		"onLog":           s.OnLog,
 		"setParams":       s.SetParams,
 		"setTransport":    s.SetTransport,
@@ -97,6 +100,16 @@ func (s *Session) OnConnState(callback js.Object) {
 	}
 
 	s.onConnState = callback
+}
+
+// OnConnActive implements the Session.onConnActive(function|null) JavaScript
+// API.
+func (s *Session) OnConnActive(callback js.Object) {
+	if callback.IsNull() {
+		callback = nil
+	}
+
+	s.onConnActive = callback
 }
 
 // OnLog implements the Session.onLog(function|null) JavaScript API.
@@ -537,9 +550,9 @@ func (s *Session) resolve(action *Action, successful bool, args ...interface{}) 
 	}
 }
 
-// connState conditionally passes an enumeration value to the client code.
+// connState passes an enumeration value to the client code.
 func (s *Session) connState(state string) {
-	if state != s.latestConnState {
+	if s.latestConnState != state {
 		s.latestConnState = state
 
 		if s.onConnState != nil {
@@ -548,7 +561,14 @@ func (s *Session) connState(state string) {
 	}
 }
 
-// log conditionally passes a message to the client code.
+// connActive passes nothing to the client code.
+func (s *Session) connActive() {
+	if s.onConnActive != nil {
+		jsInvoke(sessionConnActiveInvocationName, s.onConnActive)
+	}
+}
+
+// log passes a message to the client code.
 func (s *Session) log(tokens ...interface{}) {
 	Log(sessionLogInvocationName, s.onLog, tokens...)
 }
