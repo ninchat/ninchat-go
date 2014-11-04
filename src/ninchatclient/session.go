@@ -100,6 +100,12 @@ func (s *Session) SetParams(params js.Object) {
 		panic("message_types parameter not defined")
 	}
 
+	if sessionId := params.Get("session_id"); !sessionId.IsUndefined() && !sessionId.IsNull() {
+		s.sessionId = sessionId
+	}
+
+	params.Delete("session_id")
+
 	s.sessionParams = params
 }
 
@@ -329,6 +335,34 @@ func (s *Session) connect(transport Transport, hosts []string, backoff *Backoff)
 	return
 }
 
+// canLogin checks whether the makeCreateSessionAction method would make an
+// action that has any chance of creating a session for an existing user.
+// The answer is no if the action could succeed, but would create a new
+// user.
+func (s *Session) canLogin() bool {
+	if value := s.sessionParams.Get("access_key"); !value.IsUndefined() && !value.IsNull() {
+		return true
+	}
+
+	if value := s.sessionParams.Get("user_id"); !value.IsUndefined() && !value.IsNull() {
+		for _, key := range []string{"user_auth", "master_sign"} {
+			if value := s.sessionParams.Get(key); !value.IsUndefined() && !value.IsNull() {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	for _, key := range []string{"identity_type", "identity_name", "identity_auth"} {
+		if value := s.sessionParams.Get(key); value.IsUndefined() || value.IsNull() {
+			return false
+		}
+	}
+
+	return true
+}
+
 // makeCreateSessionAction makes a create_session action header.
 func (s *Session) makeCreateSessionAction() (header js.Object) {
 	header = s.sessionParams
@@ -382,6 +416,9 @@ func (s *Session) handleSessionEvent(header js.Object) (ok bool) {
 			s.sessionParams.Set(param, newValue)
 		}
 	}
+
+	s.sessionParams.Delete("access_key")
+	s.sessionParams.Delete("master_sign")
 
 	s.sessionId = sessionId
 	s.receivedEventId = eventId
@@ -440,9 +477,16 @@ func (s *Session) handleEvent(header, payload js.Object) (actionId uint64, needs
 	errorType, errorReason, sessionLost, err := GetEventError(header)
 	if err != nil {
 		s.log("event:", err)
+
 		if sessionLost {
-			s.reset()
+			if s.canLogin() {
+				s.reset()
+			} else {
+				jsInvoke(sessionSessionEventInvocationName, s.onSessionEvent, header)
+				s.Close()
+			}
 		}
+
 		return
 	}
 
