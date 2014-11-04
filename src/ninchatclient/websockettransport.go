@@ -39,6 +39,7 @@ func WebSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 
 			if connected {
 				s.log("connected")
+				s.connState("connected")
 
 				connWorked = true
 				gotOnline, hostHealthy = webSocketHandshake(s, ws)

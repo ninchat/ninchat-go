@@ -52,8 +52,16 @@ func LongPollTransport(s *Session, host string) (connWorked, gotOnline bool) {
 		}
 
 		gotOnline = true
+		s.connState("connected")
 	} else {
 		s.log("session resumption")
+
+		// this ensures that we get an event quickly if the connection works,
+		// and can update the status
+		if err := longPollPing(s, url); err != nil {
+			s.log("session resumption:", err)
+			return
+		}
 	}
 
 	if longPollTransfer(s, url) {
@@ -187,10 +195,24 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 				return
 			}
 
-			gotOnline = true
+			if !gotOnline {
+				gotOnline = true
+				s.connState("connected")
+			}
 		}
 	}
 
+	return
+}
+
+// longPollPing sends a ping action without an action_id.
+func longPollPing(s *Session, url string) (err error) {
+	header := map[string]interface{}{
+		"action":     "ping",
+		"session_id": s.sessionId,
+	}
+
+	_, err = DataJSONP(url, header, JitterDuration(minSendTimeout, 0.9))
 	return
 }
 

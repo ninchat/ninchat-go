@@ -42,11 +42,15 @@ function test() {
 		}
 	});
 
+	session.onConnState(function(state) {
+		print("STATE: " + state);
+	});
+
 	session.onLog(function(message) {
 		print("LOG: " + message);
 	});
 
-	if (false) {
+	if (true) {
 		// don't even try websocket
 		session.setTransport("longpoll");
 	}
@@ -81,5 +85,7 @@ function test() {
 	session.setParams(params);
 	session.open();
 
-	setTimeout(session.close, 15000);
+	if (false) {
+		setTimeout(session.close, 15000);
+	}
 }

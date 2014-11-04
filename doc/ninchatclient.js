@@ -74,7 +74,20 @@ function Session() {
 	this.onEvent = function(callback) {}
 
 	/**
-	 * Set an optional message logger.
+	 * Set an optional connection state change monitor.  It will be called with
+	 * one of the following strings at a time:
+	 *
+	 * - "connecting"
+	 * - "connected"
+	 * - "disconnected"
+	 *
+	 * @param {function}  callback
+	 */
+	this.onConnState = function(callback) {}
+
+	/**
+	 * Set an optional message logger.  It will be called with a single string
+	 * argument.
 	 *
 	 * @param {function}  callback
 	 */

@@ -19,6 +19,7 @@ const (
 
 	sessionSessionEventInvocationName = namespace + ".Session onSessionEvent callback"
 	sessionEventInvocationName        = namespace + ".Session onEvent callback"
+	sessionConnStateInvocationName    = namespace + ".Session onConnState callback"
 	sessionLogInvocationName          = namespace + ".Session onLog callback"
 )
 
@@ -34,12 +35,14 @@ type Transport func(s *Session, host string) (connWorked, gotOnline bool)
 type Session struct {
 	onSessionEvent  js.Object
 	onEvent         js.Object
+	onConnState     js.Object
 	onLog           js.Object
 	address         string
 	forceLongPoll   bool
 	sessionParams   js.Object
 	sessionId       js.Object
 	binarySupported bool
+	latestConnState string
 
 	lastActionId    uint64
 	sendNotify      chan bool
@@ -63,6 +66,7 @@ func NewSession() map[string]interface{} {
 	return map[string]interface{}{
 		"onSessionEvent":  s.OnSessionEvent,
 		"onEvent":         s.OnEvent,
+		"onConnState":     s.OnConnState,
 		"onLog":           s.OnLog,
 		"setParams":       s.SetParams,
 		"setTransport":    s.SetTransport,
@@ -83,6 +87,16 @@ func (s *Session) OnSessionEvent(callback js.Object) {
 // OnEvent implements the Session.onEvent(function) JavaScript API.
 func (s *Session) OnEvent(callback js.Object) {
 	s.onEvent = callback
+}
+
+// OnConnState implements the Session.onConnState(function|null) JavaScript
+// API.
+func (s *Session) OnConnState(callback js.Object) {
+	if callback.IsNull() {
+		callback = nil
+	}
+
+	s.onConnState = callback
 }
 
 // OnLog implements the Session.onLog(function|null) JavaScript API.
@@ -261,12 +275,14 @@ func (s *Session) reset() {
 func (s *Session) discover() {
 	s.log("opening")
 	defer s.log("closed")
+	defer s.connState("disconnected")
 
 	var backoff Backoff
 	var wsFailed bool
 
 	for !s.closed {
 		s.log("endpoint discovery")
+		s.connState("connecting")
 
 		url := "https://" + s.address + endpointPath
 
@@ -299,6 +315,8 @@ func (s *Session) discover() {
 
 		if delay := backoff.Failure(maxBackoffDelay); delay > 0 {
 			s.log("sleeping")
+			s.connState("disconnected")
+
 			Sleep(delay)
 		}
 	}
@@ -309,6 +327,8 @@ func (s *Session) discover() {
 func (s *Session) connect(transport Transport, hosts []string, backoff *Backoff) (transportWorked bool) {
 	for trial := 0; trial < connectIterations; trial++ {
 		for _, host := range hosts {
+			s.connState("connecting")
+
 			//gopherjs:blocking
 			connWorked, gotOnline := transport(s, host)
 
@@ -327,6 +347,8 @@ func (s *Session) connect(transport Transport, hosts []string, backoff *Backoff)
 
 			if delay := backoff.Failure(maxBackoffDelay); delay > 0 {
 				s.log("sleeping")
+				s.connState("disconnected")
+
 				Sleep(delay)
 			}
 		}
@@ -512,6 +534,17 @@ func (s *Session) resolve(action *Action, successful bool, args ...interface{}) 
 
 	if action.Resolve != nil {
 		action.Resolve(successful, args...)
+	}
+}
+
+// connState conditionally passes an enumeration value to the client code.
+func (s *Session) connState(state string) {
+	if state != s.latestConnState {
+		s.latestConnState = state
+
+		if s.onConnState != nil {
+			jsInvoke(sessionConnStateInvocationName, s.onConnState, state)
+		}
 	}
 }
 
