@@ -4,6 +4,9 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 )
 
+// Time
+type Time int64
+
 // Duration
 type Duration int64
 
@@ -12,6 +15,11 @@ const (
 	Second               = Millisecond * 1000
 	Minute               = Second * 60
 )
+
+// Now
+func Now() Time {
+	return Time(js.Global.Get("Date").New().Call("getTime").Int64())
+}
 
 // Timer
 type Timer struct {

@@ -46,8 +46,8 @@ function test() {
 		print("STATE: " + state);
 	});
 
-	session.onConnActive(function() {
-		print("ACTIVITY");
+	session.onConnActive(function(time) {
+		print("ACTIVE: " + (new Date(time)).toString());
 	});
 
 	session.onLog(function(message) {

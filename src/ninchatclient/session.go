@@ -44,7 +44,9 @@ type Session struct {
 	sessionParams   js.Object
 	sessionId       js.Object
 	binarySupported bool
-	latestConnState string
+
+	latestConnState  string
+	latestConnActive Time
 
 	lastActionId    uint64
 	sendNotify      chan bool
@@ -100,6 +102,10 @@ func (s *Session) OnConnState(callback js.Object) {
 	}
 
 	s.onConnState = callback
+
+	if s.onConnState != nil && s.latestConnState != "" {
+		jsInvoke(sessionConnStateInvocationName, s.onConnState, s.latestConnState)
+	}
 }
 
 // OnConnActive implements the Session.onConnActive(function|null) JavaScript
@@ -110,6 +116,10 @@ func (s *Session) OnConnActive(callback js.Object) {
 	}
 
 	s.onConnActive = callback
+
+	if s.onConnActive != nil && s.latestConnActive > 0 {
+		jsInvoke(sessionConnActiveInvocationName, s.onConnActive, s.latestConnActive)
+	}
 }
 
 // OnLog implements the Session.onLog(function|null) JavaScript API.
@@ -556,15 +566,17 @@ func (s *Session) connState(state string) {
 		s.latestConnState = state
 
 		if s.onConnState != nil {
-			jsInvoke(sessionConnStateInvocationName, s.onConnState, state)
+			jsInvoke(sessionConnStateInvocationName, s.onConnState, s.latestConnState)
 		}
 	}
 }
 
-// connActive passes nothing to the client code.
+// connActive passes the current time to the client code.
 func (s *Session) connActive() {
+	s.latestConnActive = Now()
+
 	if s.onConnActive != nil {
-		jsInvoke(sessionConnActiveInvocationName, s.onConnActive)
+		jsInvoke(sessionConnActiveInvocationName, s.onConnActive, s.latestConnActive)
 	}
 }
 

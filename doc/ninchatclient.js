@@ -86,8 +86,9 @@ function Session() {
 	this.onConnState = function(callback) {}
 
 	/**
-	 * Set an optional connection activity monitor.  It will be called whenever
-	 * data has been received on the connection.
+	 * Set an optional connection activity monitor.  It will be called with a
+	 * timestamp (in milliseconds) indicating the latest time when data was
+	 * received on the connection.
 	 *
 	 * @param {function}  callback
 	 */
