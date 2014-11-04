@@ -67,6 +67,8 @@ func WebSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 // webSocketHandshake creates or resumes a session, and runs I/O loops after
 // that.
 func webSocketHandshake(s *Session, ws *WebSocket) (gotOnline, hostHealthy bool) {
+	s.binarySupported = true
+
 	var header js.Object
 
 	if s.sessionId == nil {

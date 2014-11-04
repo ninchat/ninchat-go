@@ -27,6 +27,7 @@ function test() {
 
 	session.onSessionEvent(function(header) {
 		print("SESSION: " + JSON.stringify(header));
+		print("BINARY: " + session.binarySupported());
 
 		if (header.event === "session_created") {
 			hello(header.user_id);

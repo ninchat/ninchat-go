@@ -66,6 +66,8 @@ func LongPollTransport(s *Session, host string) (connWorked, gotOnline bool) {
 // longPollTransfer sends buffered actions and polls for events.  It stops if
 // two subsequent requests (of any kind) time out.
 func longPollTransfer(s *Session, url string) (gotOnline bool) {
+	s.binarySupported = false
+
 	var poller <-chan js.Object
 	var sender <-chan js.Object
 	var sendingId uint64

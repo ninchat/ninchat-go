@@ -32,13 +32,14 @@ type Transport func(s *Session, host string) (connWorked, gotOnline bool)
 
 // Session hides the details of Ninchat API connection management.
 type Session struct {
-	onSessionEvent js.Object
-	onEvent        js.Object
-	onLog          js.Object
-	address        string
-	forceLongPoll  bool
-	sessionParams  js.Object
-	sessionId      js.Object
+	onSessionEvent  js.Object
+	onEvent         js.Object
+	onLog           js.Object
+	address         string
+	forceLongPoll   bool
+	sessionParams   js.Object
+	sessionId       js.Object
+	binarySupported bool
 
 	lastActionId    uint64
 	sendNotify      chan bool
@@ -60,15 +61,16 @@ func NewSession() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"onSessionEvent": s.OnSessionEvent,
-		"onEvent":        s.OnEvent,
-		"onLog":          s.OnLog,
-		"setParams":      s.SetParams,
-		"setTransport":   s.SetTransport,
-		"setAddress":     s.SetAddress,
-		"open":           s.Open,
-		"close":          s.Close,
-		"send":           s.Send,
+		"onSessionEvent":  s.OnSessionEvent,
+		"onEvent":         s.OnEvent,
+		"onLog":           s.OnLog,
+		"setParams":       s.SetParams,
+		"setTransport":    s.SetTransport,
+		"setAddress":      s.SetAddress,
+		"open":            s.Open,
+		"close":           s.Close,
+		"binarySupported": s.BinarySupported,
+		"send":            s.Send,
 	}
 }
 
@@ -169,6 +171,11 @@ func (s *Session) Close() {
 		s.closeNotify <- true
 		close(s.sendNotify)
 	}()
+}
+
+// BinarySupported implements the Session.binarySupported() JavaScript API.
+func (s *Session) BinarySupported() bool {
+	return s.binarySupported
 }
 
 // Send implements the Session.send(object[, array]) JavaScript API.
