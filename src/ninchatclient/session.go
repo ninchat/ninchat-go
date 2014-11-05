@@ -280,6 +280,11 @@ func (s *Session) sendAck() {
 	}()
 }
 
+// rewind prepares to resend all buffered messages.
+func (s *Session) rewind() {
+	s.numSent = 0
+}
+
 // reset clears session state, but preserves actions in the send buffer.
 func (s *Session) reset() {
 	s.sessionId = nil
@@ -288,7 +293,8 @@ func (s *Session) reset() {
 		s.lastActionId = 0
 	}
 
-	s.numSent = 0
+	s.rewind()
+
 	s.sendEventAck = false
 	s.receivedEventId = 0
 	s.ackedEventId = 0

@@ -136,6 +136,7 @@ func webSocketHandshake(s *Session, ws *WebSocket) (gotOnline, hostHealthy bool)
 
 	<-done
 
+	s.rewind()
 	return
 }
 

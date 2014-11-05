@@ -69,6 +69,7 @@ func LongPollTransport(s *Session, host string) (connWorked, gotOnline bool) {
 		gotOnline = true
 	}
 
+	s.rewind()
 	return
 }
 
@@ -166,6 +167,7 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 
 		if array == nil {
 			timeouts++
+			s.rewind()
 			continue
 		}
 
