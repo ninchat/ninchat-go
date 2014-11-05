@@ -6,39 +6,99 @@ function print(text) {
 
 	var output = document.getElementById("output")
 	output.appendChild(row);
+
+	row.scrollIntoView();
 }
 
 function test() {
 	var session = NinchatClient.newSession();
 
-	function hello(user_id) {
-		var header = {
-			action:       "send_message",
-			user_id:      user_id,
-			message_type: "ninchat.com/text"
-		};
-
-		var payload = [
-			JSON.stringify({"text": "hello me"})
-		];
-
-		session.send(header, payload);
-	}
-
-	session.onSessionEvent(function(header) {
-		print("SESSION: " + JSON.stringify(header));
+	session.onSessionEvent(function(sessionHeader) {
+		print("SESSION: " + JSON.stringify(sessionHeader));
 		print("BINARY: " + session.binarySupported());
 
-		if (header.event === "session_created") {
-			hello(header.user_id);
-		}
+		var sendSequence = 1;
+
+		var intervalId = setInterval(function() {
+			var messageHeader = {
+				action:       "send_message",
+				user_id:      sessionHeader.user_id,
+				message_type: "ninchat.com/text"
+			};
+
+			var messagePayload = [
+				JSON.stringify({"text": "" + sendSequence})
+			];
+
+			session.send(messageHeader, messagePayload);
+
+			if (sendSequence == 100) {
+				clearInterval(intervalId);
+			} else {
+				sendSequence++;
+			}
+		}, 100);
 	});
 
-	session.onEvent(function(header, payload) {
-		print("EVENT: " + JSON.stringify(header));
+	var eventSequence = 2;
+	var actionSequence = 1;
+	var receiveSequence = [];
+	var closing = false;
 
-		for (var i = 0; i < payload.length; i++) {
-			print("PAYLOAD: " + NinchatClient.stringifyFrame(payload[i]));
+	session.onEvent(function(header, payload) {
+		print("HEADER: " + JSON.stringify(header));
+
+		if (header.event_id !== undefined) {
+			if (header.event_id == (eventSequence++)) {
+				print("EVENT: " + header.event_id);
+			} else {
+				print("EVENT OUT OF SEQUENCE: " + header.event_id);
+			}
+		}
+
+		if (header.action_id !== undefined) {
+			if (header.action_id == (actionSequence++)) {
+				print("ACTION: " + header.action_id);
+			} else {
+				print("ACTION: " + header.action_id + " (out of sequence)");
+			}
+		}
+
+		if (payload) {
+			var msg = NinchatClient.stringifyFrame(payload[0]);
+			var seq = parseInt(JSON.parse(msg).text);
+			print("MESSAGE: " + msg);
+			receiveSequence.push(seq);
+
+			if (seq >= 100 && !closing) {
+				closing = true;
+
+				setTimeout(function() {
+					session.close();
+
+					var ok = true;
+
+					for (var find = 1; find <= 100; find++) {
+						var found = false;
+
+						for (var i = 0; i < receiveSequence.length; i++) {
+							if (receiveSequence[i] === find) {
+								found = true;
+								break;
+							}
+						}
+
+						if (!found) {
+							print("MISSING MESSAGE: " + find);
+							ok = false;
+						}
+					}
+
+					if (ok) {
+						print("ALL MESSAGES RECEIVED");
+					}
+				}, 3000);
+			}
 		}
 	});
 
@@ -46,15 +106,17 @@ function test() {
 		print("STATE: " + state);
 	});
 
-	session.onConnActive(function(time) {
-		print("ACTIVE: " + (new Date(time)).toString());
-	});
+	if (false) {
+		session.onConnActive(function(time) {
+			print("ACTIVE: " + (new Date(time)).toString());
+		});
+	}
 
 	session.onLog(function(message) {
 		print("LOG: " + message);
 	});
 
-	if (true) {
+	if (false) {
 		// don't even try websocket
 		session.setTransport("longpoll");
 	}
@@ -88,8 +150,4 @@ function test() {
 
 	session.setParams(params);
 	session.open();
-
-	if (false) {
-		setTimeout(session.close, 15000);
-	}
 }
