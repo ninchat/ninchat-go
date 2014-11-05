@@ -2,5 +2,7 @@
 /pkg/
 /src/bitbucket.org/
 /src/code.google.com/
-/src/github.com/
+/src/github.com/gopherjs/
+/src/github.com/neelance/
+/src/github.com/spf13/
 /src/gopkg.in/

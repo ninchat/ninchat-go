@@ -26,7 +26,9 @@ clean:
 	rm -rf pkg
 	rm -rf src/bitbucket.org
 	rm -rf src/code.google.com
-	rm -rf src/github.com
+	rm -rf src/github.com/gopherjs
+	rm -rf src/github.com/neelance
+	rm -rf src/github.com/spf13
 	rm -rf src/gopkg.in
 
 container-for-testing:
