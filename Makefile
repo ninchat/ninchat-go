@@ -3,7 +3,13 @@ GOFMT		:= gofmt
 GOPATH		:= $(PWD)
 GOPHERJS	:= bin/gopherjs
 
+DOCKER		:= docker
+DOCKER_TAG	:= ninchat-js
+DOCKER_BROWSER	:= chromium-browser --disable-setuid-sandbox
+
 export GOPATH
+
+build: gen/ninchatclient.js gen/ninchatclient.min.js
 
 gen/ninchatclient.js gen/ninchatclient.min.js: $(wildcard src/ninchatclient/*.go) $(GOPHERJS)
 	@ mkdir -p gen
@@ -23,4 +29,10 @@ clean:
 	rm -rf src/github.com
 	rm -rf src/gopkg.in
 
-.PHONY: clean
+container-for-testing:
+	$(DOCKER) build -t $(DOCKER_TAG) .
+
+test-in-container:
+	$(DOCKER) run -e DISPLAY=$(DISPLAY) -i --rm -t -v /tmp:/tmp -v $(PWD):/work $(DOCKER_TAG) $(DOCKER_BROWSER) file:///work/example/test.html
+
+.PHONY: build clean container-for-testing test-in-container
