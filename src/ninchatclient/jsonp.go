@@ -41,9 +41,7 @@ func doJSONP(url string, timeout Duration) (channel chan js.Object, err error) {
 	channel = make(chan js.Object, 1)
 
 	timeoutId := SetTimeout(func() {
-		module.Set(function, func(js.Object) {
-			module.Delete(function)
-		})
+		module.Delete(function)
 
 		go func() {
 			close(channel)
