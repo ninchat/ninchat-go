@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+
 	"github.com/gopherjs/gopherjs/js"
 )
 
@@ -13,6 +15,8 @@ type WebSocket struct {
 	Notify chan bool
 
 	impl   js.Object
+	open   bool
+	error  error
 	buffer []js.Object
 }
 
@@ -26,6 +30,8 @@ func NewWebSocket(url string) (ws *WebSocket) {
 	ws.impl.Set("binaryType", "arraybuffer")
 
 	ws.impl.Set("onopen", func(js.Object) {
+		ws.open = true
+
 		go func() {
 			ws.Notify <- true
 		}()
@@ -43,9 +49,15 @@ func NewWebSocket(url string) (ws *WebSocket) {
 	})
 
 	ws.impl.Set("onclose", func(js.Object) {
+		ws.open = false
+
 		go func() {
 			close(ws.Notify)
 		}()
+	})
+
+	ws.impl.Set("onerror", func(object js.Object) {
+		ws.error = errors.New("WebSocket error event")
 	})
 
 	return
@@ -56,6 +68,10 @@ func (ws *WebSocket) Send(data interface{}) (err error) {
 	defer func() {
 		err = jsError(recover())
 	}()
+
+	if err = ws.error; err != nil {
+		return
+	}
 
 	ws.impl.Call("send", data)
 	return
@@ -73,18 +89,27 @@ func (ws *WebSocket) SendJSON(object interface{}) (err error) {
 }
 
 // Receive
-func (ws *WebSocket) Receive() (data js.Object) {
+func (ws *WebSocket) Receive() (data js.Object, err error) {
+	if err = ws.error; err != nil {
+		return
+	}
+
+	if !ws.open {
+		return
+	}
+
 	if len(ws.buffer) > 0 {
 		data = ws.buffer[0]
 		ws.buffer = ws.buffer[1:]
 	}
+
 	return
 }
 
 // ReceiveJSON
 func (ws *WebSocket) ReceiveJSON() (object js.Object, err error) {
-	data := ws.Receive()
-	if data == nil {
+	data, err := ws.Receive()
+	if err != nil || data == nil {
 		return
 	}
 
@@ -98,6 +123,8 @@ func (ws *WebSocket) Close() (err error) {
 	}()
 
 	ws.impl.Call("close")
+
+	err = ws.error
 	return
 }
 

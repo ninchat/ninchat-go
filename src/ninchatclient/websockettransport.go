@@ -255,7 +255,14 @@ func webSocketReceive(s *Session, ws *WebSocket, fail chan bool) (gotEvents, hos
 			if header == nil {
 				var err error
 
-				data := ws.Receive()
+				data, err := ws.Receive()
+				if err != nil {
+					s.log("receive:", err)
+					hostHealthy = false
+					fail <- true
+					return
+				}
+
 				if data == nil {
 					break
 				}
@@ -285,7 +292,14 @@ func webSocketReceive(s *Session, ws *WebSocket, fail chan bool) (gotEvents, hos
 					return
 				}
 			} else {
-				data := ws.Receive()
+				data, err := ws.Receive()
+				if err != nil {
+					s.log("receive:", err)
+					hostHealthy = false
+					fail <- true
+					return
+				}
+
 				if data == nil {
 					break
 				}
