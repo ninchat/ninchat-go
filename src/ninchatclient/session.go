@@ -319,7 +319,7 @@ func (s *Session) discover() {
 				} else {
 					s.log("endpoint discovered")
 
-					if false && (!WebSocketSupported || s.forceLongPoll || wsFailed) {
+					if !WebSocketSupported || s.forceLongPoll || wsFailed {
 						s.connect(LongPollTransport, hosts, &backoff)
 					} else {
 						wsFailed = !s.connect(WebSocketTransport, hosts, &backoff)
