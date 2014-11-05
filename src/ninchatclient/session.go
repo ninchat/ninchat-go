@@ -58,13 +58,14 @@ type Session struct {
 
 	closeNotify chan bool
 	closed      bool
+	stopped     bool
 }
 
 // NewSession implements the newSession() JavaScript API.
 func NewSession() map[string]interface{} {
 	s := Session{
 		address: defaultAddress,
-		closed:  true,
+		stopped: true,
 	}
 
 	return map[string]interface{}{
@@ -144,6 +145,11 @@ func (s *Session) SetParams(params js.Object) {
 	params.Delete("session_id")
 
 	s.sessionParams = params
+
+	if s.sendNotify != nil && s.stopped {
+		// opened + stopped -> restart
+		go s.discover()
+	}
 }
 
 // SetTransport implements the Session.setTransport(string|null) JavaScript
@@ -173,6 +179,10 @@ func (s *Session) SetAddress(address js.Object) {
 
 // Open implements the Session.open() JavaScript API.
 func (s *Session) Open() {
+	if s.closed {
+		panic("session already closed")
+	}
+
 	if s.sendNotify != nil {
 		panic("session already initialized")
 	}
@@ -191,7 +201,7 @@ func (s *Session) Open() {
 
 	s.sendNotify = make(chan bool, 1)
 	s.closeNotify = make(chan bool, 1)
-	s.closed = false
+	s.stopped = false
 
 	go s.discover()
 }
@@ -208,7 +218,9 @@ func (s *Session) Close() {
 
 	s.sendBuffer = nil
 	s.numSent = 0
+
 	s.closed = true
+	s.stopped = true
 
 	go func() {
 		s.closeNotify <- true
@@ -280,26 +292,6 @@ func (s *Session) sendAck() {
 	}()
 }
 
-// rewind prepares to resend all buffered messages.
-func (s *Session) rewind() {
-	s.numSent = 0
-}
-
-// reset clears session state, but preserves actions in the send buffer.
-func (s *Session) reset() {
-	s.sessionId = nil
-
-	if len(s.sendBuffer) == 0 {
-		s.lastActionId = 0
-	}
-
-	s.rewind()
-
-	s.sendEventAck = false
-	s.receivedEventId = 0
-	s.ackedEventId = 0
-}
-
 // discover runs an endpoint discovery loop.
 func (s *Session) discover() {
 	s.log("opening")
@@ -309,7 +301,7 @@ func (s *Session) discover() {
 	var backoff Backoff
 	var wsFailed bool
 
-	for !s.closed {
+	for !s.stopped {
 		s.log("endpoint discovery")
 		s.connState("connecting")
 
@@ -327,7 +319,7 @@ func (s *Session) discover() {
 				} else {
 					s.log("endpoint discovered")
 
-					if !WebSocketSupported || s.forceLongPoll || wsFailed {
+					if false && (!WebSocketSupported || s.forceLongPoll || wsFailed) {
 						s.connect(LongPollTransport, hosts, &backoff)
 					} else {
 						wsFailed = !s.connect(WebSocketTransport, hosts, &backoff)
@@ -370,7 +362,7 @@ func (s *Session) connect(transport Transport, hosts []string, backoff *Backoff)
 				return
 			}
 
-			if s.closed {
+			if s.stopped {
 				return
 			}
 
@@ -452,7 +444,8 @@ func (s *Session) handleSessionEvent(header js.Object) (ok bool) {
 	}
 
 	if !ok {
-		s.Close()
+		s.sessionId = nil
+		s.stopped = true
 		return
 	}
 
@@ -472,7 +465,14 @@ func (s *Session) handleSessionEvent(header js.Object) (ok bool) {
 	s.sessionParams.Delete("master_sign")
 
 	s.sessionId = sessionId
+
+	if len(s.sendBuffer) == 0 {
+		s.lastActionId = 0
+	}
+
+	s.sendEventAck = false
 	s.receivedEventId = eventId
+	s.ackedEventId = 0
 
 	s.log("session created")
 
@@ -530,11 +530,11 @@ func (s *Session) handleEvent(header, payload js.Object) (actionId uint64, needs
 		s.log("event:", err)
 
 		if sessionLost {
-			if s.canLogin() {
-				s.reset()
-			} else {
+			s.sessionId = nil
+
+			if !s.canLogin() {
 				jsInvoke(sessionSessionEventInvocationName, s.onSessionEvent, header)
-				s.Close()
+				s.stopped = true
 			}
 		}
 

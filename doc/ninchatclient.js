@@ -55,9 +55,11 @@ function Session() {
 	 * "session_created" or an "error" event header as a parameter.
 	 *
 	 * If another "session_created" event is received, it means that the
-	 * previous session was lost.  If an "error" event is received, it
-	 * means that a session can't be established (without help from the
-	 * client code), and the Session object is closed.
+	 * previous session was lost, and a new one was established automatically.
+	 *
+	 * If an "error" event is received, it means that a new session can't be
+	 * established without intervention.  The client code must call setParams()
+	 * to supply new credentials, unless it decides to close().
 	 *
 	 * @param {function}  callback
 	 */
@@ -103,7 +105,8 @@ function Session() {
 	this.onLog = function(callback) {}
 
 	/**
-	 * Set "create_session" action parameters.
+	 * Set "create_session" action parameters.  If open() has already been
+	 * called, this takes effect when a session is lost.
 	 *
 	 * @param {object}  params
 	 */

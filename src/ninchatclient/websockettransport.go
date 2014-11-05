@@ -59,7 +59,7 @@ func WebSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 
 		s.log("disconnected")
 
-		if !gotOnline || !hostHealthy || s.closed {
+		if !gotOnline || !hostHealthy || s.stopped {
 			return
 		}
 	}
@@ -136,7 +136,6 @@ func webSocketHandshake(s *Session, ws *WebSocket) (gotOnline, hostHealthy bool)
 
 	<-done
 
-	s.rewind()
 	return
 }
 
@@ -150,6 +149,8 @@ func webSocketSend(s *Session, ws *WebSocket, fail chan bool, done chan<- bool) 
 
 	keeper := NewTimer(JitterDuration(maxKeepaliveInterval, -0.3))
 	defer keeper.Stop()
+
+	s.numSent = 0
 
 	for {
 		for s.numSent < len(s.sendBuffer) {

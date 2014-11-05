@@ -69,7 +69,6 @@ func LongPollTransport(s *Session, host string) (connWorked, gotOnline bool) {
 		gotOnline = true
 	}
 
-	s.rewind()
 	return
 }
 
@@ -82,6 +81,8 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 	var sender <-chan js.Object
 	var sendingId uint64
 	var timeouts int
+
+	s.numSent = 0
 
 	for timeouts < 2 {
 		if poller == nil {
@@ -167,7 +168,7 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 
 		if array == nil {
 			timeouts++
-			s.rewind()
+			s.numSent = 0
 			continue
 		}
 
