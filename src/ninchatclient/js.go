@@ -12,7 +12,12 @@ func jsError(x interface{}) (err error) {
 	}
 
 	if jsErr, ok := x.(*js.Error); ok {
-		err = errors.New(jsErr.Get("message").Str())
+		msg := jsErr.Get("message").Str()
+		if msg == "" {
+			msg = "error"
+		}
+
+		err = errors.New(msg)
 		return
 	}
 
