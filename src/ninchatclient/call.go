@@ -34,3 +34,52 @@ func Call(header, onLog, address js.Object) (promise js.Object) {
 
 	return
 }
+
+func PostCall(header js.Object, log func(...interface{}), address string) (channel chan js.Object, err error) {
+	defer func() {
+		err = jsError(recover())
+	}()
+
+	json, err := StringifyJSON(header)
+	if err != nil {
+		return
+	}
+
+	url := "https://" + address + callPath
+
+	channel = make(chan js.Object, 1)
+
+	xhr := js.Global.Get("XMLHttpRequest").New()
+
+	xhr.Set("onload", func() {
+		defer func() {
+			if x := recover(); x != nil {
+				println(x)
+			}
+		}()
+
+		var array js.Object
+
+		if xhr.Get("status").Int() == 200 {
+			object, err := ParseJSON(xhr.Get("response").Str())
+			if err != nil {
+				log(err)
+			} else {
+				array = NewArray()
+				array.Call("push", object)
+			}
+		} else {
+			log("call status", xhr.Get("status").Str())
+		}
+
+		go func() {
+			channel <- array
+		}()
+	})
+
+	xhr.Call("open", "POST", url, true)
+	xhr.Call("setRequestHeader", "Content-Type", "application/json")
+	xhr.Call("send", json)
+
+	return
+}

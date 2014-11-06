@@ -24,6 +24,11 @@ func DataJSONP(url string, data interface{}, timeout Duration) (channel chan js.
 		return
 	}
 
+	return StringJSONP(url, json, timeout)
+}
+
+// StringJSONP
+func StringJSONP(url string, json string, timeout Duration) (channel chan js.Object, err error) {
 	return doJSONP(url+"?data="+EncodeURIComponent(json)+"&callback=", timeout)
 }
 

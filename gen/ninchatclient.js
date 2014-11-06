@@ -2033,7 +2033,7 @@ $packages["sort"] = (function() {
 	return $pkg;
 })();
 $packages["ninchatclient"] = (function() {
-	var $pkg = {}, errors = $packages["errors"], js = $packages["github.com/gopherjs/gopherjs/js"], sort = $packages["sort"], Action, Backoff, PromiseResolver, Promise, Transport, Session, Time, Duration, Timer, WebSocket, callbackNum, module, sessionEventAckWindow, GetAddress, GetEndpointHosts, GetSessionEventCredentials, GetEventFrames, GetEventAndActionId, IsEventLastReply, GetEventError, Call, Jitter, JitterDuration, JitterUint64, jsError, jsInvoke, Atob, ParseDataURI, NewArray, NewArrayBuffer, NewUint8Array, NewObject, EncodeURIComponent, ParseJSON, StringifyJSON, Random, SetTimeout, ClearTimeout, JSONP, DataJSONP, doJSONP, Log, LongPollTransport, longPollTransfer, longPollPing, longPollClose, main, NewPromise, NewSession, Now, NewTimer, Sleep, NewWebSocket, StringifyFrame, WebSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
+	var $pkg = {}, errors = $packages["errors"], js = $packages["github.com/gopherjs/gopherjs/js"], sort = $packages["sort"], Action, Backoff, PromiseResolver, Promise, Transport, Session, Time, Duration, Timer, WebSocket, callbackNum, module, sessionEventAckWindow, GetAddress, GetEndpointHosts, GetSessionEventCredentials, GetEventFrames, GetEventAndActionId, IsEventLastReply, GetEventError, Call, PostCall, Jitter, JitterDuration, JitterUint64, jsError, jsInvoke, Atob, ParseDataURI, NewArray, NewArrayBuffer, NewUint8Array, NewObject, EncodeURIComponent, ParseJSON, StringifyJSON, Random, SetTimeout, ClearTimeout, JSONP, DataJSONP, StringJSONP, doJSONP, Log, LongPollTransport, longPollTransfer, longPollPing, longPollClose, main, NewPromise, NewSession, Now, NewTimer, Sleep, NewWebSocket, StringifyFrame, WebSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
 	Action = $pkg.Action = $newType(0, "Struct", "main.Action", "Action", "ninchatclient", function(Id_, Header_, Payload_, Resolve_, name_) {
 		this.$val = this;
 		this.Id = Id_ !== undefined ? Id_ : new $Uint64(0, 0);
@@ -2290,6 +2290,55 @@ $packages["ninchatclient"] = (function() {
 		}), []);
 		return promise;
 	};
+	PostCall = $pkg.PostCall = function(header, log, address) {
+		var channel = ($chanType(js.Object, false, false)).nil, err = $ifaceNil, $deferred = [], $err = null, _tuple, json, url, xhr;
+		/* */ try { $deferFrames.push($deferred);
+		$deferred.push([(function() {
+			err = jsError($recover());
+		}), []]);
+		_tuple = StringifyJSON(header); json = _tuple[0]; err = _tuple[1];
+		if (!($interfaceIsEqual(err, $ifaceNil))) {
+			return [channel, err];
+		}
+		url = "https://" + address + "/v2/call";
+		channel = new ($chanType(js.Object, false, false))(1);
+		xhr = new ($global.XMLHttpRequest)();
+		xhr.onload = $externalize((function() {
+			var $deferred = [], $err = null, array, _tuple$1, object, err$1;
+			/* */ try { $deferFrames.push($deferred);
+			$deferred.push([(function() {
+				var x;
+				x = $recover();
+				if (!($interfaceIsEqual(x, $ifaceNil))) {
+					console.log(x);
+				}
+			}), []]);
+			array = $ifaceNil;
+			if (($parseInt(xhr.status) >> 0) === 200) {
+				_tuple$1 = ParseJSON($internalize(xhr.response, $String)); object = _tuple$1[0]; err$1 = _tuple$1[1];
+				if (!($interfaceIsEqual(err$1, $ifaceNil))) {
+					log(new ($sliceType($emptyInterface))([err$1]));
+				} else {
+					array = NewArray();
+					array.push(object);
+				}
+			} else {
+				log(new ($sliceType($emptyInterface))([new $String("call status"), new $String($internalize(xhr.status, $String))]));
+			}
+			$go((function($b) {
+				var $this = this, $args = arguments, $r, $s = 0;
+				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
+				$r = $send(channel, array, true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
+				/* */ case -1: } return; } }; $f.$blocking = true; return $f;
+			}), []);
+			/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); }
+		}), ($funcType([], [], false)));
+		xhr.open($externalize("POST", $String), $externalize(url, $String), $externalize(true, $Bool));
+		xhr.setRequestHeader($externalize("Content-Type", $String), $externalize("application/json", $String));
+		xhr.send($externalize(json, $String));
+		return [channel, err];
+		/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); return [channel, err]; }
+	};
 	Jitter = $pkg.Jitter = function(x, scale) {
 		return x + x * scale * Random();
 	};
@@ -2408,7 +2457,12 @@ $packages["ninchatclient"] = (function() {
 		if (!($interfaceIsEqual(err, $ifaceNil))) {
 			return [channel, err];
 		}
-		_tuple$1 = doJSONP(url + "?data=" + EncodeURIComponent(json) + "&callback=", timeout); channel = _tuple$1[0]; err = _tuple$1[1];
+		_tuple$1 = StringJSONP(url, json, timeout); channel = _tuple$1[0]; err = _tuple$1[1];
+		return [channel, err];
+	};
+	StringJSONP = $pkg.StringJSONP = function(url, json, timeout) {
+		var channel = ($chanType(js.Object, false, false)).nil, err = $ifaceNil, _tuple;
+		_tuple = doJSONP(url + "?data=" + EncodeURIComponent(json) + "&callback=", timeout); channel = _tuple[0]; err = _tuple[1];
 		return [channel, err];
 	};
 	doJSONP = function(url, timeout) {
@@ -2534,7 +2588,7 @@ $packages["ninchatclient"] = (function() {
 		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); return [connWorked, gotOnline]; } }; $f.$blocking = true; return $f;
 	};
 	longPollTransfer = function(s, url, $b) {
-		var $this = this, $args = arguments, gotOnline = false, $r, $s = 0, poller, sender, sendingId, timeouts, err, header, _tuple, x, x$1, action, payload, err$1, frame, _tuple$1, base64, err$2, _tuple$2, _tuple$3, channel, err$3, x$2, array, _selection, _r, sending, i, header$1, payload$1, object, _tuple$4, json, err$4, _tuple$5, ackedActionId, ok;
+		var $this = this, $args = arguments, gotOnline = false, $r, $s = 0, poller, sender, sendingId, timeouts, err, header, _tuple, x, x$1, action, payload, err$1, frame, _tuple$1, base64, err$2, _tuple$2, _tuple$3, json, err$3, channel, _tuple$4, _tuple$5, x$2, array, _selection, _r, sending, i, header$1, payload$1, object, _tuple$6, json$1, err$4, _tuple$7, ackedActionId, ok;
 		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
 		poller = ($chanType(js.Object, false, true)).nil;
 		sender = ($chanType(js.Object, false, true)).nil;
@@ -2575,9 +2629,23 @@ $packages["ninchatclient"] = (function() {
 					action.Header.payload = payload;
 				}
 				action.Header.session_id = s.sessionId;
-				_tuple$3 = DataJSONP(url, action.Header, JitterDuration(new Duration(0, 7000), 0.2)); channel = _tuple$3[0]; err$3 = _tuple$3[1];
-				delete action.Header[$externalize("payload", $String)];
+				_tuple$3 = StringifyJSON(action.Header); json = _tuple$3[0]; err$3 = _tuple$3[1];
 				delete action.Header[$externalize("session_id", $String)];
+				if (!($interfaceIsEqual(err$3, $ifaceNil))) {
+					s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$3]));
+					return gotOnline;
+				}
+				channel = ($chanType(js.Object, false, false)).nil;
+				if (json.length <= 2048) {
+					_tuple$4 = StringJSONP(url, json, JitterDuration(new Duration(0, 7000), 0.2)); channel = _tuple$4[0]; err$3 = _tuple$4[1];
+				} else {
+					action.Header.caller_id = s.sessionParams.user_id;
+					action.Header.caller_auth = s.sessionParams.user_auth;
+					_tuple$5 = PostCall(action.Header, $methodVal(s, "log"), s.address); channel = _tuple$5[0]; err$3 = _tuple$5[1];
+					delete action.Header[$externalize("caller_id", $String)];
+					delete action.Header[$externalize("caller_auth", $String)];
+				}
+				delete action.Header[$externalize("payload", $String)];
 				if (!($interfaceIsEqual(err$3, $ifaceNil))) {
 					s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$3]));
 					return gotOnline;
@@ -2631,14 +2699,14 @@ $packages["ninchatclient"] = (function() {
 				payload$1 = NewArray();
 				object = header$1.payload;
 				if (!(object === undefined)) {
-					_tuple$4 = StringifyJSON(object); json = _tuple$4[0]; err$4 = _tuple$4[1];
+					_tuple$6 = StringifyJSON(object); json$1 = _tuple$6[0]; err$4 = _tuple$6[1];
 					if (!($interfaceIsEqual(err$4, $ifaceNil))) {
 						s.log(new ($sliceType($emptyInterface))([new $String("poll payload:"), err$4]));
 						return gotOnline;
 					}
-					payload$1.push($externalize(json, $String));
+					payload$1.push($externalize(json$1, $String));
 				}
-				_tuple$5 = s.handleEvent(header$1, payload$1); ackedActionId = _tuple$5[0]; ok = _tuple$5[2];
+				_tuple$7 = s.handleEvent(header$1, payload$1); ackedActionId = _tuple$7[0]; ok = _tuple$7[2];
 				if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0)) && (sendingId.$high < ackedActionId.$high || (sendingId.$high === ackedActionId.$high && sendingId.$low <= ackedActionId.$low))) {
 					sendingId = new $Uint64(0, 0);
 					s.numSent = s.numSent + (1) >> 0;

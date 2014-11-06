@@ -7,6 +7,8 @@ import (
 const (
 	minPollTimeout = Second * 64
 	minSendTimeout = Second * 7
+
+	maxJSONPSize = 2048
 )
 
 // LongPollTransport creates or resumes a session, and runs an I/O loop after
@@ -125,10 +127,30 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 
 			action.Header.Set("session_id", s.sessionId)
 
-			channel, err := DataJSONP(url, action.Header, JitterDuration(minSendTimeout, 0.2))
+			json, err := StringifyJSON(action.Header)
+
+			action.Header.Delete("session_id")
+
+			if err != nil {
+				s.log("send:", err)
+				return
+			}
+
+			var channel chan js.Object
+
+			if len(json) <= maxJSONPSize {
+				channel, err = StringJSONP(url, json, JitterDuration(minSendTimeout, 0.2))
+			} else {
+				action.Header.Set("caller_id", s.sessionParams.Get("user_id"))
+				action.Header.Set("caller_auth", s.sessionParams.Get("user_auth"))
+
+				channel, err = PostCall(action.Header, s.log, s.address)
+
+				action.Header.Delete("caller_id")
+				action.Header.Delete("caller_auth")
+			}
 
 			action.Header.Delete("payload")
-			action.Header.Delete("session_id")
 
 			if err != nil {
 				s.log("send:", err)
