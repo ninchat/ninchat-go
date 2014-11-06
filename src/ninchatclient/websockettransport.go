@@ -178,7 +178,37 @@ func webSocketSend(s *Session, ws *WebSocket, fail chan bool, done chan<- bool) 
 
 			if action.Payload != nil {
 				for i := 0; i < action.Payload.Length(); i++ {
-					if err := ws.Send(action.Payload.Index(0)); err != nil {
+					frame := action.Payload.Index(i)
+
+					if action.Header.Get("action").Str() == "update_user" {
+						if _, ok := frame.Interface().(string); ok {
+							base64, err := ParseDataURI(frame)
+							if err != nil {
+								s.log("send:", err)
+								fail <- true
+								return
+							}
+
+							data, err := Atob(base64)
+							if err != nil {
+								s.log("send:", err)
+								fail <- true
+								return
+							}
+
+							length := data.Length()
+							buffer := NewArrayBuffer(length)
+							array := NewUint8Array(buffer)
+
+							for i := 0; i < length; i++ {
+								array.SetIndex(i, data.Call("charCodeAt", i))
+							}
+
+							frame = buffer
+						}
+					}
+
+					if err := ws.Send(frame); err != nil {
 						s.log("send:", err)
 						fail <- true
 						return

@@ -102,24 +102,21 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 				var payload js.Object
 				var err error
 
-				length := action.Payload.Length()
+				frame := action.Payload.Index(0)
 
-				if str, ok := action.Payload.Index(0).Interface().(string); ok && length == 1 {
-					if payload, err = ParseJSON(str); err != nil {
+				if action.Header.Get("action").Str() == "update_user" {
+					base64, err := ParseDataURI(frame)
+					if err != nil {
 						s.log("send:", err)
 						return
 					}
-				} else {
+
 					payload = NewArray()
-
-					for i := 0; i < length; i++ {
-						encoded, err := EncodeBase64(action.Payload.Index(i))
-						if err != nil {
-							s.log("send:", err)
-							return
-						}
-
-						payload.Call("push", encoded)
+					payload.Call("push", base64)
+				} else {
+					if payload, err = ParseJSON(frame.Str()); err != nil {
+						s.log("send:", err)
+						return
 					}
 				}
 

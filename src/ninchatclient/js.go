@@ -38,18 +38,30 @@ func jsInvoke(name string, function js.Object, args ...interface{}) (ok bool) {
 	return
 }
 
-func EncodeBase64(data js.Object) (encoded js.Object, err error) {
+func Atob(string js.Object) (binary js.Object, err error) {
 	defer func() {
 		err = jsError(recover())
 	}()
 
-	str := js.Global.Get("String").Get("fromCharCode").Call("apply", nil, data)
-	encoded = js.Global.Call("btoa", str)
+	binary = js.Global.Call("atob", string)
+	return
+}
+
+func ParseDataURI(string js.Object) (base64 js.Object, err error) {
+	defer func() {
+		err = jsError(recover())
+	}()
+
+	base64 = string.Call("split", ",").Index(1)
 	return
 }
 
 func NewArray() js.Object {
 	return js.Global.Get("Array").New()
+}
+
+func NewArrayBuffer(length int) js.Object {
+	return js.Global.Get("ArrayBuffer").New(length)
 }
 
 func NewUint8Array(arrayBuffer js.Object) js.Object {

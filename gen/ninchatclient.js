@@ -2033,7 +2033,7 @@ $packages["sort"] = (function() {
 	return $pkg;
 })();
 $packages["ninchatclient"] = (function() {
-	var $pkg = {}, errors = $packages["errors"], js = $packages["github.com/gopherjs/gopherjs/js"], sort = $packages["sort"], Action, Backoff, PromiseResolver, Promise, Transport, Session, Time, Duration, Timer, WebSocket, callbackNum, module, sessionEventAckWindow, GetAddress, GetEndpointHosts, GetSessionEventCredentials, GetEventFrames, GetEventAndActionId, IsEventLastReply, GetEventError, Call, Jitter, JitterDuration, JitterUint64, jsError, jsInvoke, EncodeBase64, NewArray, NewUint8Array, NewObject, EncodeURIComponent, ParseJSON, StringifyJSON, Random, SetTimeout, ClearTimeout, JSONP, DataJSONP, doJSONP, Log, LongPollTransport, longPollTransfer, longPollPing, longPollClose, main, NewPromise, NewSession, Now, NewTimer, Sleep, NewWebSocket, StringifyFrame, WebSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
+	var $pkg = {}, errors = $packages["errors"], js = $packages["github.com/gopherjs/gopherjs/js"], sort = $packages["sort"], Action, Backoff, PromiseResolver, Promise, Transport, Session, Time, Duration, Timer, WebSocket, callbackNum, module, sessionEventAckWindow, GetAddress, GetEndpointHosts, GetSessionEventCredentials, GetEventFrames, GetEventAndActionId, IsEventLastReply, GetEventError, Call, Jitter, JitterDuration, JitterUint64, jsError, jsInvoke, Atob, ParseDataURI, NewArray, NewArrayBuffer, NewUint8Array, NewObject, EncodeURIComponent, ParseJSON, StringifyJSON, Random, SetTimeout, ClearTimeout, JSONP, DataJSONP, doJSONP, Log, LongPollTransport, longPollTransfer, longPollPing, longPollClose, main, NewPromise, NewSession, Now, NewTimer, Sleep, NewWebSocket, StringifyFrame, WebSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
 	Action = $pkg.Action = $newType(0, "Struct", "main.Action", "Action", "ninchatclient", function(Id_, Header_, Payload_, Resolve_, name_) {
 		this.$val = this;
 		this.Id = Id_ !== undefined ? Id_ : new $Uint64(0, 0);
@@ -2331,19 +2331,31 @@ $packages["ninchatclient"] = (function() {
 		return ok;
 		/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); return ok; }
 	};
-	EncodeBase64 = $pkg.EncodeBase64 = function(data) {
-		var encoded = $ifaceNil, err = $ifaceNil, $deferred = [], $err = null, str;
+	Atob = $pkg.Atob = function(string) {
+		var binary = $ifaceNil, err = $ifaceNil, $deferred = [], $err = null;
 		/* */ try { $deferFrames.push($deferred);
 		$deferred.push([(function() {
 			err = jsError($recover());
 		}), []]);
-		str = $global.String.fromCharCode.apply(null, data);
-		encoded = $global.btoa(str);
-		return [encoded, err];
-		/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); return [encoded, err]; }
+		binary = $global.atob(string);
+		return [binary, err];
+		/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); return [binary, err]; }
+	};
+	ParseDataURI = $pkg.ParseDataURI = function(string) {
+		var base64 = $ifaceNil, err = $ifaceNil, $deferred = [], $err = null;
+		/* */ try { $deferFrames.push($deferred);
+		$deferred.push([(function() {
+			err = jsError($recover());
+		}), []]);
+		base64 = string.split($externalize(",", $String))[1];
+		return [base64, err];
+		/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); return [base64, err]; }
 	};
 	NewArray = $pkg.NewArray = function() {
 		return new ($global.Array)();
+	};
+	NewArrayBuffer = $pkg.NewArrayBuffer = function(length) {
+		return new ($global.ArrayBuffer)(length);
 	};
 	NewUint8Array = $pkg.NewUint8Array = function(arrayBuffer) {
 		return new ($global.Uint8Array)(arrayBuffer);
@@ -2522,7 +2534,7 @@ $packages["ninchatclient"] = (function() {
 		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); return [connWorked, gotOnline]; } }; $f.$blocking = true; return $f;
 	};
 	longPollTransfer = function(s, url, $b) {
-		var $this = this, $args = arguments, gotOnline = false, $r, $s = 0, poller, sender, sendingId, timeouts, err, header, _tuple, x, x$1, action, payload, err$1, length, _tuple$1, str, ok, _tuple$2, i, _tuple$3, encoded, err$2, _tuple$4, channel, err$3, x$2, array, _selection, _r, sending, i$1, header$1, payload$1, object, _tuple$5, json, err$4, _tuple$6, ackedActionId, ok$1;
+		var $this = this, $args = arguments, gotOnline = false, $r, $s = 0, poller, sender, sendingId, timeouts, err, header, _tuple, x, x$1, action, payload, err$1, frame, _tuple$1, base64, err$2, _tuple$2, _tuple$3, channel, err$3, x$2, array, _selection, _r, sending, i, header$1, payload$1, object, _tuple$4, json, err$4, _tuple$5, ackedActionId, ok;
 		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
 		poller = ($chanType(js.Object, false, true)).nil;
 		sender = ($chanType(js.Object, false, true)).nil;
@@ -2544,31 +2556,26 @@ $packages["ninchatclient"] = (function() {
 				if (!(action.Payload === $ifaceNil)) {
 					payload = $ifaceNil;
 					err$1 = $ifaceNil;
-					length = $parseInt(action.Payload.length);
-					_tuple$1 = $assertType($internalize(action.Payload[0], $emptyInterface), $String, true); str = _tuple$1[0]; ok = _tuple$1[1];
-					if (ok && (length === 1)) {
-						_tuple$2 = ParseJSON(str); payload = _tuple$2[0]; err$1 = _tuple$2[1];
+					frame = action.Payload[0];
+					if ($internalize(action.Header.action, $String) === "update_user") {
+						_tuple$1 = ParseDataURI(frame); base64 = _tuple$1[0]; err$2 = _tuple$1[1];
+						if (!($interfaceIsEqual(err$2, $ifaceNil))) {
+							s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$2]));
+							return gotOnline;
+						}
+						payload = NewArray();
+						payload.push(base64);
+					} else {
+						_tuple$2 = ParseJSON($internalize(frame, $String)); payload = _tuple$2[0]; err$1 = _tuple$2[1];
 						if (!($interfaceIsEqual(err$1, $ifaceNil))) {
 							s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$1]));
 							return gotOnline;
-						}
-					} else {
-						payload = NewArray();
-						i = 0;
-						while (i < length) {
-							_tuple$3 = EncodeBase64(action.Payload[i]); encoded = _tuple$3[0]; err$2 = _tuple$3[1];
-							if (!($interfaceIsEqual(err$2, $ifaceNil))) {
-								s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$2]));
-								return gotOnline;
-							}
-							payload.push(encoded);
-							i = i + (1) >> 0;
 						}
 					}
 					action.Header.payload = payload;
 				}
 				action.Header.session_id = s.sessionId;
-				_tuple$4 = DataJSONP(url, action.Header, JitterDuration(new Duration(0, 7000), 0.2)); channel = _tuple$4[0]; err$3 = _tuple$4[1];
+				_tuple$3 = DataJSONP(url, action.Header, JitterDuration(new Duration(0, 7000), 0.2)); channel = _tuple$3[0]; err$3 = _tuple$3[1];
 				delete action.Header[$externalize("payload", $String)];
 				delete action.Header[$externalize("session_id", $String)];
 				if (!($interfaceIsEqual(err$3, $ifaceNil))) {
@@ -2618,32 +2625,32 @@ $packages["ninchatclient"] = (function() {
 				/* continue; */ $s = 1; continue;
 			}
 			timeouts = 0;
-			i$1 = 0;
-			while (i$1 < $parseInt(array.length)) {
-				header$1 = array[i$1];
+			i = 0;
+			while (i < $parseInt(array.length)) {
+				header$1 = array[i];
 				payload$1 = NewArray();
 				object = header$1.payload;
 				if (!(object === undefined)) {
-					_tuple$5 = StringifyJSON(object); json = _tuple$5[0]; err$4 = _tuple$5[1];
+					_tuple$4 = StringifyJSON(object); json = _tuple$4[0]; err$4 = _tuple$4[1];
 					if (!($interfaceIsEqual(err$4, $ifaceNil))) {
 						s.log(new ($sliceType($emptyInterface))([new $String("poll payload:"), err$4]));
 						return gotOnline;
 					}
 					payload$1.push($externalize(json, $String));
 				}
-				_tuple$6 = s.handleEvent(header$1, payload$1); ackedActionId = _tuple$6[0]; ok$1 = _tuple$6[2];
+				_tuple$5 = s.handleEvent(header$1, payload$1); ackedActionId = _tuple$5[0]; ok = _tuple$5[2];
 				if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0)) && (sendingId.$high < ackedActionId.$high || (sendingId.$high === ackedActionId.$high && sendingId.$low <= ackedActionId.$low))) {
 					sendingId = new $Uint64(0, 0);
 					s.numSent = s.numSent + (1) >> 0;
 				}
-				if (!ok$1) {
+				if (!ok) {
 					return gotOnline;
 				}
 				if (!gotOnline) {
 					gotOnline = true;
 					s.connState("connected");
 				}
-				i$1 = i$1 + (1) >> 0;
+				i = i + (1) >> 0;
 			}
 		/* } */ $s = 1; continue; case 2:
 		return gotOnline;
@@ -3479,7 +3486,7 @@ $packages["ninchatclient"] = (function() {
 		/* */ case -1: } return; } }; $f.$blocking = true; return $f;
 	};
 	webSocketSend = function(s, ws, fail, done, $b) {
-		var $this = this, $args = arguments, $r, $deferred = [], $err = null, $s = 0, keeper, x, x$1, action, x$2, x$3, err, i, err$1, x$4, x$5, x$6, action$1, err$2, _selection, _r, sending, closeSession, _map, _key, err$3, err$4;
+		var $this = this, $args = arguments, $r, $deferred = [], $err = null, $s = 0, keeper, x, x$1, action, x$2, x$3, err, i, frame, _tuple, ok, _tuple$1, base64, err$1, _tuple$2, data, length, buffer, array, i$1, err$2, x$4, x$5, x$6, action$1, err$3, _selection, _r, sending, closeSession, _map, _key, err$4, err$5;
 		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { try { $deferFrames.push($deferred); while (true) { switch ($s) { case 0:
 		$deferred.push([(function($b) {
 			var $this = this, $args = arguments, $r, $s = 0;
@@ -3512,12 +3519,39 @@ $packages["ninchatclient"] = (function() {
 				/* if (!(action.Payload === $ifaceNil)) { */ if (!(action.Payload === $ifaceNil)) {} else { $s = 7; continue; }
 					i = 0;
 					/* while (i < $parseInt(action.Payload.length)) { */ case 8: if(!(i < $parseInt(action.Payload.length))) { $s = 9; continue; }
-						err$1 = ws.Send(action.Payload[0]);
-						/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ if (!($interfaceIsEqual(err$1, $ifaceNil))) {} else { $s = 10; continue; }
-							s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$1]));
-							$r = $send(fail, true, true); /* */ $s = 11; case 11: if ($r && $r.$blocking) { $r = $r(); }
-							return;
+						frame = action.Payload[i];
+						/* if ($internalize(action.Header.action, $String) === "update_user") { */ if ($internalize(action.Header.action, $String) === "update_user") {} else { $s = 10; continue; }
+							_tuple = $assertType($internalize(frame, $emptyInterface), $String, true); ok = _tuple[1];
+							/* if (ok) { */ if (ok) {} else { $s = 11; continue; }
+								_tuple$1 = ParseDataURI(frame); base64 = _tuple$1[0]; err$1 = _tuple$1[1];
+								/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ if (!($interfaceIsEqual(err$1, $ifaceNil))) {} else { $s = 12; continue; }
+									s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$1]));
+									$r = $send(fail, true, true); /* */ $s = 13; case 13: if ($r && $r.$blocking) { $r = $r(); }
+									return;
+								/* } */ case 12:
+								_tuple$2 = Atob(base64); data = _tuple$2[0]; err$1 = _tuple$2[1];
+								/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ if (!($interfaceIsEqual(err$1, $ifaceNil))) {} else { $s = 14; continue; }
+									s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$1]));
+									$r = $send(fail, true, true); /* */ $s = 15; case 15: if ($r && $r.$blocking) { $r = $r(); }
+									return;
+								/* } */ case 14:
+								length = $parseInt(data.length);
+								buffer = NewArrayBuffer(length);
+								array = NewUint8Array(buffer);
+								i$1 = 0;
+								while (i$1 < length) {
+									array[i$1] = data.charCodeAt(i$1);
+									i$1 = i$1 + (1) >> 0;
+								}
+								frame = buffer;
+							/* } */ case 11:
 						/* } */ case 10:
+						err$2 = ws.Send(frame);
+						/* if (!($interfaceIsEqual(err$2, $ifaceNil))) { */ if (!($interfaceIsEqual(err$2, $ifaceNil))) {} else { $s = 16; continue; }
+							s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$2]));
+							$r = $send(fail, true, true); /* */ $s = 17; case 17: if ($r && $r.$blocking) { $r = $r(); }
+							return;
+						/* } */ case 16:
 						i = i + (1) >> 0;
 					/* } */ $s = 8; continue; case 9:
 				/* } */ case 7:
@@ -3528,38 +3562,38 @@ $packages["ninchatclient"] = (function() {
 				}
 				keeper.Reset(JitterDuration(new Duration(0, 56000), -0.3));
 			/* } */ $s = 3; continue; case 4:
-			/* if (s.sendEventAck && !((x$5 = s.receivedEventId, x$6 = s.ackedEventId, (x$5.$high === x$6.$high && x$5.$low === x$6.$low)))) { */ if (s.sendEventAck && !((x$5 = s.receivedEventId, x$6 = s.ackedEventId, (x$5.$high === x$6.$high && x$5.$low === x$6.$low)))) {} else { $s = 12; continue; }
+			/* if (s.sendEventAck && !((x$5 = s.receivedEventId, x$6 = s.ackedEventId, (x$5.$high === x$6.$high && x$5.$low === x$6.$low)))) { */ if (s.sendEventAck && !((x$5 = s.receivedEventId, x$6 = s.ackedEventId, (x$5.$high === x$6.$high && x$5.$low === x$6.$low)))) {} else { $s = 18; continue; }
 				action$1 = s.makeResumeSessionAction(false);
-				err$2 = ws.SendJSON(action$1);
-				/* if (!($interfaceIsEqual(err$2, $ifaceNil))) { */ if (!($interfaceIsEqual(err$2, $ifaceNil))) {} else { $s = 13; continue; }
-					s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$2]));
-					$r = $send(fail, true, true); /* */ $s = 14; case 14: if ($r && $r.$blocking) { $r = $r(); }
-					return;
-				/* } */ case 13:
-			/* } */ case 12:
-			_r = $select([[s.sendNotify], [keeper.C], [fail]], true); /* */ $s = 15; case 15: if (_r && _r.$blocking) { _r = _r(); }
-			_selection = _r;
-			/* if (_selection[0] === 0) { */ if (_selection[0] === 0) {} else if (_selection[0] === 1) { $s = 16; continue; } else if (_selection[0] === 2) { $s = 17; continue; } else { $s = 18; continue; }
-				sending = _selection[1][0];
-				if (!sending) {
-					closeSession = (_map = new $Map(), _key = "action", _map[_key] = { k: _key, v: new $String("close_session") }, _map);
-					err$3 = ws.SendJSON(new ($mapType($String, $emptyInterface))(closeSession));
-					if (!($interfaceIsEqual(err$3, $ifaceNil))) {
-						s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$3]));
-					}
-					return;
-				}
-			/* } else if (_selection[0] === 1) { */ $s = 18; continue; case 16: 
-				err$4 = ws.Send(new ($sliceType($Uint8))([]));
-				/* if (!($interfaceIsEqual(err$4, $ifaceNil))) { */ if (!($interfaceIsEqual(err$4, $ifaceNil))) {} else { $s = 19; continue; }
-					s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$4]));
+				err$3 = ws.SendJSON(action$1);
+				/* if (!($interfaceIsEqual(err$3, $ifaceNil))) { */ if (!($interfaceIsEqual(err$3, $ifaceNil))) {} else { $s = 19; continue; }
+					s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$3]));
 					$r = $send(fail, true, true); /* */ $s = 20; case 20: if ($r && $r.$blocking) { $r = $r(); }
 					return;
 				/* } */ case 19:
-				keeper.Reset(JitterDuration(new Duration(0, 56000), -0.3));
-			/* } else if (_selection[0] === 2) { */ $s = 18; continue; case 17: 
-				return;
 			/* } */ case 18:
+			_r = $select([[s.sendNotify], [keeper.C], [fail]], true); /* */ $s = 21; case 21: if (_r && _r.$blocking) { _r = _r(); }
+			_selection = _r;
+			/* if (_selection[0] === 0) { */ if (_selection[0] === 0) {} else if (_selection[0] === 1) { $s = 22; continue; } else if (_selection[0] === 2) { $s = 23; continue; } else { $s = 24; continue; }
+				sending = _selection[1][0];
+				if (!sending) {
+					closeSession = (_map = new $Map(), _key = "action", _map[_key] = { k: _key, v: new $String("close_session") }, _map);
+					err$4 = ws.SendJSON(new ($mapType($String, $emptyInterface))(closeSession));
+					if (!($interfaceIsEqual(err$4, $ifaceNil))) {
+						s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$4]));
+					}
+					return;
+				}
+			/* } else if (_selection[0] === 1) { */ $s = 24; continue; case 22: 
+				err$5 = ws.Send(new ($sliceType($Uint8))([]));
+				/* if (!($interfaceIsEqual(err$5, $ifaceNil))) { */ if (!($interfaceIsEqual(err$5, $ifaceNil))) {} else { $s = 25; continue; }
+					s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$5]));
+					$r = $send(fail, true, true); /* */ $s = 26; case 26: if ($r && $r.$blocking) { $r = $r(); }
+					return;
+				/* } */ case 25:
+				keeper.Reset(JitterDuration(new Duration(0, 56000), -0.3));
+			/* } else if (_selection[0] === 2) { */ $s = 24; continue; case 23: 
+				return;
+			/* } */ case 24:
 		/* } */ $s = 1; continue; case 2:
 		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); } }; $f.$blocking = true; return $f;
 	};
