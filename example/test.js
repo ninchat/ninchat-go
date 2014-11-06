@@ -15,7 +15,6 @@ function test() {
 
 	session.onSessionEvent(function(sessionHeader) {
 		print("SESSION: " + JSON.stringify(sessionHeader));
-		print("BINARY: " + session.binarySupported());
 
 		var sendSequence = 1;
 

@@ -138,14 +138,6 @@ function Session() {
 	this.close = function() {}
 
 	/**
-	 * Does the currently active transport implementation support binary
-	 * payloads?  The result is undefined until a session has been established.
-	 *
-	 * @return {boolean}
-	 */
-	this.binarySupported = function() {}
-
-	/**
 	 * Send an action.
 	 *
 	 * To send an action without an "action_id" parameter, specify it as
