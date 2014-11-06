@@ -229,7 +229,7 @@ func (s *Session) Close() {
 }
 
 // Send implements the Session.send(object[, array]) JavaScript API.
-func (s *Session) Send(header, payload js.Object) (promise js.Object) {
+func (s *Session) Send(header, payload js.Object) (promise interface{}) {
 	if s.sendNotify == nil {
 		panic("session not initialized")
 	}

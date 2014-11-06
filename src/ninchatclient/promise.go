@@ -18,11 +18,12 @@ type Deferred struct {
 }
 
 // Defer
-func Defer() (d *Deferred, promise js.Object) {
+func Defer() (d *Deferred, promise map[string]interface{}) {
 	d = &Deferred{}
 
-	promise = NewObject()
-	promise.Set("then", d.then)
+	promise = map[string]interface{}{
+		"then": d.then,
+	}
 
 	return
 }

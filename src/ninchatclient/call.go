@@ -12,7 +12,7 @@ const (
 
 // Call implements the call(object[, function|null[, string|null]]) JavaScript
 // API.
-func Call(header, onLog, address js.Object) (promise js.Object) {
+func Call(header, onLog, address js.Object) (promise interface{}) {
 	url := "https://" + GetAddress(address) + callPath
 
 	deferred, promise := Defer()
