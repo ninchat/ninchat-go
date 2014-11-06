@@ -15,20 +15,20 @@ const (
 func Call(header, onLog, address js.Object) (promise js.Object) {
 	url := "https://" + GetAddress(address) + callPath
 
-	promise, resolve := NewPromise()
+	deferred, promise := Defer()
 
 	go func() {
 		response, err := DataJSONP(url, header, JitterDuration(callTimeout, 0.1))
 		if err != nil {
 			Log(callLogInvocationName, onLog, "call:", err)
-			resolve(false)
+			deferred.Reject()
 			return
 		}
 
 		if events := <-response; events != nil {
-			resolve(true, events)
+			deferred.Resolve(events)
 		} else {
-			resolve(false)
+			deferred.Reject()
 		}
 	}()
 

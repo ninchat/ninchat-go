@@ -5,79 +5,61 @@ import (
 )
 
 const (
-	promiseSuccessInvocationName = namespace + " promise success callback"
-	promiseFailureInvocationName = namespace + " promise failure callback"
+	promiseResolveInvocationName = namespace + " promise resolve callback"
+	promiseRejectInvocationName  = namespace + " promise reject callback"
+	promiseNotifyInvocationName  = namespace + " promise notify callback"
 )
 
-// PromiseResolver
-type PromiseResolver func(successful bool, args ...interface{})
-
-// Promise
-type Promise struct {
-	settled    bool
-	successful bool
-	args       []interface{}
-
-	successCallbacks []js.Object
-	failureCallbacks []js.Object
+// Deferred
+type Deferred struct {
+	resolve []js.Object
+	reject  []js.Object
+	notify  []js.Object
 }
 
-// NewPromise
-func NewPromise() (promise js.Object, resolve PromiseResolver) {
-	var p Promise
+// Defer
+func Defer() (d *Deferred, promise js.Object) {
+	d = &Deferred{}
 
 	promise = NewObject()
-	promise.Set("then", p.Then)
-
-	resolve = p.Resolve
+	promise.Set("then", d.then)
 
 	return
 }
 
-// Then implements the Promise.then(function|null[, function|null]) JavaScript
-// API.
-func (p *Promise) Then(success, failure js.Object) {
-	hasSuccess := !success.IsUndefined() && !success.IsNull()
-	hasFailure := !failure.IsUndefined() && !failure.IsNull()
+// then implements the Promise.then(function|null[, function|null[,
+// function|null]]) JavaScript API.
+func (d *Deferred) then(resolve, reject, notify js.Object) {
+	if !resolve.IsUndefined() && !resolve.IsNull() {
+		d.resolve = append(d.resolve, resolve)
+	}
 
-	if p.settled {
-		if p.successful {
-			if hasSuccess {
-				jsInvoke(promiseSuccessInvocationName, success, p.args...)
-			}
-		} else {
-			if hasFailure {
-				jsInvoke(promiseFailureInvocationName, failure, p.args...)
-			}
-		}
-	} else {
-		if hasSuccess {
-			p.successCallbacks = append(p.successCallbacks, success)
-		}
+	if !reject.IsUndefined() && !reject.IsNull() {
+		d.reject = append(d.reject, reject)
+	}
 
-		if hasFailure {
-			p.failureCallbacks = append(p.failureCallbacks, failure)
-		}
+	if !notify.IsUndefined() && !notify.IsNull() {
+		d.notify = append(d.notify, notify)
 	}
 }
 
 // Resolve
-func (p *Promise) Resolve(successful bool, args ...interface{}) {
-	if p.settled {
-		panic("promise has already been settled")
+func (d *Deferred) Resolve(args ...interface{}) {
+	for _, callback := range d.resolve {
+		jsInvoke(promiseResolveInvocationName, callback, args...)
 	}
+}
 
-	p.settled = true
-	p.successful = successful
-	p.args = args
+// Reject
+func (d *Deferred) Reject(args ...interface{}) {
+	for _, callback := range d.reject {
+		jsInvoke(promiseRejectInvocationName, callback, args...)
+	}
+}
 
-	if successful {
-		for _, callback := range p.successCallbacks {
-			jsInvoke(promiseSuccessInvocationName, callback, p.args...)
-		}
-	} else {
-		for _, callback := range p.failureCallbacks {
-			jsInvoke(promiseFailureInvocationName, callback, p.args...)
-		}
+// Notify
+func (d *Deferred) Notify(args ...interface{}) {
+	for _, callback := range d.notify {
+		jsInvoke(promiseNotifyInvocationName, callback, args...)
 	}
 }

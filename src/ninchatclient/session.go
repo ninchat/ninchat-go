@@ -211,7 +211,9 @@ func (s *Session) Close() {
 	}
 
 	for _, action := range s.sendBuffer {
-		s.resolve(action, false)
+		if action.Deferred != nil {
+			action.Deferred.Reject()
+		}
 	}
 
 	s.sendBuffer = nil
@@ -252,7 +254,7 @@ func (s *Session) Send(header, payload js.Object) (promise js.Object) {
 		action.Id = s.lastActionId
 		header.Set("action_id", action.Id)
 
-		promise, action.Resolve = NewPromise()
+		action.Deferred, promise = Defer()
 	}
 
 	s.send(action)
@@ -502,12 +504,18 @@ func (s *Session) handleEvent(header, payload js.Object) (actionId uint64, needs
 
 		if i < s.numSent {
 			if action := s.sendBuffer[i]; action.Id == actionId {
-				s.resolve(action, true, header, payload)
-
 				lastReply, err := IsEventLastReply(header, action)
 				if err != nil {
 					s.log("event:", err)
 					return
+				}
+
+				if action.Deferred != nil {
+					if lastReply {
+						action.Deferred.Resolve(header, payload)
+					} else {
+						action.Deferred.Notify(header, payload)
+					}
 				}
 
 				if lastReply {
@@ -544,19 +552,6 @@ func (s *Session) handleEvent(header, payload js.Object) (actionId uint64, needs
 
 	ok = true
 	return
-}
-
-// resolve fulfills the promise made by the Send method.
-func (s *Session) resolve(action *Action, successful bool, args ...interface{}) {
-	defer func() {
-		if x := recover(); x != nil {
-			println(x)
-		}
-	}()
-
-	if action.Resolve != nil {
-		action.Resolve(successful, args...)
-	}
 }
 
 // connState passes an enumeration value to the client code.

@@ -17,10 +17,10 @@ const (
 
 // Action
 type Action struct {
-	Id      uint64
-	Header  js.Object
-	Payload js.Object
-	Resolve PromiseResolver
+	Id       uint64
+	Header   js.Object
+	Payload  js.Object
+	Deferred *Deferred
 
 	name string
 }

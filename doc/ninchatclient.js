@@ -149,6 +149,10 @@ function Session() {
 	 * object is closed before a reply is received, the promise will be
 	 * rejected without a parameter.
 	 *
+	 * With specific actions that cause multiple reply events, the notify
+	 * callback will be called for each event until the final event which
+	 * resolves the promise.
+	 *
 	 * @param {object}  header     Action parameters to send.
 	 * @param {array}   [payload]  Consists of (already encoded) data
 	 *                             frames.
@@ -165,14 +169,15 @@ function Session() {
 function Promise() {
 
 	/**
-	 * Add callback(s) to be called when the promise is resolved or
-	 * rejected.
+	 * Add callback(s) to be called when the promise is resolved, updated
+	 * (notify) or rejected.
 	 *
 	 * Promise objects may not be instantiated directly.
 	 *
-	 * @param {function}  [success]
-	 * @param {function}  [failure]
+	 * @param {function}  [resolve]
+	 * @param {function}  [reject]
+	 * @param {function}  [notify]
 	 */
-	this.then = function(success, failure) {};
+	this.then = function(resolve, reject, notify) {};
 
 }
