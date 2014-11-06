@@ -99,15 +99,31 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 			action := s.sendBuffer[s.numSent]
 
 			if action.Payload != nil {
-				json := action.Payload.Index(0).Str()
+				var payload js.Object
+				var err error
 
-				object, err := ParseJSON(json)
-				if err != nil {
-					s.log("send:", err)
-					return
+				length := action.Payload.Length()
+
+				if str, ok := action.Payload.Index(0).Interface().(string); ok && length == 1 {
+					if payload, err = ParseJSON(str); err != nil {
+						s.log("send:", err)
+						return
+					}
+				} else {
+					payload = NewArray()
+
+					for i := 0; i < length; i++ {
+						encoded, err := EncodeBase64(action.Payload.Index(i))
+						if err != nil {
+							s.log("send:", err)
+							return
+						}
+
+						payload.Call("push", encoded)
+					}
 				}
 
-				action.Header.Set("payload", object)
+				action.Header.Set("payload", payload)
 			}
 
 			action.Header.Set("session_id", s.sessionId)

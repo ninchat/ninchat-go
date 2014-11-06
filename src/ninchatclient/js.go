@@ -38,6 +38,16 @@ func jsInvoke(name string, function js.Object, args ...interface{}) (ok bool) {
 	return
 }
 
+func EncodeBase64(data js.Object) (encoded js.Object, err error) {
+	defer func() {
+		err = jsError(recover())
+	}()
+
+	str := js.Global.Get("String").Get("fromCharCode").Call("apply", nil, data)
+	encoded = js.Global.Call("btoa", str)
+	return
+}
+
 func NewArray() js.Object {
 	return js.Global.Get("Array").New()
 }
