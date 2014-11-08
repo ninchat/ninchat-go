@@ -129,18 +129,21 @@ func IsEventLastReply(header js.Object, action *Action) (lastReply bool, err err
 		err = jsError(recover())
 	}()
 
-	switch action.name {
-	case "load_history":
-		historyLength := header.Get("history_length").Int()
-		lastReply = (historyLength == 0)
+	lastReply = true
 
-	case "search":
+	if historyLength := header.Get("history_length"); !historyLength.IsUndefined() {
+		if historyLength.Int() > 0 {
+			lastReply = false
+		}
+	}
+
+	if action.name == "search" {
 		users := header.Get("users")
 		channels := header.Get("channels")
-		lastReply = users.IsUndefined() && channels.IsUndefined()
 
-	default:
-		lastReply = true
+		if !users.IsUndefined() || !channels.IsUndefined() {
+			lastReply = false
+		}
 	}
 
 	return

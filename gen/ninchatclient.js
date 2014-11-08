@@ -2190,21 +2190,24 @@ $packages["ninchatclient"] = (function() {
 		/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); return [eventId, actionId, err]; }
 	};
 	IsEventLastReply = $pkg.IsEventLastReply = function(header, action) {
-		var lastReply = false, err = $ifaceNil, $deferred = [], $err = null, _ref, historyLength, users, channels;
+		var lastReply = false, err = $ifaceNil, $deferred = [], $err = null, historyLength, users, channels;
 		/* */ try { $deferFrames.push($deferred);
 		$deferred.push([(function() {
 			err = jsError($recover());
 		}), []]);
-		_ref = action.name;
-		if (_ref === "load_history") {
-			historyLength = $parseInt(header.history_length) >> 0;
-			lastReply = (historyLength === 0);
-		} else if (_ref === "search") {
+		lastReply = true;
+		historyLength = header.history_length;
+		if (!(historyLength === undefined)) {
+			if (($parseInt(historyLength) >> 0) > 0) {
+				lastReply = false;
+			}
+		}
+		if (action.name === "search") {
 			users = header.users;
 			channels = header.channels;
-			lastReply = (users === undefined) && (channels === undefined);
-		} else {
-			lastReply = true;
+			if (!(users === undefined) || !(channels === undefined)) {
+				lastReply = false;
+			}
 		}
 		return [lastReply, err];
 		/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); return [lastReply, err]; }
