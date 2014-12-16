@@ -227,7 +227,7 @@ func longPollTransfer(s *Session, url string, connWorked, gotOnline *bool) {
 				payload.Call("push", json)
 			}
 
-			ackedActionId, _, ok := s.handleEvent(header, payload)
+			ackedActionId, sessionLost, _, ok := s.handleEvent(header, payload)
 
 			// poll acked the action being sent before we got send response?
 			if sendingId > 0 && sendingId <= ackedActionId {
@@ -236,6 +236,10 @@ func longPollTransfer(s *Session, url string, connWorked, gotOnline *bool) {
 			}
 
 			if !ok {
+				if sessionLost {
+					*gotOnline = true
+				}
+
 				return
 			}
 

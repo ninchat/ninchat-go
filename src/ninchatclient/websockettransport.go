@@ -339,9 +339,14 @@ func webSocketReceive(s *Session, ws *WebSocket, fail chan bool) (gotEvents, hos
 			}
 
 			if frames == 0 {
-				_, needsAck, ok := s.handleEvent(header, payload)
+				_, sessionLost, needsAck, ok := s.handleEvent(header, payload)
 				if !ok {
-					hostHealthy = false
+					if sessionLost {
+						gotEvents = true
+					} else {
+						hostHealthy = false
+					}
+
 					fail <- true
 					return
 				}

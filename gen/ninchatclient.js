@@ -2541,7 +2541,7 @@ $packages["ninchatclient"] = (function() {
 		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); return [connWorked, gotOnline]; } }; $blocking_LongPollTransport.$blocking = true; return $blocking_LongPollTransport;
 	};
 	longPollTransfer = function(s, url, connWorked, gotOnline, $b) {
-		var $this = this, $args = arguments, $r, $s = 0, poller, sender, sendingId, failures, err, header, _tuple, x, x$1, action, payload, err$1, frame, _tuple$1, base64, err$2, _tuple$2, _tuple$3, request, err$3, _tuple$4, channel, x$2, response, ok, _selection, _r, _tuple$5, _tuple$6, sending, array, err$4, _tuple$7, i, header$1, payload$1, object, _tuple$8, json, err$5, _tuple$9, ackedActionId, ok$1;
+		var $this = this, $args = arguments, $r, $s = 0, poller, sender, sendingId, failures, err, header, _tuple, x, x$1, action, payload, err$1, frame, _tuple$1, base64, err$2, _tuple$2, _tuple$3, request, err$3, _tuple$4, channel, x$2, response, ok, _selection, _r, _tuple$5, _tuple$6, sending, array, err$4, _tuple$7, i, header$1, payload$1, object, _tuple$8, json, err$5, _tuple$9, ackedActionId, sessionLost, ok$1;
 		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_longPollTransfer = function() { s: while (true) { switch ($s) { case 0:
 		poller = ($chanType($String, false, true)).nil;
 		sender = ($chanType($String, false, true)).nil;
@@ -2664,12 +2664,15 @@ $packages["ninchatclient"] = (function() {
 					}
 					payload$1.push($externalize(json, $String));
 				}
-				_tuple$9 = s.handleEvent(header$1, payload$1); ackedActionId = _tuple$9[0]; ok$1 = _tuple$9[2];
+				_tuple$9 = s.handleEvent(header$1, payload$1); ackedActionId = _tuple$9[0]; sessionLost = _tuple$9[1]; ok$1 = _tuple$9[3];
 				if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0)) && (sendingId.$high < ackedActionId.$high || (sendingId.$high === ackedActionId.$high && sendingId.$low <= ackedActionId.$low))) {
 					sendingId = new $Uint64(0, 0);
 					s.numSent = s.numSent + (1) >> 0;
 				}
 				if (!ok$1) {
+					if (sessionLost) {
+						gotOnline.$set(true);
+					}
 					return;
 				}
 				if (!gotOnline.$get()) {
@@ -3138,12 +3141,12 @@ $packages["ninchatclient"] = (function() {
 	};
 	Session.prototype.handleSessionEvent = function(header) { return this.$val.handleSessionEvent(header); };
 	Session.Ptr.prototype.handleEvent = function(header, payload) {
-		var actionId = new $Uint64(0, 0), needsAck = false, ok = false, s, _tuple, eventId, err, x, x$1, x$2, i, x$3, action, x$4, _tuple$1, lastReply, err$1, _tuple$2, errorType, errorReason, sessionLost;
+		var actionId = new $Uint64(0, 0), sessionLost = false, needsAck = false, ok = false, s, _tuple, eventId, err, x, x$1, x$2, i, x$3, action, x$4, _tuple$1, lastReply, err$1, _tuple$2, errorType, errorReason;
 		s = this;
 		_tuple = GetEventAndActionId(header); eventId = _tuple[0]; actionId = _tuple[1]; err = _tuple[2];
 		if (!($interfaceIsEqual(err, $ifaceNil))) {
 			s.log(new ($sliceType($emptyInterface))([new $String("event:"), err]));
-			return [actionId, needsAck, ok];
+			return [actionId, sessionLost, needsAck, ok];
 		}
 		if ((eventId.$high > 0 || (eventId.$high === 0 && eventId.$low > 0))) {
 			s.receivedEventId = eventId;
@@ -3167,7 +3170,7 @@ $packages["ninchatclient"] = (function() {
 					_tuple$1 = IsEventLastReply(header, action); lastReply = _tuple$1[0]; err$1 = _tuple$1[1];
 					if (!($interfaceIsEqual(err$1, $ifaceNil))) {
 						s.log(new ($sliceType($emptyInterface))([new $String("event:"), err$1]));
-						return [actionId, needsAck, ok];
+						return [actionId, sessionLost, needsAck, ok];
 					}
 					if (!(action.Deferred === ($ptrType(Deferred)).nil)) {
 						if (lastReply) {
@@ -3193,16 +3196,16 @@ $packages["ninchatclient"] = (function() {
 					s.stopped = true;
 				}
 			}
-			return [actionId, needsAck, ok];
+			return [actionId, sessionLost, needsAck, ok];
 		}
 		if (errorType === "deprecated") {
 			s.log(new ($sliceType($emptyInterface))([new $String("deprecated:"), new $String(errorReason)]));
 		}
 		if (!jsInvoke("NinchatClient.Session onEvent callback", s.onEvent, new ($sliceType($emptyInterface))([header, payload]))) {
-			return [actionId, needsAck, ok];
+			return [actionId, sessionLost, needsAck, ok];
 		}
 		ok = true;
-		return [actionId, needsAck, ok];
+		return [actionId, sessionLost, needsAck, ok];
 	};
 	Session.prototype.handleEvent = function(header, payload) { return this.$val.handleEvent(header, payload); };
 	Session.Ptr.prototype.connState = function(state) {
@@ -3611,7 +3614,7 @@ $packages["ninchatclient"] = (function() {
 		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); } }; $blocking_webSocketSend.$blocking = true; return $blocking_webSocketSend;
 	};
 	webSocketReceive = function(s, ws, fail, $b) {
-		var $this = this, $args = arguments, gotEvents = false, hostHealthy = false, $r, $deferred = [], $err = null, $s = 0, header, payload, frames, watchdog, acker, ackNeeded, err, _tuple, data, text, _tuple$1, _tuple$2, _tuple$3, data$1, err$1, _tuple$4, needsAck, ok, _selection, _selection$1, _r, connected, x, x$1;
+		var $this = this, $args = arguments, gotEvents = false, hostHealthy = false, $r, $deferred = [], $err = null, $s = 0, header, payload, frames, watchdog, acker, ackNeeded, err, _tuple, data, text, _tuple$1, _tuple$2, _tuple$3, data$1, err$1, _tuple$4, sessionLost, needsAck, ok, _selection, _selection$1, _r, connected, x, x$1;
 		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_webSocketReceive = function() { try { $deferFrames.push($deferred); s: while (true) { switch ($s) { case 0:
 		header = $ifaceNil;
 		payload = $ifaceNil;
@@ -3671,9 +3674,13 @@ $packages["ninchatclient"] = (function() {
 					frames = frames - (1) >> 0;
 				/* } */ case 6:
 				/* if (frames === 0) { */ if (frames === 0) {} else { $s = 15; continue; }
-					_tuple$4 = s.handleEvent(header, payload); needsAck = _tuple$4[1]; ok = _tuple$4[2];
+					_tuple$4 = s.handleEvent(header, payload); sessionLost = _tuple$4[1]; needsAck = _tuple$4[2]; ok = _tuple$4[3];
 					/* if (!ok) { */ if (!ok) {} else { $s = 16; continue; }
-						hostHealthy = false;
+						if (sessionLost) {
+							gotEvents = true;
+						} else {
+							hostHealthy = false;
+						}
 						$r = $send(fail, true, true); /* */ $s = 17; case 17: if ($r && $r.$blocking) { $r = $r(); }
 						return [gotEvents, hostHealthy];
 					/* } */ case 16:
@@ -3797,7 +3804,7 @@ $packages["ninchatclient"] = (function() {
 		($ptrType(Deferred)).methods = [["Notify", "Notify", "", $funcType([($sliceType($emptyInterface))], [], true), -1], ["Reject", "Reject", "", $funcType([($sliceType($emptyInterface))], [], true), -1], ["Resolve", "Resolve", "", $funcType([($sliceType($emptyInterface))], [], true), -1], ["then", "then", "ninchatclient", $funcType([js.Object, js.Object, js.Object], [], false), -1]];
 		Deferred.init([["resolve", "resolve", "ninchatclient", ($sliceType(js.Object)), ""], ["reject", "reject", "ninchatclient", ($sliceType(js.Object)), ""], ["notify", "notify", "ninchatclient", ($sliceType(js.Object)), ""]]);
 		Transport.init([($ptrType(Session)), $String], [$Bool, $Bool], false);
-		($ptrType(Session)).methods = [["Close", "Close", "", $funcType([], [], false), -1], ["OnConnActive", "OnConnActive", "", $funcType([js.Object], [], false), -1], ["OnConnState", "OnConnState", "", $funcType([js.Object], [], false), -1], ["OnEvent", "OnEvent", "", $funcType([js.Object], [], false), -1], ["OnLog", "OnLog", "", $funcType([js.Object], [], false), -1], ["OnSessionEvent", "OnSessionEvent", "", $funcType([js.Object], [], false), -1], ["Open", "Open", "", $funcType([], [], false), -1], ["Send", "Send", "", $funcType([js.Object, js.Object], [$emptyInterface], false), -1], ["SetAddress", "SetAddress", "", $funcType([js.Object], [], false), -1], ["SetParams", "SetParams", "", $funcType([js.Object], [], false), -1], ["SetTransport", "SetTransport", "", $funcType([js.Object], [], false), -1], ["canLogin", "canLogin", "ninchatclient", $funcType([], [$Bool], false), -1], ["connActive", "connActive", "ninchatclient", $funcType([], [], false), -1], ["connState", "connState", "ninchatclient", $funcType([$String], [], false), -1], ["connect", "connect", "ninchatclient", $funcType([Transport, ($sliceType($String)), ($ptrType(Backoff))], [$Bool], false), -1], ["discover", "discover", "ninchatclient", $funcType([], [], false), -1], ["handleEvent", "handleEvent", "ninchatclient", $funcType([js.Object, js.Object], [$Uint64, $Bool, $Bool], false), -1], ["handleSessionEvent", "handleSessionEvent", "ninchatclient", $funcType([js.Object], [$Bool], false), -1], ["log", "log", "ninchatclient", $funcType([($sliceType($emptyInterface))], [], true), -1], ["makeCreateSessionAction", "makeCreateSessionAction", "ninchatclient", $funcType([], [js.Object], false), -1], ["makeResumeSessionAction", "makeResumeSessionAction", "ninchatclient", $funcType([$Bool], [js.Object], false), -1], ["send", "send", "ninchatclient", $funcType([($ptrType(Action))], [], false), -1], ["sendAck", "sendAck", "ninchatclient", $funcType([], [], false), -1]];
+		($ptrType(Session)).methods = [["Close", "Close", "", $funcType([], [], false), -1], ["OnConnActive", "OnConnActive", "", $funcType([js.Object], [], false), -1], ["OnConnState", "OnConnState", "", $funcType([js.Object], [], false), -1], ["OnEvent", "OnEvent", "", $funcType([js.Object], [], false), -1], ["OnLog", "OnLog", "", $funcType([js.Object], [], false), -1], ["OnSessionEvent", "OnSessionEvent", "", $funcType([js.Object], [], false), -1], ["Open", "Open", "", $funcType([], [], false), -1], ["Send", "Send", "", $funcType([js.Object, js.Object], [$emptyInterface], false), -1], ["SetAddress", "SetAddress", "", $funcType([js.Object], [], false), -1], ["SetParams", "SetParams", "", $funcType([js.Object], [], false), -1], ["SetTransport", "SetTransport", "", $funcType([js.Object], [], false), -1], ["canLogin", "canLogin", "ninchatclient", $funcType([], [$Bool], false), -1], ["connActive", "connActive", "ninchatclient", $funcType([], [], false), -1], ["connState", "connState", "ninchatclient", $funcType([$String], [], false), -1], ["connect", "connect", "ninchatclient", $funcType([Transport, ($sliceType($String)), ($ptrType(Backoff))], [$Bool], false), -1], ["discover", "discover", "ninchatclient", $funcType([], [], false), -1], ["handleEvent", "handleEvent", "ninchatclient", $funcType([js.Object, js.Object], [$Uint64, $Bool, $Bool, $Bool], false), -1], ["handleSessionEvent", "handleSessionEvent", "ninchatclient", $funcType([js.Object], [$Bool], false), -1], ["log", "log", "ninchatclient", $funcType([($sliceType($emptyInterface))], [], true), -1], ["makeCreateSessionAction", "makeCreateSessionAction", "ninchatclient", $funcType([], [js.Object], false), -1], ["makeResumeSessionAction", "makeResumeSessionAction", "ninchatclient", $funcType([$Bool], [js.Object], false), -1], ["send", "send", "ninchatclient", $funcType([($ptrType(Action))], [], false), -1], ["sendAck", "sendAck", "ninchatclient", $funcType([], [], false), -1]];
 		Session.init([["onSessionEvent", "onSessionEvent", "ninchatclient", js.Object, ""], ["onEvent", "onEvent", "ninchatclient", js.Object, ""], ["onConnState", "onConnState", "ninchatclient", js.Object, ""], ["onConnActive", "onConnActive", "ninchatclient", js.Object, ""], ["onLog", "onLog", "ninchatclient", js.Object, ""], ["address", "address", "ninchatclient", $String, ""], ["forceLongPoll", "forceLongPoll", "ninchatclient", $Bool, ""], ["sessionParams", "sessionParams", "ninchatclient", js.Object, ""], ["sessionId", "sessionId", "ninchatclient", js.Object, ""], ["latestConnState", "latestConnState", "ninchatclient", $String, ""], ["latestConnActive", "latestConnActive", "ninchatclient", Time, ""], ["lastActionId", "lastActionId", "ninchatclient", $Uint64, ""], ["sendNotify", "sendNotify", "ninchatclient", ($chanType($Bool, false, false)), ""], ["sendBuffer", "sendBuffer", "ninchatclient", ($sliceType(($ptrType(Action)))), ""], ["numSent", "numSent", "ninchatclient", $Int, ""], ["sendEventAck", "sendEventAck", "ninchatclient", $Bool, ""], ["receivedEventId", "receivedEventId", "ninchatclient", $Uint64, ""], ["ackedEventId", "ackedEventId", "ninchatclient", $Uint64, ""], ["closeNotify", "closeNotify", "ninchatclient", ($chanType($Bool, false, false)), ""], ["closed", "closed", "ninchatclient", $Bool, ""], ["stopped", "stopped", "ninchatclient", $Bool, ""]]);
 		($ptrType(Timer)).methods = [["Active", "Active", "", $funcType([], [$Bool], false), -1], ["Reset", "Reset", "", $funcType([Duration], [], false), -1], ["Stop", "Stop", "", $funcType([], [], false), -1]];
 		Timer.init([["C", "C", "", ($chanType($Bool, false, false)), ""], ["id", "id", "ninchatclient", js.Object, ""]]);

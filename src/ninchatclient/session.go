@@ -477,7 +477,7 @@ func (s *Session) handleSessionEvent(header js.Object) (ok bool) {
 
 // handleEvent parses the event header partially, does whatever is necessary,
 // and usually passes the event to client code.
-func (s *Session) handleEvent(header, payload js.Object) (actionId uint64, needsAck, ok bool) {
+func (s *Session) handleEvent(header, payload js.Object) (actionId uint64, sessionLost, needsAck, ok bool) {
 	eventId, actionId, err := GetEventAndActionId(header)
 	if err != nil {
 		s.log("event:", err)
