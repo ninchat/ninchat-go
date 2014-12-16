@@ -19,16 +19,24 @@ gen/ninchatclient.js gen/ninchatclient.min.js: $(wildcard src/ninchatclient/*.go
 	$(GO) vet ninchatclient
 
 $(GOPHERJS):
-	$(GO) get -u github.com/gopherjs/gopherjs
+	$(GO) get bitbucket.org/kardianos/osext
+	$(GO) get github.com/neelance/sourcemap
+	$(GO) get github.com/spf13/cobra
+	$(GO) get github.com/spf13/pflag
+	$(GO) get golang.org/x/crypto/ssh/terminal
+	$(GO) get golang.org/x/tools/go/exact
+	$(GO) get golang.org/x/tools/go/gcimporter
+	$(GO) get golang.org/x/tools/go/types
+	$(GO) get gopkg.in/fsnotify.v1
+	$(GO) build -o $@ github.com/gopherjs/gopherjs
 
 clean:
 	rm -rf bin
 	rm -rf pkg
 	rm -rf src/bitbucket.org
-	rm -rf src/code.google.com
-	rm -rf src/github.com/gopherjs
 	rm -rf src/github.com/neelance
 	rm -rf src/github.com/spf13
+	rm -rf src/golang.org
 	rm -rf src/gopkg.in
 
 container-for-testing:

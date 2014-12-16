@@ -24,11 +24,12 @@ var $min = Math.min;
 var $mod = function(x, y) { return x % y; };
 var $parseInt = parseInt;
 var $parseFloat = function(f) {
-  if (f.constructor === Number) {
+  if (f !== undefined && f !== null && f.constructor === Number) {
     return f;
   }
   return parseFloat(f);
 };
+var $flushConsole = function() {};
 
 var $mapArray = function(array, f) {
   var newArray = new array.constructor(array.length), i;
@@ -228,10 +229,10 @@ var $copySlice = function(dst, src) {
 var $copy = function(dst, src, type) {
   var i;
   switch (type.kind) {
-  case "Array":
+  case $kindArray:
     $internalCopy(dst, src, 0, 0, src.length, type.elem);
     return true;
-  case "Struct":
+  case $kindStruct:
     for (i = 0; i < type.fields.length; i++) {
       var field = type.fields[i];
       var name = field[0];
@@ -257,8 +258,8 @@ var $internalCopy = function(dst, src, dstOffset, srcOffset, n, elem) {
   }
 
   switch (elem.kind) {
-  case "Array":
-  case "Struct":
+  case $kindArray:
+  case $kindStruct:
     for (i = 0; i < n; i++) {
       $copy(dst[dstOffset + i], src[srcOffset + i], elem);
     }
@@ -326,21 +327,21 @@ var $equal = function(a, b, type) {
   }
   var i;
   switch (type.kind) {
-  case "Float32":
+  case $kindFloat32:
     return $float32IsEqual(a, b);
-  case "Complex64":
+  case $kindComplex64:
     return $float32IsEqual(a.$real, b.$real) && $float32IsEqual(a.$imag, b.$imag);
-  case "Complex128":
+  case $kindComplex128:
     return a.$real === b.$real && a.$imag === b.$imag;
-  case "Int64":
-  case "Uint64":
+  case $kindInt64:
+  case $kindUint64:
     return a.$high === b.$high && a.$low === b.$low;
-  case "Ptr":
+  case $kindPtr:
     if (a.constructor.Struct) {
       return false;
     }
     return $pointerIsEqual(a, b);
-  case "Array":
+  case $kindArray:
     if (a.length != b.length) {
       return false;
     }
@@ -351,7 +352,7 @@ var $equal = function(a, b, type) {
       }
     }
     return true;
-  case "Struct":
+  case $kindStruct:
     for (i = 0; i < type.fields.length; i++) {
       var field = type.fields[i];
       var name = field[0];
@@ -370,10 +371,10 @@ var $interfaceIsEqual = function(a, b) {
     return a === b;
   }
   switch (a.constructor.kind) {
-  case "Func":
-  case "Map":
-  case "Slice":
-  case "Struct":
+  case $kindFunc:
+  case $kindMap:
+  case $kindSlice:
+  case $kindStruct:
     $throwRuntimeError("comparing uncomparable type " + a.constructor.string);
   case undefined: /* js.Object */
     return a === b;
@@ -386,7 +387,7 @@ var $float32IsEqual = function(a, b) {
   if (a === b) {
     return true;
   }
-  if (a === 0 || b === 0 || a === 1/0 || b === 1/0 || a === -1/0 || b === -1/0 || a !== a || b !== b) {
+  if (a === 1/0 || b === 1/0 || a === -1/0 || b === -1/0 || a !== a || b !== b) {
     return false;
   }
   var math = $packages["math"];
@@ -412,32 +413,59 @@ var $pointerIsEqual = function(a, b) {
   return equal;
 };
 
+var $kindBool = 1;
+var $kindInt = 2;
+var $kindInt8 = 3;
+var $kindInt16 = 4;
+var $kindInt32 = 5;
+var $kindInt64 = 6;
+var $kindUint = 7;
+var $kindUint8 = 8;
+var $kindUint16 = 9;
+var $kindUint32 = 10;
+var $kindUint64 = 11;
+var $kindUintptr = 12;
+var $kindFloat32 = 13;
+var $kindFloat64 = 14;
+var $kindComplex64 = 15;
+var $kindComplex128 = 16;
+var $kindArray = 17;
+var $kindChan = 18;
+var $kindFunc = 19;
+var $kindInterface = 20;
+var $kindMap = 21;
+var $kindPtr = 22;
+var $kindSlice = 23;
+var $kindString = 24;
+var $kindStruct = 25;
+var $kindUnsafePointer = 26;
+
 var $newType = function(size, kind, string, name, pkgPath, constructor) {
   var typ;
   switch(kind) {
-  case "Bool":
-  case "Int":
-  case "Int8":
-  case "Int16":
-  case "Int32":
-  case "Uint":
-  case "Uint8" :
-  case "Uint16":
-  case "Uint32":
-  case "Uintptr":
-  case "String":
-  case "UnsafePointer":
+  case $kindBool:
+  case $kindInt:
+  case $kindInt8:
+  case $kindInt16:
+  case $kindInt32:
+  case $kindUint:
+  case $kindUint8:
+  case $kindUint16:
+  case $kindUint32:
+  case $kindUintptr:
+  case $kindString:
+  case $kindUnsafePointer:
     typ = function(v) { this.$val = v; };
     typ.prototype.$key = function() { return string + "$" + this.$val; };
     break;
 
-  case "Float32":
-  case "Float64":
+  case $kindFloat32:
+  case $kindFloat64:
     typ = function(v) { this.$val = v; };
     typ.prototype.$key = function() { return string + "$" + $floatKey(this.$val); };
     break;
 
-  case "Int64":
+  case $kindInt64:
     typ = function(high, low) {
       this.$high = (high + Math.floor(Math.ceil(low) / 4294967296)) >> 0;
       this.$low = low >>> 0;
@@ -446,7 +474,7 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
     typ.prototype.$key = function() { return string + "$" + this.$high + "$" + this.$low; };
     break;
 
-  case "Uint64":
+  case $kindUint64:
     typ = function(high, low) {
       this.$high = (high + Math.floor(Math.ceil(low) / 4294967296)) >>> 0;
       this.$low = low >>> 0;
@@ -455,8 +483,8 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
     typ.prototype.$key = function() { return string + "$" + this.$high + "$" + this.$low; };
     break;
 
-  case "Complex64":
-  case "Complex128":
+  case $kindComplex64:
+  case $kindComplex128:
     typ = function(real, imag) {
       this.$real = real;
       this.$imag = imag;
@@ -465,10 +493,11 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
     typ.prototype.$key = function() { return string + "$" + this.$real + "$" + this.$imag; };
     break;
 
-  case "Array":
+  case $kindArray:
     typ = function(v) { this.$val = v; };
-    typ.Ptr = $newType(4, "Ptr", "*" + string, "", "", function(array) {
+    typ.Ptr = $newType(4, $kindPtr, "*" + string, "", "", function(array) {
       this.$get = function() { return array; };
+      this.$set = function(v) { $copy(this, v, typ); };
       this.$val = array;
     });
     typ.init = function(elem, len) {
@@ -488,7 +517,7 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
     };
     break;
 
-  case "Chan":
+  case $kindChan:
     typ = function(capacity) {
       this.$val = this;
       this.$capacity = capacity;
@@ -516,7 +545,7 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
     };
     break;
 
-  case "Func":
+  case $kindFunc:
     typ = function(v) { this.$val = v; };
     typ.init = function(params, results, variadic) {
       typ.params = params;
@@ -529,7 +558,7 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
     };
     break;
 
-  case "Interface":
+  case $kindInterface:
     typ = { implementedBy: {}, missingMethodFor: {} };
     typ.init = function(methods) {
       typ.methods = methods;
@@ -543,7 +572,7 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
     };
     break;
 
-  case "Map":
+  case $kindMap:
     typ = function(v) { this.$val = v; };
     typ.init = function(key, elem) {
       typ.key = key;
@@ -554,7 +583,7 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
     };
     break;
 
-  case "Ptr":
+  case $kindPtr:
     typ = constructor || function(getter, setter, target) {
       this.$get = getter;
       this.$set = setter;
@@ -576,7 +605,7 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
     };
     break;
 
-  case "Slice":
+  case $kindSlice:
     var nativeArray;
     typ = function(array) {
       if (array.constructor !== nativeArray) {
@@ -610,11 +639,12 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
     };
     break;
 
-  case "Struct":
+  case $kindStruct:
     typ = function(v) { this.$val = v; };
-    typ.Ptr = $newType(4, "Ptr", "*" + string, "", "", constructor);
+    typ.Ptr = $newType(4, $kindPtr, "*" + string, "", "", constructor);
     typ.Ptr.Struct = typ;
     typ.Ptr.prototype.$get = function() { return this; };
+    typ.Ptr.prototype.$set = function(v) { $copy(this, v, typ); };
     typ.init = function(fields) {
       var i;
       typ.fields = fields;
@@ -679,53 +709,53 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
   }
 
   switch(kind) {
-  case "Bool":
-  case "Map":
+  case $kindBool:
+  case $kindMap:
     typ.zero = function() { return false; };
     break;
 
-  case "Int":
-  case "Int8":
-  case "Int16":
-  case "Int32":
-  case "Uint":
-  case "Uint8" :
-  case "Uint16":
-  case "Uint32":
-  case "Uintptr":
-  case "UnsafePointer":
-  case "Float32":
-  case "Float64":
+  case $kindInt:
+  case $kindInt8:
+  case $kindInt16:
+  case $kindInt32:
+  case $kindUint:
+  case $kindUint8 :
+  case $kindUint16:
+  case $kindUint32:
+  case $kindUintptr:
+  case $kindUnsafePointer:
+  case $kindFloat32:
+  case $kindFloat64:
     typ.zero = function() { return 0; };
     break;
 
-  case "String":
+  case $kindString:
     typ.zero = function() { return ""; };
     break;
 
-  case "Int64":
-  case "Uint64":
-  case "Complex64":
-  case "Complex128":
+  case $kindInt64:
+  case $kindUint64:
+  case $kindComplex64:
+  case $kindComplex128:
     var zero = new typ(0, 0);
     typ.zero = function() { return zero; };
     break;
 
-  case "Chan":
-  case "Ptr":
-  case "Slice":
+  case $kindChan:
+  case $kindPtr:
+  case $kindSlice:
     typ.zero = function() { return typ.nil; };
     break;
 
-  case "Func":
+  case $kindFunc:
     typ.zero = function() { return $throwNilPointerError; };
     break;
 
-  case "Interface":
+  case $kindInterface:
     typ.zero = function() { return $ifaceNil; };
     break;
 
-  case "Array":
+  case $kindArray:
     typ.zero = function() {
       var arrayClass = $nativeArray(typ.elem.kind);
       if (arrayClass !== Array) {
@@ -739,7 +769,7 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
     };
     break;
 
-  case "Struct":
+  case $kindStruct:
     typ.zero = function() { return new typ.Ptr(); };
     break;
 
@@ -755,7 +785,7 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
   var rt = null;
   typ.reflectType = function() {
     if (rt === null) {
-      rt = new $reflect.rtype.Ptr(size, 0, 0, 0, 0, $reflect.kinds[kind], undefined, undefined, $newStringPtr(string), undefined, undefined);
+      rt = new $reflect.rtype.Ptr(size, 0, 0, 0, 0, kind, undefined, undefined, $newStringPtr(string), undefined, undefined);
       rt.jsType = typ;
 
       var methods = [];
@@ -782,27 +812,52 @@ var $newType = function(size, kind, string, name, pkgPath, constructor) {
   return typ;
 };
 
-var $Bool          = $newType( 1, "Bool",          "bool",           "bool",       "", null);
-var $Int           = $newType( 4, "Int",           "int",            "int",        "", null);
-var $Int8          = $newType( 1, "Int8",          "int8",           "int8",       "", null);
-var $Int16         = $newType( 2, "Int16",         "int16",          "int16",      "", null);
-var $Int32         = $newType( 4, "Int32",         "int32",          "int32",      "", null);
-var $Int64         = $newType( 8, "Int64",         "int64",          "int64",      "", null);
-var $Uint          = $newType( 4, "Uint",          "uint",           "uint",       "", null);
-var $Uint8         = $newType( 1, "Uint8",         "uint8",          "uint8",      "", null);
-var $Uint16        = $newType( 2, "Uint16",        "uint16",         "uint16",     "", null);
-var $Uint32        = $newType( 4, "Uint32",        "uint32",         "uint32",     "", null);
-var $Uint64        = $newType( 8, "Uint64",        "uint64",         "uint64",     "", null);
-var $Uintptr       = $newType( 4, "Uintptr",       "uintptr",        "uintptr",    "", null);
-var $Float32       = $newType( 4, "Float32",       "float32",        "float32",    "", null);
-var $Float64       = $newType( 8, "Float64",       "float64",        "float64",    "", null);
-var $Complex64     = $newType( 8, "Complex64",     "complex64",      "complex64",  "", null);
-var $Complex128    = $newType(16, "Complex128",    "complex128",     "complex128", "", null);
-var $String        = $newType( 8, "String",        "string",         "string",     "", null);
-var $UnsafePointer = $newType( 4, "UnsafePointer", "unsafe.Pointer", "Pointer",    "", null);
+var $Bool          = $newType( 1, $kindBool,          "bool",           "bool",       "", null);
+var $Int           = $newType( 4, $kindInt,           "int",            "int",        "", null);
+var $Int8          = $newType( 1, $kindInt8,          "int8",           "int8",       "", null);
+var $Int16         = $newType( 2, $kindInt16,         "int16",          "int16",      "", null);
+var $Int32         = $newType( 4, $kindInt32,         "int32",          "int32",      "", null);
+var $Int64         = $newType( 8, $kindInt64,         "int64",          "int64",      "", null);
+var $Uint          = $newType( 4, $kindUint,          "uint",           "uint",       "", null);
+var $Uint8         = $newType( 1, $kindUint8,         "uint8",          "uint8",      "", null);
+var $Uint16        = $newType( 2, $kindUint16,        "uint16",         "uint16",     "", null);
+var $Uint32        = $newType( 4, $kindUint32,        "uint32",         "uint32",     "", null);
+var $Uint64        = $newType( 8, $kindUint64,        "uint64",         "uint64",     "", null);
+var $Uintptr       = $newType( 4, $kindUintptr,       "uintptr",        "uintptr",    "", null);
+var $Float32       = $newType( 4, $kindFloat32,       "float32",        "float32",    "", null);
+var $Float64       = $newType( 8, $kindFloat64,       "float64",        "float64",    "", null);
+var $Complex64     = $newType( 8, $kindComplex64,     "complex64",      "complex64",  "", null);
+var $Complex128    = $newType(16, $kindComplex128,    "complex128",     "complex128", "", null);
+var $String        = $newType( 8, $kindString,        "string",         "string",     "", null);
+var $UnsafePointer = $newType( 4, $kindUnsafePointer, "unsafe.Pointer", "Pointer",    "", null);
 
 var $nativeArray = function(elemKind) {
-  return ({ Int: Int32Array, Int8: Int8Array, Int16: Int16Array, Int32: Int32Array, Uint: Uint32Array, Uint8: Uint8Array, Uint16: Uint16Array, Uint32: Uint32Array, Uintptr: Uint32Array, Float32: Float32Array, Float64: Float64Array })[elemKind] || Array;
+  switch (elemKind) {
+  case $kindInt:
+    return Int32Array;
+  case $kindInt8:
+    return Int8Array;
+  case $kindInt16:
+    return Int16Array;
+  case $kindInt32:
+    return Int32Array;
+  case $kindUint:
+    return Uint32Array;
+  case $kindUint8:
+    return Uint8Array;
+  case $kindUint16:
+    return Uint16Array;
+  case $kindUint32:
+    return Uint32Array;
+  case $kindUintptr:
+    return Uint32Array;
+  case $kindFloat32:
+    return Float32Array;
+  case $kindFloat64:
+    return Float64Array;
+  default:
+    return Array;
+  }
 };
 var $toNativeArray = function(elemKind, array) {
   var nativeArray = $nativeArray(elemKind);
@@ -816,7 +871,7 @@ var $arrayType = function(elem, len) {
   var string = "[" + len + "]" + elem.string;
   var typ = $arrayTypes[string];
   if (typ === undefined) {
-    typ = $newType(12, "Array", string, "", "", null);
+    typ = $newType(12, $kindArray, string, "", "", null);
     typ.init(elem, len);
     $arrayTypes[string] = typ;
   }
@@ -828,7 +883,7 @@ var $chanType = function(elem, sendOnly, recvOnly) {
   var field = sendOnly ? "SendChan" : (recvOnly ? "RecvChan" : "Chan");
   var typ = elem[field];
   if (typ === undefined) {
-    typ = $newType(4, "Chan", string, "", "", null);
+    typ = $newType(4, $kindChan, string, "", "", null);
     typ.init(elem, sendOnly, recvOnly);
     elem[field] = typ;
   }
@@ -849,7 +904,7 @@ var $funcType = function(params, results, variadic) {
   }
   var typ = $funcTypes[string];
   if (typ === undefined) {
-    typ = $newType(4, "Func", string, "", "", null);
+    typ = $newType(4, $kindFunc, string, "", "", null);
     typ.init(params, results, variadic);
     $funcTypes[string] = typ;
   }
@@ -866,7 +921,7 @@ var $interfaceType = function(methods) {
   }
   var typ = $interfaceTypes[string];
   if (typ === undefined) {
-    typ = $newType(8, "Interface", string, "", "", null);
+    typ = $newType(8, $kindInterface, string, "", "", null);
     typ.init(methods);
     $interfaceTypes[string] = typ;
   }
@@ -874,7 +929,7 @@ var $interfaceType = function(methods) {
 };
 var $emptyInterface = $interfaceType([]);
 var $ifaceNil = { $key: function() { return "nil"; } };
-var $error = $newType(8, "Interface", "error", "error", "", null);
+var $error = $newType(8, $kindInterface, "error", "error", "", null);
 $error.init([["Error", "Error", "", $funcType([], [$String], false)]]);
 
 var $Map = function() {};
@@ -889,7 +944,7 @@ var $mapType = function(key, elem) {
   var string = "map[" + key.string + "]" + elem.string;
   var typ = $mapTypes[string];
   if (typ === undefined) {
-    typ = $newType(4, "Map", string, "", "", null);
+    typ = $newType(4, $kindMap, string, "", "", null);
     typ.init(key, elem);
     $mapTypes[string] = typ;
   }
@@ -901,7 +956,7 @@ var $throwNilPointerError = function() { $throwRuntimeError("invalid memory addr
 var $ptrType = function(elem) {
   var typ = elem.Ptr;
   if (typ === undefined) {
-    typ = $newType(4, "Ptr", "*" + elem.string, "", "", null);
+    typ = $newType(4, $kindPtr, "*" + elem.string, "", "", null);
     typ.init(elem);
     elem.Ptr = typ;
   }
@@ -931,7 +986,7 @@ var $newDataPointer = function(data, constructor) {
 var $sliceType = function(elem) {
   var typ = elem.Slice;
   if (typ === undefined) {
-    typ = $newType(12, "Slice", "[]" + elem.string, "", "", null);
+    typ = $newType(12, $kindSlice, "[]" + elem.string, "", "", null);
     typ.init(elem);
     elem.Slice = typ;
   }
@@ -948,7 +1003,7 @@ var $structType = function(fields) {
   }
   var typ = $structTypes[string];
   if (typ === undefined) {
-    typ = $newType(0, "Struct", string, "", "", function() {
+    typ = $newType(0, $kindStruct, string, "", "", function() {
       this.$val = this;
       var i;
       for (i = 0; i < fields.length; i++) {
@@ -968,7 +1023,7 @@ var $structType = function(fields) {
           typ.methods.push(m);
           typ.Ptr.methods.push(m);
         }
-        if (field[3].kind === "Struct") {
+        if (field[3].kind === $kindStruct) {
           var methods = field[3].Ptr.methods;
           for (j = 0; j < methods.length; j++) {
             typ.Ptr.methods.push(methods[j].slice(0, 6).concat([i]));
@@ -983,7 +1038,7 @@ var $structType = function(fields) {
 };
 
 var $assertType = function(value, type, returnTuple) {
-  var isInterface = (type.kind === "Interface"), ok, missingMethod = "";
+  var isInterface = (type.kind === $kindInterface), ok, missingMethod = "";
   if (value === $ifaceNil) {
     ok = false;
   } else if (!isInterface) {
@@ -1252,27 +1307,34 @@ var $callDeferred = function(deferred, jsErr) {
     $panicValue = localPanicValue;
   }
 
-  var call;
+  var call, localSkippedDeferFrames = 0;
   try {
     while (true) {
       if (deferred === null) {
-        deferred = $deferFrames[$deferFrames.length - 1 - $skippedDeferFrames];
+        deferred = $deferFrames[$deferFrames.length - 1 - localSkippedDeferFrames];
         if (deferred === undefined) {
+          var msg;
           if (localPanicValue.constructor === $String) {
-            throw new Error(localPanicValue.$val);
+            msg = localPanicValue.$val;
           } else if (localPanicValue.Error !== undefined) {
-            throw new Error(localPanicValue.Error());
+            msg = localPanicValue.Error();
           } else if (localPanicValue.String !== undefined) {
-            throw new Error(localPanicValue.String());
+            msg = localPanicValue.String();
           } else {
-            throw new Error(localPanicValue);
+            msg = localPanicValue;
           }
+          var e = new Error(msg);
+          if (localPanicValue.Stack !== undefined) {
+            e.stack = localPanicValue.Stack();
+            e.stack = msg + e.stack.substr(e.stack.indexOf("\n"));
+          }
+          throw e;
         }
       }
       var call = deferred.pop();
       if (call === undefined) {
         if (localPanicValue !== undefined) {
-          $skippedDeferFrames++;
+          localSkippedDeferFrames++;
           deferred = null;
           continue;
         }
@@ -1288,6 +1350,7 @@ var $callDeferred = function(deferred, jsErr) {
       }
     }
   } finally {
+    $skippedDeferFrames += localSkippedDeferFrames;
     if ($curGoroutine.asleep) {
       deferred.push(call);
       $jumpToDefer = true;
@@ -1577,20 +1640,20 @@ var $select = function(comms) {
 
 var $needsExternalization = function(t) {
   switch (t.kind) {
-    case "Bool":
-    case "Int":
-    case "Int8":
-    case "Int16":
-    case "Int32":
-    case "Uint":
-    case "Uint8":
-    case "Uint16":
-    case "Uint32":
-    case "Uintptr":
-    case "Float32":
-    case "Float64":
+    case $kindBool:
+    case $kindInt:
+    case $kindInt8:
+    case $kindInt16:
+    case $kindInt32:
+    case $kindUint:
+    case $kindUint8:
+    case $kindUint16:
+    case $kindUint32:
+    case $kindUintptr:
+    case $kindFloat32:
+    case $kindFloat64:
       return false;
-    case "Interface":
+    case $kindInterface:
       return t !== $packages["github.com/gopherjs/gopherjs/js"].Object;
     default:
       return true;
@@ -1599,28 +1662,28 @@ var $needsExternalization = function(t) {
 
 var $externalize = function(v, t) {
   switch (t.kind) {
-  case "Bool":
-  case "Int":
-  case "Int8":
-  case "Int16":
-  case "Int32":
-  case "Uint":
-  case "Uint8":
-  case "Uint16":
-  case "Uint32":
-  case "Uintptr":
-  case "Float32":
-  case "Float64":
+  case $kindBool:
+  case $kindInt:
+  case $kindInt8:
+  case $kindInt16:
+  case $kindInt32:
+  case $kindUint:
+  case $kindUint8:
+  case $kindUint16:
+  case $kindUint32:
+  case $kindUintptr:
+  case $kindFloat32:
+  case $kindFloat64:
     return v;
-  case "Int64":
-  case "Uint64":
+  case $kindInt64:
+  case $kindUint64:
     return $flatten64(v);
-  case "Array":
+  case $kindArray:
     if ($needsExternalization(t.elem)) {
       return $mapArray(v, function(e) { return $externalize(e, t.elem); });
     }
     return v;
-  case "Func":
+  case $kindFunc:
     if (v === $throwNilPointerError) {
       return null;
     }
@@ -1665,7 +1728,7 @@ var $externalize = function(v, t) {
       };
     }
     return v.$externalizeWrapper;
-  case "Interface":
+  case $kindInterface:
     if (v === $ifaceNil) {
       return null;
     }
@@ -1673,7 +1736,7 @@ var $externalize = function(v, t) {
       return v;
     }
     return $externalize(v.$val, v.constructor);
-  case "Map":
+  case $kindMap:
     var m = {};
     var keys = $keys(v), i;
     for (i = 0; i < keys.length; i++) {
@@ -1681,7 +1744,7 @@ var $externalize = function(v, t) {
       m[$externalize(entry.k, t.key)] = $externalize(entry.v, t.elem);
     }
     return m;
-  case "Ptr":
+  case $kindPtr:
     var o = {}, i;
     for (i = 0; i < t.methods.length; i++) {
       var m = t.methods[i];
@@ -1695,19 +1758,19 @@ var $externalize = function(v, t) {
       })(m);
     }
     return o;
-  case "Slice":
+  case $kindSlice:
     if ($needsExternalization(t.elem)) {
       return $mapArray($sliceToArray(v), function(e) { return $externalize(e, t.elem); });
     }
     return $sliceToArray(v);
-  case "String":
+  case $kindString:
     var s = "", r, i, j = 0;
     for (i = 0; i < v.length; i += r[1], j++) {
       r = $decodeRune(v, i);
       s += String.fromCharCode(r[0]);
     }
     return s;
-  case "Struct":
+  case $kindStruct:
     var timePkg = $packages["time"];
     if (timePkg && v.constructor === timePkg.Time.Ptr) {
       var milli = $div64(v.UnixNano(), new $Int64(0, 1000000));
@@ -1728,37 +1791,37 @@ var $externalize = function(v, t) {
 
 var $internalize = function(v, t, recv) {
   switch (t.kind) {
-  case "Bool":
+  case $kindBool:
     return !!v;
-  case "Int":
+  case $kindInt:
     return parseInt(v);
-  case "Int8":
+  case $kindInt8:
     return parseInt(v) << 24 >> 24;
-  case "Int16":
+  case $kindInt16:
     return parseInt(v) << 16 >> 16;
-  case "Int32":
+  case $kindInt32:
     return parseInt(v) >> 0;
-  case "Uint":
+  case $kindUint:
     return parseInt(v);
-  case "Uint8":
+  case $kindUint8:
     return parseInt(v) << 24 >>> 24;
-  case "Uint16":
+  case $kindUint16:
     return parseInt(v) << 16 >>> 16;
-  case "Uint32":
-  case "Uintptr":
+  case $kindUint32:
+  case $kindUintptr:
     return parseInt(v) >>> 0;
-  case "Int64":
-  case "Uint64":
+  case $kindInt64:
+  case $kindUint64:
     return new t(0, v);
-  case "Float32":
-  case "Float64":
+  case $kindFloat32:
+  case $kindFloat64:
     return parseFloat(v);
-  case "Array":
+  case $kindArray:
     if (v.length !== t.len) {
       $throwRuntimeError("got array with wrong size from JavaScript native");
     }
     return $mapArray(v, function(e) { return $internalize(e, t.elem); });
-  case "Func":
+  case $kindFunc:
     return function() {
       var args = [], i;
       for (i = 0; i < t.params.length; i++) {
@@ -1784,7 +1847,7 @@ var $internalize = function(v, t, recv) {
         return result;
       }
     };
-  case "Interface":
+  case $kindInterface:
     if (t === $packages["github.com/gopherjs/gopherjs/js"].Object) {
       return v;
     }
@@ -1831,7 +1894,7 @@ var $internalize = function(v, t, recv) {
       var mapType = $mapType($String, $emptyInterface);
       return new mapType($internalize(v, mapType));
     }
-  case "Map":
+  case $kindMap:
     var m = new $Map();
     var keys = $keys(v), i;
     for (i = 0; i < keys.length; i++) {
@@ -1839,9 +1902,9 @@ var $internalize = function(v, t, recv) {
       m[key.$key ? key.$key() : key] = { k: key, v: $internalize(v[keys[i]], t.elem) };
     }
     return m;
-  case "Slice":
+  case $kindSlice:
     return new t($mapArray(v, function(e) { return $internalize(e, t.elem); }));
-  case "String":
+  case $kindString:
     v = String(v);
     var s = "", i;
     for (i = 0; i < v.length; i++) {
@@ -1855,8 +1918,8 @@ var $internalize = function(v, t, recv) {
 
 $packages["github.com/gopherjs/gopherjs/js"] = (function() {
 	var $pkg = {}, Object, Error, init;
-	Object = $pkg.Object = $newType(8, "Interface", "js.Object", "Object", "github.com/gopherjs/gopherjs/js", null);
-	Error = $pkg.Error = $newType(0, "Struct", "js.Error", "Error", "github.com/gopherjs/gopherjs/js", function(Object_) {
+	Object = $pkg.Object = $newType(8, $kindInterface, "js.Object", "Object", "github.com/gopherjs/gopherjs/js", null);
+	Error = $pkg.Error = $newType(0, $kindStruct, "js.Error", "Error", "github.com/gopherjs/gopherjs/js", function(Object_) {
 		this.$val = this;
 		this.Object = Object_ !== undefined ? Object_ : $ifaceNil;
 	});
@@ -1866,65 +1929,42 @@ $packages["github.com/gopherjs/gopherjs/js"] = (function() {
 		return "JavaScript error: " + $internalize(err.Object.message, $String);
 	};
 	Error.prototype.Error = function() { return this.$val.Error(); };
+	Error.Ptr.prototype.Stack = function() {
+		var err;
+		err = this;
+		return $internalize(err.Object.stack, $String);
+	};
+	Error.prototype.Stack = function() { return this.$val.Stack(); };
 	init = function() {
 		var e;
 		e = new Error.Ptr($ifaceNil);
 	};
 	$pkg.$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $r, $s = 0; var $f = function() { while (true) { switch ($s) { case 0:
 		Object.init([["Bool", "Bool", "", $funcType([], [$Bool], false)], ["Call", "Call", "", $funcType([$String, ($sliceType($emptyInterface))], [Object], true)], ["Delete", "Delete", "", $funcType([$String], [], false)], ["Float", "Float", "", $funcType([], [$Float64], false)], ["Get", "Get", "", $funcType([$String], [Object], false)], ["Index", "Index", "", $funcType([$Int], [Object], false)], ["Int", "Int", "", $funcType([], [$Int], false)], ["Int64", "Int64", "", $funcType([], [$Int64], false)], ["Interface", "Interface", "", $funcType([], [$emptyInterface], false)], ["Invoke", "Invoke", "", $funcType([($sliceType($emptyInterface))], [Object], true)], ["IsNull", "IsNull", "", $funcType([], [$Bool], false)], ["IsUndefined", "IsUndefined", "", $funcType([], [$Bool], false)], ["Length", "Length", "", $funcType([], [$Int], false)], ["New", "New", "", $funcType([($sliceType($emptyInterface))], [Object], true)], ["Set", "Set", "", $funcType([$String, $emptyInterface], [], false)], ["SetIndex", "SetIndex", "", $funcType([$Int, $emptyInterface], [], false)], ["Str", "Str", "", $funcType([], [$String], false)], ["Uint64", "Uint64", "", $funcType([], [$Uint64], false)], ["Unsafe", "Unsafe", "", $funcType([], [$Uintptr], false)]]);
 		Error.methods = [["Bool", "Bool", "", $funcType([], [$Bool], false), 0], ["Call", "Call", "", $funcType([$String, ($sliceType($emptyInterface))], [Object], true), 0], ["Delete", "Delete", "", $funcType([$String], [], false), 0], ["Float", "Float", "", $funcType([], [$Float64], false), 0], ["Get", "Get", "", $funcType([$String], [Object], false), 0], ["Index", "Index", "", $funcType([$Int], [Object], false), 0], ["Int", "Int", "", $funcType([], [$Int], false), 0], ["Int64", "Int64", "", $funcType([], [$Int64], false), 0], ["Interface", "Interface", "", $funcType([], [$emptyInterface], false), 0], ["Invoke", "Invoke", "", $funcType([($sliceType($emptyInterface))], [Object], true), 0], ["IsNull", "IsNull", "", $funcType([], [$Bool], false), 0], ["IsUndefined", "IsUndefined", "", $funcType([], [$Bool], false), 0], ["Length", "Length", "", $funcType([], [$Int], false), 0], ["New", "New", "", $funcType([($sliceType($emptyInterface))], [Object], true), 0], ["Set", "Set", "", $funcType([$String, $emptyInterface], [], false), 0], ["SetIndex", "SetIndex", "", $funcType([$Int, $emptyInterface], [], false), 0], ["Str", "Str", "", $funcType([], [$String], false), 0], ["Uint64", "Uint64", "", $funcType([], [$Uint64], false), 0], ["Unsafe", "Unsafe", "", $funcType([], [$Uintptr], false), 0]];
-		($ptrType(Error)).methods = [["Bool", "Bool", "", $funcType([], [$Bool], false), 0], ["Call", "Call", "", $funcType([$String, ($sliceType($emptyInterface))], [Object], true), 0], ["Delete", "Delete", "", $funcType([$String], [], false), 0], ["Error", "Error", "", $funcType([], [$String], false), -1], ["Float", "Float", "", $funcType([], [$Float64], false), 0], ["Get", "Get", "", $funcType([$String], [Object], false), 0], ["Index", "Index", "", $funcType([$Int], [Object], false), 0], ["Int", "Int", "", $funcType([], [$Int], false), 0], ["Int64", "Int64", "", $funcType([], [$Int64], false), 0], ["Interface", "Interface", "", $funcType([], [$emptyInterface], false), 0], ["Invoke", "Invoke", "", $funcType([($sliceType($emptyInterface))], [Object], true), 0], ["IsNull", "IsNull", "", $funcType([], [$Bool], false), 0], ["IsUndefined", "IsUndefined", "", $funcType([], [$Bool], false), 0], ["Length", "Length", "", $funcType([], [$Int], false), 0], ["New", "New", "", $funcType([($sliceType($emptyInterface))], [Object], true), 0], ["Set", "Set", "", $funcType([$String, $emptyInterface], [], false), 0], ["SetIndex", "SetIndex", "", $funcType([$Int, $emptyInterface], [], false), 0], ["Str", "Str", "", $funcType([], [$String], false), 0], ["Uint64", "Uint64", "", $funcType([], [$Uint64], false), 0], ["Unsafe", "Unsafe", "", $funcType([], [$Uintptr], false), 0]];
+		($ptrType(Error)).methods = [["Bool", "Bool", "", $funcType([], [$Bool], false), 0], ["Call", "Call", "", $funcType([$String, ($sliceType($emptyInterface))], [Object], true), 0], ["Delete", "Delete", "", $funcType([$String], [], false), 0], ["Error", "Error", "", $funcType([], [$String], false), -1], ["Float", "Float", "", $funcType([], [$Float64], false), 0], ["Get", "Get", "", $funcType([$String], [Object], false), 0], ["Index", "Index", "", $funcType([$Int], [Object], false), 0], ["Int", "Int", "", $funcType([], [$Int], false), 0], ["Int64", "Int64", "", $funcType([], [$Int64], false), 0], ["Interface", "Interface", "", $funcType([], [$emptyInterface], false), 0], ["Invoke", "Invoke", "", $funcType([($sliceType($emptyInterface))], [Object], true), 0], ["IsNull", "IsNull", "", $funcType([], [$Bool], false), 0], ["IsUndefined", "IsUndefined", "", $funcType([], [$Bool], false), 0], ["Length", "Length", "", $funcType([], [$Int], false), 0], ["New", "New", "", $funcType([($sliceType($emptyInterface))], [Object], true), 0], ["Set", "Set", "", $funcType([$String, $emptyInterface], [], false), 0], ["SetIndex", "SetIndex", "", $funcType([$Int, $emptyInterface], [], false), 0], ["Stack", "Stack", "", $funcType([], [$String], false), -1], ["Str", "Str", "", $funcType([], [$String], false), 0], ["Uint64", "Uint64", "", $funcType([], [$Uint64], false), 0], ["Unsafe", "Unsafe", "", $funcType([], [$Uintptr], false), 0]];
 		Error.init([["Object", "", "", Object, ""]]);
 		init();
+		/* */ } return; } }; $f.$blocking = true; return $f;
 	};
 	return $pkg;
 })();
 $packages["runtime"] = (function() {
-	var $pkg = {}, js = $packages["github.com/gopherjs/gopherjs/js"], NotSupportedError, TypeAssertionError, errorString, MemStats, sizeof_C_MStats, init, init$1;
-	NotSupportedError = $pkg.NotSupportedError = $newType(0, "Struct", "runtime.NotSupportedError", "NotSupportedError", "runtime", function(Feature_) {
+	var $pkg = {}, js = $packages["github.com/gopherjs/gopherjs/js"], NotSupportedError, TypeAssertionError, errorString, init;
+	NotSupportedError = $pkg.NotSupportedError = $newType(0, $kindStruct, "runtime.NotSupportedError", "NotSupportedError", "runtime", function(Feature_) {
 		this.$val = this;
 		this.Feature = Feature_ !== undefined ? Feature_ : "";
 	});
-	TypeAssertionError = $pkg.TypeAssertionError = $newType(0, "Struct", "runtime.TypeAssertionError", "TypeAssertionError", "runtime", function(interfaceString_, concreteString_, assertedString_, missingMethod_) {
+	TypeAssertionError = $pkg.TypeAssertionError = $newType(0, $kindStruct, "runtime.TypeAssertionError", "TypeAssertionError", "runtime", function(interfaceString_, concreteString_, assertedString_, missingMethod_) {
 		this.$val = this;
 		this.interfaceString = interfaceString_ !== undefined ? interfaceString_ : "";
 		this.concreteString = concreteString_ !== undefined ? concreteString_ : "";
 		this.assertedString = assertedString_ !== undefined ? assertedString_ : "";
 		this.missingMethod = missingMethod_ !== undefined ? missingMethod_ : "";
 	});
-	errorString = $pkg.errorString = $newType(8, "String", "runtime.errorString", "errorString", "runtime", null);
-	MemStats = $pkg.MemStats = $newType(0, "Struct", "runtime.MemStats", "MemStats", "runtime", function(Alloc_, TotalAlloc_, Sys_, Lookups_, Mallocs_, Frees_, HeapAlloc_, HeapSys_, HeapIdle_, HeapInuse_, HeapReleased_, HeapObjects_, StackInuse_, StackSys_, MSpanInuse_, MSpanSys_, MCacheInuse_, MCacheSys_, BuckHashSys_, GCSys_, OtherSys_, NextGC_, LastGC_, PauseTotalNs_, PauseNs_, NumGC_, EnableGC_, DebugGC_, BySize_) {
-		this.$val = this;
-		this.Alloc = Alloc_ !== undefined ? Alloc_ : new $Uint64(0, 0);
-		this.TotalAlloc = TotalAlloc_ !== undefined ? TotalAlloc_ : new $Uint64(0, 0);
-		this.Sys = Sys_ !== undefined ? Sys_ : new $Uint64(0, 0);
-		this.Lookups = Lookups_ !== undefined ? Lookups_ : new $Uint64(0, 0);
-		this.Mallocs = Mallocs_ !== undefined ? Mallocs_ : new $Uint64(0, 0);
-		this.Frees = Frees_ !== undefined ? Frees_ : new $Uint64(0, 0);
-		this.HeapAlloc = HeapAlloc_ !== undefined ? HeapAlloc_ : new $Uint64(0, 0);
-		this.HeapSys = HeapSys_ !== undefined ? HeapSys_ : new $Uint64(0, 0);
-		this.HeapIdle = HeapIdle_ !== undefined ? HeapIdle_ : new $Uint64(0, 0);
-		this.HeapInuse = HeapInuse_ !== undefined ? HeapInuse_ : new $Uint64(0, 0);
-		this.HeapReleased = HeapReleased_ !== undefined ? HeapReleased_ : new $Uint64(0, 0);
-		this.HeapObjects = HeapObjects_ !== undefined ? HeapObjects_ : new $Uint64(0, 0);
-		this.StackInuse = StackInuse_ !== undefined ? StackInuse_ : new $Uint64(0, 0);
-		this.StackSys = StackSys_ !== undefined ? StackSys_ : new $Uint64(0, 0);
-		this.MSpanInuse = MSpanInuse_ !== undefined ? MSpanInuse_ : new $Uint64(0, 0);
-		this.MSpanSys = MSpanSys_ !== undefined ? MSpanSys_ : new $Uint64(0, 0);
-		this.MCacheInuse = MCacheInuse_ !== undefined ? MCacheInuse_ : new $Uint64(0, 0);
-		this.MCacheSys = MCacheSys_ !== undefined ? MCacheSys_ : new $Uint64(0, 0);
-		this.BuckHashSys = BuckHashSys_ !== undefined ? BuckHashSys_ : new $Uint64(0, 0);
-		this.GCSys = GCSys_ !== undefined ? GCSys_ : new $Uint64(0, 0);
-		this.OtherSys = OtherSys_ !== undefined ? OtherSys_ : new $Uint64(0, 0);
-		this.NextGC = NextGC_ !== undefined ? NextGC_ : new $Uint64(0, 0);
-		this.LastGC = LastGC_ !== undefined ? LastGC_ : new $Uint64(0, 0);
-		this.PauseTotalNs = PauseTotalNs_ !== undefined ? PauseTotalNs_ : new $Uint64(0, 0);
-		this.PauseNs = PauseNs_ !== undefined ? PauseNs_ : ($arrayType($Uint64, 256)).zero();
-		this.NumGC = NumGC_ !== undefined ? NumGC_ : 0;
-		this.EnableGC = EnableGC_ !== undefined ? EnableGC_ : false;
-		this.DebugGC = DebugGC_ !== undefined ? DebugGC_ : false;
-		this.BySize = BySize_ !== undefined ? BySize_ : ($arrayType(($structType([["Size", "Size", "", $Uint32, ""], ["Mallocs", "Mallocs", "", $Uint64, ""], ["Frees", "Frees", "", $Uint64, ""]])), 61)).zero();
-	});
+	errorString = $pkg.errorString = $newType(8, $kindString, "runtime.errorString", "errorString", "runtime", null);
 	NotSupportedError.Ptr.prototype.Error = function() {
 		var err;
 		err = this;
@@ -1970,31 +2010,24 @@ $packages["runtime"] = (function() {
 		return "runtime error: " + e;
 	};
 	$ptrType(errorString).prototype.Error = function() { return new errorString(this.$get()).Error(); };
-	init$1 = function() {
-		var memStats;
-		memStats = new MemStats.Ptr(); $copy(memStats, new MemStats.Ptr(), MemStats);
-		if (!((sizeof_C_MStats === 3712))) {
-			console.log(sizeof_C_MStats, 3712);
-			$panic(new $String("MStats vs MemStatsType size mismatch"));
-		}
-	};
 	$pkg.$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $r, $s = 0; var $f = function() { while (true) { switch ($s) { case 0:
+		$r = js.$init(true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
 		($ptrType(NotSupportedError)).methods = [["Error", "Error", "", $funcType([], [$String], false), -1]];
 		NotSupportedError.init([["Feature", "Feature", "", $String, ""]]);
 		($ptrType(TypeAssertionError)).methods = [["Error", "Error", "", $funcType([], [$String], false), -1], ["RuntimeError", "RuntimeError", "", $funcType([], [], false), -1]];
 		TypeAssertionError.init([["interfaceString", "interfaceString", "runtime", $String, ""], ["concreteString", "concreteString", "runtime", $String, ""], ["assertedString", "assertedString", "runtime", $String, ""], ["missingMethod", "missingMethod", "runtime", $String, ""]]);
 		errorString.methods = [["Error", "Error", "", $funcType([], [$String], false), -1], ["RuntimeError", "RuntimeError", "", $funcType([], [], false), -1]];
 		($ptrType(errorString)).methods = [["Error", "Error", "", $funcType([], [$String], false), -1], ["RuntimeError", "RuntimeError", "", $funcType([], [], false), -1]];
-		MemStats.init([["Alloc", "Alloc", "", $Uint64, ""], ["TotalAlloc", "TotalAlloc", "", $Uint64, ""], ["Sys", "Sys", "", $Uint64, ""], ["Lookups", "Lookups", "", $Uint64, ""], ["Mallocs", "Mallocs", "", $Uint64, ""], ["Frees", "Frees", "", $Uint64, ""], ["HeapAlloc", "HeapAlloc", "", $Uint64, ""], ["HeapSys", "HeapSys", "", $Uint64, ""], ["HeapIdle", "HeapIdle", "", $Uint64, ""], ["HeapInuse", "HeapInuse", "", $Uint64, ""], ["HeapReleased", "HeapReleased", "", $Uint64, ""], ["HeapObjects", "HeapObjects", "", $Uint64, ""], ["StackInuse", "StackInuse", "", $Uint64, ""], ["StackSys", "StackSys", "", $Uint64, ""], ["MSpanInuse", "MSpanInuse", "", $Uint64, ""], ["MSpanSys", "MSpanSys", "", $Uint64, ""], ["MCacheInuse", "MCacheInuse", "", $Uint64, ""], ["MCacheSys", "MCacheSys", "", $Uint64, ""], ["BuckHashSys", "BuckHashSys", "", $Uint64, ""], ["GCSys", "GCSys", "", $Uint64, ""], ["OtherSys", "OtherSys", "", $Uint64, ""], ["NextGC", "NextGC", "", $Uint64, ""], ["LastGC", "LastGC", "", $Uint64, ""], ["PauseTotalNs", "PauseTotalNs", "", $Uint64, ""], ["PauseNs", "PauseNs", "", ($arrayType($Uint64, 256)), ""], ["NumGC", "NumGC", "", $Uint32, ""], ["EnableGC", "EnableGC", "", $Bool, ""], ["DebugGC", "DebugGC", "", $Bool, ""], ["BySize", "BySize", "", ($arrayType(($structType([["Size", "Size", "", $Uint32, ""], ["Mallocs", "Mallocs", "", $Uint64, ""], ["Frees", "Frees", "", $Uint64, ""]])), 61)), ""]]);
-		sizeof_C_MStats = 3712;
 		init();
-		init$1();
+		/* */ } return; } }; $f.$blocking = true; return $f;
 	};
 	return $pkg;
 })();
 $packages["errors"] = (function() {
 	var $pkg = {}, errorString, New;
-	errorString = $pkg.errorString = $newType(0, "Struct", "errors.errorString", "errorString", "errors", function(s_) {
+	errorString = $pkg.errorString = $newType(0, $kindStruct, "errors.errorString", "errorString", "errors", function(s_) {
 		this.$val = this;
 		this.s = s_ !== undefined ? s_ : "";
 	});
@@ -2008,8 +2041,11 @@ $packages["errors"] = (function() {
 	};
 	errorString.prototype.Error = function() { return this.$val.Error(); };
 	$pkg.$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $r, $s = 0; var $f = function() { while (true) { switch ($s) { case 0:
 		($ptrType(errorString)).methods = [["Error", "Error", "", $funcType([], [$String], false), -1]];
 		errorString.init([["s", "s", "errors", $String, ""]]);
+		/* */ } return; } }; $f.$blocking = true; return $f;
 	};
 	return $pkg;
 })();
@@ -2029,12 +2065,15 @@ $packages["sort"] = (function() {
 		return i;
 	};
 	$pkg.$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $r, $s = 0; var $f = function() { while (true) { switch ($s) { case 0:
+		/* */ } return; } }; $f.$blocking = true; return $f;
 	};
 	return $pkg;
 })();
 $packages["ninchatclient"] = (function() {
 	var $pkg = {}, errors = $packages["errors"], js = $packages["github.com/gopherjs/gopherjs/js"], sort = $packages["sort"], Action, Backoff, Deferred, Transport, Session, Time, Duration, Timer, WebSocket, callbackNum, module, sessionEventAckWindow, GetAddress, GetEndpointHosts, GetSessionEventCredentials, GetEventFrames, GetEventAndActionId, IsEventLastReply, GetEventError, Call, PostCall, Jitter, JitterDuration, JitterUint64, jsError, jsInvoke, Atob, ParseDataURI, NewArray, NewArrayBuffer, NewUint8Array, NewObject, EncodeURIComponent, ParseJSON, StringifyJSON, Random, SetTimeout, ClearTimeout, JSONP, DataJSONP, StringJSONP, doJSONP, Log, LongPollTransport, longPollTransfer, longPollPing, longPollClose, main, Defer, NewSession, Now, NewTimer, Sleep, NewWebSocket, StringifyFrame, WebSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
-	Action = $pkg.Action = $newType(0, "Struct", "main.Action", "Action", "ninchatclient", function(Id_, Header_, Payload_, Deferred_, name_) {
+	Action = $pkg.Action = $newType(0, $kindStruct, "main.Action", "Action", "ninchatclient", function(Id_, Header_, Payload_, Deferred_, name_) {
 		this.$val = this;
 		this.Id = Id_ !== undefined ? Id_ : new $Uint64(0, 0);
 		this.Header = Header_ !== undefined ? Header_ : $ifaceNil;
@@ -2042,18 +2081,18 @@ $packages["ninchatclient"] = (function() {
 		this.Deferred = Deferred_ !== undefined ? Deferred_ : ($ptrType(Deferred)).nil;
 		this.name = name_ !== undefined ? name_ : "";
 	});
-	Backoff = $pkg.Backoff = $newType(0, "Struct", "main.Backoff", "Backoff", "ninchatclient", function(lastSlot_) {
+	Backoff = $pkg.Backoff = $newType(0, $kindStruct, "main.Backoff", "Backoff", "ninchatclient", function(lastSlot_) {
 		this.$val = this;
 		this.lastSlot = lastSlot_ !== undefined ? lastSlot_ : 0;
 	});
-	Deferred = $pkg.Deferred = $newType(0, "Struct", "main.Deferred", "Deferred", "ninchatclient", function(resolve_, reject_, notify_) {
+	Deferred = $pkg.Deferred = $newType(0, $kindStruct, "main.Deferred", "Deferred", "ninchatclient", function(resolve_, reject_, notify_) {
 		this.$val = this;
 		this.resolve = resolve_ !== undefined ? resolve_ : ($sliceType(js.Object)).nil;
 		this.reject = reject_ !== undefined ? reject_ : ($sliceType(js.Object)).nil;
 		this.notify = notify_ !== undefined ? notify_ : ($sliceType(js.Object)).nil;
 	});
-	Transport = $pkg.Transport = $newType(4, "Func", "main.Transport", "Transport", "ninchatclient", null);
-	Session = $pkg.Session = $newType(0, "Struct", "main.Session", "Session", "ninchatclient", function(onSessionEvent_, onEvent_, onConnState_, onConnActive_, onLog_, address_, forceLongPoll_, sessionParams_, sessionId_, latestConnState_, latestConnActive_, lastActionId_, sendNotify_, sendBuffer_, numSent_, sendEventAck_, receivedEventId_, ackedEventId_, closeNotify_, closed_, stopped_) {
+	Transport = $pkg.Transport = $newType(4, $kindFunc, "main.Transport", "Transport", "ninchatclient", null);
+	Session = $pkg.Session = $newType(0, $kindStruct, "main.Session", "Session", "ninchatclient", function(onSessionEvent_, onEvent_, onConnState_, onConnActive_, onLog_, address_, forceLongPoll_, sessionParams_, sessionId_, latestConnState_, latestConnActive_, lastActionId_, sendNotify_, sendBuffer_, numSent_, sendEventAck_, receivedEventId_, ackedEventId_, closeNotify_, closed_, stopped_) {
 		this.$val = this;
 		this.onSessionEvent = onSessionEvent_ !== undefined ? onSessionEvent_ : $ifaceNil;
 		this.onEvent = onEvent_ !== undefined ? onEvent_ : $ifaceNil;
@@ -2077,14 +2116,14 @@ $packages["ninchatclient"] = (function() {
 		this.closed = closed_ !== undefined ? closed_ : false;
 		this.stopped = stopped_ !== undefined ? stopped_ : false;
 	});
-	Time = $pkg.Time = $newType(8, "Int64", "main.Time", "Time", "ninchatclient", null);
-	Duration = $pkg.Duration = $newType(8, "Int64", "main.Duration", "Duration", "ninchatclient", null);
-	Timer = $pkg.Timer = $newType(0, "Struct", "main.Timer", "Timer", "ninchatclient", function(C_, id_) {
+	Time = $pkg.Time = $newType(8, $kindInt64, "main.Time", "Time", "ninchatclient", null);
+	Duration = $pkg.Duration = $newType(8, $kindInt64, "main.Duration", "Duration", "ninchatclient", null);
+	Timer = $pkg.Timer = $newType(0, $kindStruct, "main.Timer", "Timer", "ninchatclient", function(C_, id_) {
 		this.$val = this;
 		this.C = C_ !== undefined ? C_ : ($chanType($Bool, false, false)).nil;
 		this.id = id_ !== undefined ? id_ : $ifaceNil;
 	});
-	WebSocket = $pkg.WebSocket = $newType(0, "Struct", "main.WebSocket", "WebSocket", "ninchatclient", function(Notify_, impl_, open_, error_, buffer_) {
+	WebSocket = $pkg.WebSocket = $newType(0, $kindStruct, "main.WebSocket", "WebSocket", "ninchatclient", function(Notify_, impl_, open_, error_, buffer_) {
 		this.$val = this;
 		this.Notify = Notify_ !== undefined ? Notify_ : ($chanType($Bool, false, false)).nil;
 		this.impl = impl_ !== undefined ? impl_ : $ifaceNil;
@@ -2272,7 +2311,7 @@ $packages["ninchatclient"] = (function() {
 		_tuple = Defer(); deferred = _tuple[0]; promise = new ($mapType($String, $emptyInterface))(_tuple[1]);
 		$go((function($b) {
 			var $this = this, $args = arguments, $r, $s = 0, _tuple$1, response, err, _r, events;
-			/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
+			/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { s: while (true) { switch ($s) { case 0:
 			_tuple$1 = DataJSONP(url, header, JitterDuration(new Duration(0, 11000), 0.1)); response = _tuple$1[0]; err = _tuple$1[1];
 			if (!($interfaceIsEqual(err, $ifaceNil))) {
 				Log("NinchatClient.call onLog callback", onLog, new ($sliceType($emptyInterface))([new $String("call:"), err]));
@@ -2327,7 +2366,7 @@ $packages["ninchatclient"] = (function() {
 			}
 			$go((function($b) {
 				var $this = this, $args = arguments, $r, $s = 0;
-				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
+				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { s: while (true) { switch ($s) { case 0:
 				$r = $send(channel, array, true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
 				/* */ case -1: } return; } }; $f.$blocking = true; return $f;
 			}), []);
@@ -2487,7 +2526,7 @@ $packages["ninchatclient"] = (function() {
 			delete module[$externalize(function$1, $String)];
 			$go((function($b) {
 				var $this = this, $args = arguments, $r, $s = 0;
-				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
+				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { s: while (true) { switch ($s) { case 0:
 				$r = $send(channel, object, true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
 				/* */ case -1: } return; } }; $f.$blocking = true; return $f;
 			}), []);
@@ -2535,7 +2574,7 @@ $packages["ninchatclient"] = (function() {
 	};
 	LongPollTransport = $pkg.LongPollTransport = function(s, host, $b) {
 		var $this = this, $args = arguments, connWorked = false, gotOnline = false, $r, $deferred = [], $err = null, $s = 0, url, header, _tuple, response, err, _selection, _r, array, header$1, err$1, _r$1;
-		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { try { $deferFrames.push($deferred); while (true) { switch ($s) { case 0:
+		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_LongPollTransport = function() { try { $deferFrames.push($deferred); s: while (true) { switch ($s) { case 0:
 		$deferred.push([(function() {
 			var err;
 			err = jsError($recover());
@@ -2585,11 +2624,11 @@ $packages["ninchatclient"] = (function() {
 			gotOnline = true;
 		/* } */ case 5:
 		return [connWorked, gotOnline];
-		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); return [connWorked, gotOnline]; } }; $f.$blocking = true; return $f;
+		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); return [connWorked, gotOnline]; } }; $blocking_LongPollTransport.$blocking = true; return $blocking_LongPollTransport;
 	};
 	longPollTransfer = function(s, url, $b) {
 		var $this = this, $args = arguments, gotOnline = false, $r, $s = 0, poller, sender, sendingId, timeouts, err, header, _tuple, x, x$1, action, payload, err$1, frame, _tuple$1, base64, err$2, _tuple$2, _tuple$3, json, err$3, channel, _tuple$4, _tuple$5, x$2, array, _selection, _r, sending, i, header$1, payload$1, object, _tuple$6, json$1, err$4, _tuple$7, ackedActionId, ok;
-		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
+		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_longPollTransfer = function() { s: while (true) { switch ($s) { case 0:
 		poller = ($chanType(js.Object, false, true)).nil;
 		sender = ($chanType(js.Object, false, true)).nil;
 		sendingId = new $Uint64(0, 0);
@@ -2722,7 +2761,7 @@ $packages["ninchatclient"] = (function() {
 			}
 		/* } */ $s = 1; continue; case 2:
 		return gotOnline;
-		/* */ case -1: } return; } }; $f.$blocking = true; return $f;
+		/* */ case -1: } return; } }; $blocking_longPollTransfer.$blocking = true; return $blocking_longPollTransfer;
 	};
 	longPollPing = function(s, url) {
 		var err = $ifaceNil, header, _map, _key, _tuple;
@@ -2936,7 +2975,7 @@ $packages["ninchatclient"] = (function() {
 		s.stopped = true;
 		$go((function($b) {
 			var $this = this, $args = arguments, $r, $s = 0;
-			/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
+			/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { s: while (true) { switch ($s) { case 0:
 			$r = $send(s.closeNotify, true, true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
 			$close(s.sendNotify);
 			/* */ case -1: } return; } }; $f.$blocking = true; return $f;
@@ -2991,7 +3030,7 @@ $packages["ninchatclient"] = (function() {
 	Session.prototype.sendAck = function() { return this.$val.sendAck(); };
 	Session.Ptr.prototype.discover = function($b) {
 		var $this = this, $args = arguments, $r, $deferred = [], $err = null, $s = 0, s, backoff, wsFailed, url, _tuple, response, err, _selection, _r, endpoint, _tuple$1, hosts, err$1, _r$1, _r$2, delay;
-		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { try { $deferFrames.push($deferred); while (true) { switch ($s) { case 0:
+		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_discover = function() { try { $deferFrames.push($deferred); s: while (true) { switch ($s) { case 0:
 		s = $this;
 		s.log(new ($sliceType($emptyInterface))([new $String("opening")]));
 		$deferred.push([$methodVal(s, "log"), [new ($sliceType($emptyInterface))([new $String("closed")]), true]]);
@@ -3039,12 +3078,12 @@ $packages["ninchatclient"] = (function() {
 				$r = Sleep(delay, true); /* */ $s = 17; case 17: if ($r && $r.$blocking) { $r = $r(); }
 			/* } */ case 16:
 		/* } */ $s = 1; continue; case 2:
-		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); } }; $f.$blocking = true; return $f;
+		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); } }; $blocking_discover.$blocking = true; return $blocking_discover;
 	};
 	Session.prototype.discover = function($b) { return this.$val.discover($b); };
 	Session.Ptr.prototype.connect = function(transport, hosts, backoff, $b) {
 		var $this = this, $args = arguments, transportWorked = false, $r, $s = 0, s, trial, _ref, _i, host, _tuple, _r, connWorked, gotOnline, delay;
-		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
+		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_connect = function() { s: while (true) { switch ($s) { case 0:
 		s = $this;
 		trial = 0;
 		/* while (trial < 2) { */ case 1: if(!(trial < 2)) { $s = 2; continue; }
@@ -3076,7 +3115,7 @@ $packages["ninchatclient"] = (function() {
 			trial = trial + (1) >> 0;
 		/* } */ $s = 1; continue; case 2:
 		return transportWorked;
-		/* */ case -1: } return; } }; $f.$blocking = true; return $f;
+		/* */ case -1: } return; } }; $blocking_connect.$blocking = true; return $blocking_connect;
 	};
 	Session.prototype.connect = function(transport, hosts, backoff, $b) { return this.$val.connect(transport, hosts, backoff, $b); };
 	Session.Ptr.prototype.canLogin = function() {
@@ -3298,7 +3337,7 @@ $packages["ninchatclient"] = (function() {
 			timer.id = $ifaceNil;
 			$go((function($b) {
 				var $this = this, $args = arguments, $r, $s = 0;
-				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
+				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { s: while (true) { switch ($s) { case 0:
 				$r = $send(timer.C, true, true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
 				/* */ case -1: } return; } }; $f.$blocking = true; return $f;
 			}), []);
@@ -3316,20 +3355,20 @@ $packages["ninchatclient"] = (function() {
 	Timer.prototype.Stop = function() { return this.$val.Stop(); };
 	Sleep = $pkg.Sleep = function(delay, $b) {
 		var $this = this, $args = arguments, $r, $s = 0, _r;
-		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
+		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_Sleep = function() { s: while (true) { switch ($s) { case 0:
 		_r = $recv(NewTimer(delay).C, true); /* */ $s = 1; case 1: if (_r && _r.$blocking) { _r = _r(); }
 		_r[0];
-		/* */ case -1: } return; } }; $f.$blocking = true; return $f;
+		/* */ case -1: } return; } }; $blocking_Sleep.$blocking = true; return $blocking_Sleep;
 	};
 	NewWebSocket = $pkg.NewWebSocket = function(url) {
 		var ws = ($ptrType(WebSocket)).nil;
 		ws = new WebSocket.Ptr(new ($chanType($Bool, false, false))(1), new ($global.WebSocket)($externalize(url, $String)), false, $ifaceNil, ($sliceType(js.Object)).nil);
 		ws.impl.binaryType = $externalize("arraybuffer", $String);
-		ws.impl.onopen = $externalize((function() {
+		ws.impl.onopen = $externalize((function(param) {
 			ws.open = true;
 			$go((function($b) {
 				var $this = this, $args = arguments, $r, $s = 0;
-				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
+				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { s: while (true) { switch ($s) { case 0:
 				$r = $send(ws.Notify, true, true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
 				/* */ case -1: } return; } }; $f.$blocking = true; return $f;
 			}), []);
@@ -3341,7 +3380,7 @@ $packages["ninchatclient"] = (function() {
 				_selection = $select([[ws.Notify, true], []]);
 			}), []);
 		}), ($funcType([js.Object], [], false)));
-		ws.impl.onclose = $externalize((function() {
+		ws.impl.onclose = $externalize((function(param) {
 			ws.open = false;
 			$go((function() {
 				$close(ws.Notify);
@@ -3433,7 +3472,7 @@ $packages["ninchatclient"] = (function() {
 	};
 	WebSocketTransport = $pkg.WebSocketTransport = function(s, host, $b) {
 		var $this = this, $args = arguments, connWorked = false, gotOnline = false, $r, $deferred = [], $err = null, $s = 0, ws, connectTimer, hostHealthy, _selection, _r, connected, _tuple, _r$1;
-		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { try { $deferFrames.push($deferred); while (true) { switch ($s) { case 0:
+		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_WebSocketTransport = function() { try { $deferFrames.push($deferred); s: while (true) { switch ($s) { case 0:
 		ws = ($ptrType(WebSocket)).nil;
 		$deferred.push([(function() {
 			if (!(ws === ($ptrType(WebSocket)).nil)) {
@@ -3474,11 +3513,11 @@ $packages["ninchatclient"] = (function() {
 				return [connWorked, gotOnline];
 			}
 		/* } */ $s = 1; continue; case 2:
-		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); return [connWorked, gotOnline]; } }; $f.$blocking = true; return $f;
+		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); return [connWorked, gotOnline]; } }; $blocking_WebSocketTransport.$blocking = true; return $blocking_WebSocketTransport;
 	};
 	webSocketHandshake = function(s, ws, $b) {
 		var $this = this, $args = arguments, gotOnline = false, hostHealthy = false, $r, $s = 0, header, err, header$1, timer, err$1, _tuple, _selection, _r, connected, fail, done, _tuple$1, _r$1, gotEvents, _r$2;
-		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
+		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_webSocketHandshake = function() { s: while (true) { switch ($s) { case 0:
 		header = $ifaceNil;
 		if (s.sessionId === $ifaceNil) {
 			s.log(new ($sliceType($emptyInterface))([new $String("session creation")]));
@@ -3537,14 +3576,14 @@ $packages["ninchatclient"] = (function() {
 		_r$2 = $recv(done, true); /* */ $s = 6; case 6: if (_r$2 && _r$2.$blocking) { _r$2 = _r$2(); }
 		_r$2[0];
 		return [gotOnline, hostHealthy];
-		/* */ case -1: } return; } }; $f.$blocking = true; return $f;
+		/* */ case -1: } return; } }; $blocking_webSocketHandshake.$blocking = true; return $blocking_webSocketHandshake;
 	};
 	webSocketSend = function(s, ws, fail, done, $b) {
 		var $this = this, $args = arguments, $r, $deferred = [], $err = null, $s = 0, keeper, x, x$1, action, x$2, x$3, err, i, frame, _tuple, ok, _tuple$1, base64, err$1, _tuple$2, data, length, buffer, array, i$1, err$2, x$4, x$5, x$6, action$1, err$3, _selection, _r, sending, closeSession, _map, _key, err$4, err$5;
-		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { try { $deferFrames.push($deferred); while (true) { switch ($s) { case 0:
+		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_webSocketSend = function() { try { $deferFrames.push($deferred); s: while (true) { switch ($s) { case 0:
 		$deferred.push([(function($b) {
 			var $this = this, $args = arguments, $r, $s = 0;
-			/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { while (true) { switch ($s) { case 0:
+			/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { s: while (true) { switch ($s) { case 0:
 			$r = $send(done, true, true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
 			/* */ case -1: } return; } }; $f.$blocking = true; return $f;
 		}), [true]]);
@@ -3649,11 +3688,11 @@ $packages["ninchatclient"] = (function() {
 				return;
 			/* } */ case 24:
 		/* } */ $s = 1; continue; case 2:
-		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); } }; $f.$blocking = true; return $f;
+		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); } }; $blocking_webSocketSend.$blocking = true; return $blocking_webSocketSend;
 	};
 	webSocketReceive = function(s, ws, fail, $b) {
 		var $this = this, $args = arguments, gotEvents = false, hostHealthy = false, $r, $deferred = [], $err = null, $s = 0, header, payload, frames, watchdog, acker, ackNeeded, err, _tuple, data, text, _tuple$1, _tuple$2, _tuple$3, data$1, err$1, _tuple$4, needsAck, ok, _selection, _selection$1, _r, connected, x, x$1;
-		/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { try { $deferFrames.push($deferred); while (true) { switch ($s) { case 0:
+		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_webSocketReceive = function() { try { $deferFrames.push($deferred); s: while (true) { switch ($s) { case 0:
 		header = $ifaceNil;
 		payload = $ifaceNil;
 		frames = 0;
@@ -3759,17 +3798,14 @@ $packages["ninchatclient"] = (function() {
 				return [gotEvents, hostHealthy];
 			/* } */ case 23:
 		/* } */ $s = 1; continue; case 2:
-		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); return [gotEvents, hostHealthy]; } }; $f.$blocking = true; return $f;
-	};
-	$pkg.$run = function($b) {
-		$packages["github.com/gopherjs/gopherjs/js"].$init();
-		$packages["runtime"].$init();
-		$packages["errors"].$init();
-		$packages["sort"].$init();
-		$pkg.$init();
-		main();
+		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); return [gotEvents, hostHealthy]; } }; $blocking_webSocketReceive.$blocking = true; return $blocking_webSocketReceive;
 	};
 	$pkg.$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $r, $s = 0; var $f = function() { while (true) { switch ($s) { case 0:
+		$r = errors.$init(true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
+		$r = js.$init(true); /* */ $s = 2; case 2: if ($r && $r.$blocking) { $r = $r(); }
+		$r = sort.$init(true); /* */ $s = 3; case 3: if ($r && $r.$blocking) { $r = $r(); }
 		($ptrType(Action)).methods = [["Name", "Name", "", $funcType([], [$String], false), -1]];
 		Action.init([["Id", "Id", "", $Uint64, ""], ["Header", "Header", "", js.Object, ""], ["Payload", "Payload", "", js.Object, ""], ["Deferred", "Deferred", "", ($ptrType(Deferred)), ""], ["name", "name", "ninchatclient", $String, ""]]);
 		($ptrType(Backoff)).methods = [["Failure", "Failure", "", $funcType([Duration], [Duration], false), -1], ["Success", "Success", "", $funcType([], [], false), -1]];
@@ -3787,10 +3823,13 @@ $packages["ninchatclient"] = (function() {
 		module = NewObject();
 		sessionEventAckWindow = JitterUint64(new $Uint64(0, 4096), -0.25);
 		$pkg.WebSocketSupported = !($global.WebSocket === undefined);
+		main();
+		/* */ } return; } }; $f.$blocking = true; return $f;
 	};
 	return $pkg;
 })();
-$go($packages["ninchatclient"].$run, [], true);
+$go($packages["ninchatclient"].$init, [], true);
+$flushConsole();
 
 })();
 //# sourceMappingURL=ninchatclient.js.map
