@@ -7,8 +7,6 @@ import (
 const (
 	minPollTimeout = Second * 64
 	minSendTimeout = Second * 7
-
-	maxJSONPSize = 2048
 )
 
 // LongPollTransport creates or resumes a session, and runs an I/O loop after
@@ -20,9 +18,6 @@ func LongPollTransport(s *Session, host string) (connWorked, gotOnline bool) {
 		}
 	}()
 
-	// assume that JSONP works always (endpoint discovery worked, after all)
-	connWorked = true
-
 	url := "https://" + host + pollPath
 
 	if s.sessionId == nil {
@@ -30,20 +25,30 @@ func LongPollTransport(s *Session, host string) (connWorked, gotOnline bool) {
 
 		header := s.makeCreateSessionAction()
 
-		response, err := DataJSONP(url, header, JitterDuration(sessionCreateTimeout, 0.2))
+		creator, err := XHR_JSON(url, header, JitterDuration(sessionCreateTimeout, 0.2))
 		if err != nil {
 			s.log("session creation:", err)
 			return
 		}
 
 		select {
-		case array := <-response:
-			if array == nil {
+		case response, ok := <-creator:
+			if !ok {
 				s.log("session creation timeout")
+				return
+			} else if response == "" {
+				s.log("session creation error")
+				return
+			}
+
+			array, err := ParseJSON(response)
+			if err != nil {
+				s.log("session creation response:", err)
 				return
 			}
 
 			header := array.Index(0)
+
 			if !s.handleSessionEvent(header) {
 				return
 			}
@@ -53,6 +58,7 @@ func LongPollTransport(s *Session, host string) (connWorked, gotOnline bool) {
 			return
 		}
 
+		connWorked = true
 		gotOnline = true
 		s.connState("connected")
 		s.connActive()
@@ -67,30 +73,27 @@ func LongPollTransport(s *Session, host string) (connWorked, gotOnline bool) {
 		}
 	}
 
-	if longPollTransfer(s, url) {
-		gotOnline = true
-	}
-
+	longPollTransfer(s, url, &connWorked, &gotOnline)
 	return
 }
 
 // longPollTransfer sends buffered actions and polls for events.  It stops if
 // two subsequent requests (of any kind) time out.
-func longPollTransfer(s *Session, url string) (gotOnline bool) {
-	var poller <-chan js.Object
-	var sender <-chan js.Object
+func longPollTransfer(s *Session, url string, connWorked, gotOnline *bool) {
+	var poller <-chan string
+	var sender <-chan string
 	var sendingId uint64
-	var timeouts int
+	var failures int
 
 	s.numSent = 0
 
-	for timeouts < 2 {
+	for failures < 2 {
 		if poller == nil {
 			var err error
 
 			header := s.makeResumeSessionAction(true)
 
-			poller, err = DataJSONP(url, header, JitterDuration(minPollTimeout, 0.2))
+			poller, err = XHR_JSON(url, header, JitterDuration(minPollTimeout, 0.2))
 			if err != nil {
 				s.log("poll:", err)
 				return
@@ -127,31 +130,17 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 
 			action.Header.Set("session_id", s.sessionId)
 
-			json, err := StringifyJSON(action.Header)
+			request, err := StringifyJSON(action.Header)
 
 			action.Header.Delete("session_id")
+			action.Header.Delete("payload")
 
 			if err != nil {
 				s.log("send:", err)
 				return
 			}
 
-			var channel chan js.Object
-
-			if len(json) <= maxJSONPSize {
-				channel, err = StringJSONP(url, json, JitterDuration(minSendTimeout, 0.2))
-			} else {
-				action.Header.Set("caller_id", s.sessionParams.Get("user_id"))
-				action.Header.Set("caller_auth", s.sessionParams.Get("user_auth"))
-
-				channel, err = PostCall(action.Header, s.log, s.address)
-
-				action.Header.Delete("caller_id")
-				action.Header.Delete("caller_auth")
-			}
-
-			action.Header.Delete("payload")
-
+			channel, err := XHR(url, request, JitterDuration(minSendTimeout, 0.2))
 			if err != nil {
 				s.log("send:", err)
 				return
@@ -165,20 +154,25 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 			}
 		}
 
-		var array js.Object
+		var response string
+		var ok bool
 
 		select {
-		case array = <-poller:
-			if array == nil {
+		case response, ok = <-poller:
+			if !ok {
 				s.log("poll timeout")
+			} else if response == "" {
+				s.log("poll error")
 			}
 
 			poller = nil
 			s.connActive()
 
-		case array = <-sender:
-			if array == nil {
+		case response, ok = <-sender:
+			if !ok {
 				s.log("send timeout")
+			} else if response == "" {
+				s.log("send error")
 			} else if sendingId > 0 {
 				s.numSent++
 			}
@@ -199,13 +193,25 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 			return
 		}
 
+		var array js.Object
+
+		if response != "" {
+			var err error
+
+			array, err = ParseJSON(response)
+			if err != nil {
+				s.log("response:", err)
+			}
+		}
+
 		if array == nil {
-			timeouts++
+			failures++
 			s.numSent = 0
 			continue
 		}
 
-		timeouts = 0
+		failures = 0
+		*connWorked = true
 
 		for i := 0; i < array.Length(); i++ {
 			header := array.Index(i)
@@ -233,8 +239,8 @@ func longPollTransfer(s *Session, url string) (gotOnline bool) {
 				return
 			}
 
-			if !gotOnline {
-				gotOnline = true
+			if !*gotOnline {
+				*gotOnline = true
 				s.connState("connected")
 			}
 		}
@@ -250,7 +256,7 @@ func longPollPing(s *Session, url string) (err error) {
 		"session_id": s.sessionId,
 	}
 
-	_, err = DataJSONP(url, header, JitterDuration(minSendTimeout, 0.9))
+	_, err = XHR_JSON(url, header, JitterDuration(minSendTimeout, 0.9))
 	return
 }
 
@@ -262,7 +268,7 @@ func longPollClose(s *Session, url string) {
 		"session_id": s.sessionId,
 	}
 
-	if _, err := DataJSONP(url, header, JitterDuration(minSendTimeout, 0.9)); err != nil {
+	if _, err := XHR_JSON(url, header, JitterDuration(minSendTimeout, 0.9)); err != nil {
 		s.log("send:", err)
 	}
 }

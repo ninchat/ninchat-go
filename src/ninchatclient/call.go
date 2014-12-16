@@ -18,68 +18,37 @@ func Call(header, onLog, address js.Object) (promise interface{}) {
 	deferred, promise := Defer()
 
 	go func() {
-		response, err := DataJSONP(url, header, JitterDuration(callTimeout, 0.1))
+		channel, err := XHR_JSON(url, header, JitterDuration(callTimeout, 0.1))
 		if err != nil {
 			Log(callLogInvocationName, onLog, "call:", err)
 			deferred.Reject()
 			return
 		}
 
-		if events := <-response; events != nil {
-			deferred.Resolve(events)
-		} else {
-			deferred.Reject()
-		}
-	}()
-
-	return
-}
-
-func PostCall(header js.Object, log func(...interface{}), address string) (channel chan js.Object, err error) {
-	defer func() {
-		err = jsError(recover())
-	}()
-
-	json, err := StringifyJSON(header)
-	if err != nil {
-		return
-	}
-
-	url := "https://" + address + callPath
-
-	channel = make(chan js.Object, 1)
-
-	xhr := js.Global.Get("XMLHttpRequest").New()
-
-	xhr.Set("onload", func() {
-		defer func() {
-			if x := recover(); x != nil {
-				println(x)
-			}
-		}()
-
-		var array js.Object
-
-		if xhr.Get("status").Int() == 200 {
-			object, err := ParseJSON(xhr.Get("response").Str())
-			if err != nil {
-				log(err)
+		response, ok := <-channel
+		if response == "" {
+			if ok {
+				Log(callLogInvocationName, onLog, "call error")
 			} else {
-				array = NewArray()
-				array.Call("push", object)
+				Log(callLogInvocationName, onLog, "call timeout")
 			}
-		} else {
-			log("call status", xhr.Get("status").Str())
+
+			deferred.Reject()
+			return
 		}
 
-		go func() {
-			channel <- array
-		}()
-	})
+		event, err := ParseJSON(response)
+		if err != nil {
+			Log(callLogInvocationName, onLog, "call response:", err)
+			deferred.Reject()
+			return
+		}
 
-	xhr.Call("open", "POST", url, true)
-	xhr.Call("setRequestHeader", "Content-Type", "application/json")
-	xhr.Call("send", json)
+		events := NewArray()
+		events.Call("push", event)
+
+		deferred.Resolve(events)
+	}()
 
 	return
 }

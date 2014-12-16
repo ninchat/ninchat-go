@@ -43,12 +43,17 @@ func GetAddress(address js.Object) string {
 }
 
 // GetEndpointHosts
-func GetEndpointHosts(endpoint js.Object) (hosts []string, err error) {
+func GetEndpointHosts(response string) (hosts []string, err error) {
 	defer func() {
 		if e := jsError(recover()); e != nil {
 			err = e
 		}
 	}()
+
+	endpoint, err := ParseJSON(response)
+	if err != nil {
+		return
+	}
 
 	jsHosts := endpoint.Get("hosts")
 

@@ -302,14 +302,16 @@ func (s *Session) discover() {
 
 		url := "https://" + s.address + endpointPath
 
-		if response, err := JSONP(url, JitterDuration(discoveryTimeout, 0.1)); err != nil {
+		if channel, err := XHR(url, "", JitterDuration(discoveryTimeout, 0.1)); err != nil {
 			s.log("endpoint discovery:", err)
 		} else {
 			select {
-			case endpoint := <-response:
-				if endpoint == nil {
-					s.log("endpoint discovery timed out")
-				} else if hosts, err := GetEndpointHosts(endpoint); err != nil {
+			case response, ok := <-channel:
+				if !ok {
+					s.log("endpoint discovery timeout")
+				} else if response == "" {
+					s.log("endpoint discovery error")
+				} else if hosts, err := GetEndpointHosts(response); err != nil {
 					s.log("endpoint discovery:", err)
 				} else {
 					s.log("endpoint discovered")

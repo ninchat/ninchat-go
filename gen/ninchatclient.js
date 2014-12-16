@@ -2072,7 +2072,7 @@ $packages["sort"] = (function() {
 	return $pkg;
 })();
 $packages["ninchatclient"] = (function() {
-	var $pkg = {}, errors = $packages["errors"], js = $packages["github.com/gopherjs/gopherjs/js"], sort = $packages["sort"], Action, Backoff, Deferred, Transport, Session, Time, Duration, Timer, WebSocket, callbackNum, module, sessionEventAckWindow, GetAddress, GetEndpointHosts, GetSessionEventCredentials, GetEventFrames, GetEventAndActionId, IsEventLastReply, GetEventError, Call, PostCall, Jitter, JitterDuration, JitterUint64, jsError, jsInvoke, Atob, ParseDataURI, NewArray, NewArrayBuffer, NewUint8Array, NewObject, EncodeURIComponent, ParseJSON, StringifyJSON, Random, SetTimeout, ClearTimeout, JSONP, DataJSONP, StringJSONP, doJSONP, Log, LongPollTransport, longPollTransfer, longPollPing, longPollClose, main, Defer, NewSession, Now, NewTimer, Sleep, NewWebSocket, StringifyFrame, WebSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
+	var $pkg = {}, errors = $packages["errors"], js = $packages["github.com/gopherjs/gopherjs/js"], sort = $packages["sort"], Action, Backoff, Deferred, Transport, Session, Time, Duration, Timer, WebSocket, module, sessionEventAckWindow, xhrType, GetAddress, GetEndpointHosts, GetSessionEventCredentials, GetEventFrames, GetEventAndActionId, IsEventLastReply, GetEventError, Call, Jitter, JitterDuration, JitterUint64, jsError, jsInvoke, Atob, ParseDataURI, NewArray, NewArrayBuffer, NewUint8Array, NewObject, ParseJSON, StringifyJSON, Random, SetTimeout, ClearTimeout, Log, LongPollTransport, longPollTransfer, longPollPing, longPollClose, main, Defer, NewSession, Now, NewTimer, Sleep, NewWebSocket, StringifyFrame, WebSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive, init, XHR, XHR_JSON;
 	Action = $pkg.Action = $newType(0, $kindStruct, "main.Action", "Action", "ninchatclient", function(Id_, Header_, Payload_, Deferred_, name_) {
 		this.$val = this;
 		this.Id = Id_ !== undefined ? Id_ : new $Uint64(0, 0);
@@ -2147,8 +2147,8 @@ $packages["ninchatclient"] = (function() {
 			return $internalize(address, $String);
 		}
 	};
-	GetEndpointHosts = $pkg.GetEndpointHosts = function(endpoint) {
-		var hosts = ($sliceType($String)).nil, err = $ifaceNil, $deferred = [], $err = null, jsHosts, i;
+	GetEndpointHosts = $pkg.GetEndpointHosts = function(response) {
+		var hosts = ($sliceType($String)).nil, err = $ifaceNil, $deferred = [], $err = null, _tuple, endpoint, jsHosts, i;
 		/* */ try { $deferFrames.push($deferred);
 		$deferred.push([(function() {
 			var e;
@@ -2157,6 +2157,10 @@ $packages["ninchatclient"] = (function() {
 				err = e;
 			}
 		}), []]);
+		_tuple = ParseJSON(response); endpoint = _tuple[0]; err = _tuple[1];
+		if (!($interfaceIsEqual(err, $ifaceNil))) {
+			return [hosts, err];
+		}
 		jsHosts = endpoint.hosts;
 		if ($parseInt(jsHosts.length) === 0) {
 			err = errors.New("endpoint hosts array is empty");
@@ -2310,73 +2314,37 @@ $packages["ninchatclient"] = (function() {
 		url = "https://" + GetAddress(address) + "/v2/call";
 		_tuple = Defer(); deferred = _tuple[0]; promise = new ($mapType($String, $emptyInterface))(_tuple[1]);
 		$go((function($b) {
-			var $this = this, $args = arguments, $r, $s = 0, _tuple$1, response, err, _r, events;
+			var $this = this, $args = arguments, $r, $s = 0, _tuple$1, channel, err, _tuple$2, _r, response, ok, _tuple$3, event, events;
 			/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { s: while (true) { switch ($s) { case 0:
-			_tuple$1 = DataJSONP(url, header, JitterDuration(new Duration(0, 11000), 0.1)); response = _tuple$1[0]; err = _tuple$1[1];
+			_tuple$1 = XHR_JSON(url, header, JitterDuration(new Duration(0, 11000), 0.1)); channel = _tuple$1[0]; err = _tuple$1[1];
 			if (!($interfaceIsEqual(err, $ifaceNil))) {
 				Log("NinchatClient.call onLog callback", onLog, new ($sliceType($emptyInterface))([new $String("call:"), err]));
 				deferred.Reject(new ($sliceType($emptyInterface))([]));
 				return;
 			}
-			_r = $recv(response, true); /* */ $s = 1; case 1: if (_r && _r.$blocking) { _r = _r(); }
-			events = _r[0];
-			/* if (!(events === $ifaceNil)) { */ if (!(events === $ifaceNil)) {} else { $s = 2; continue; }
-				deferred.Resolve(new ($sliceType($emptyInterface))([events]));
-			/* } else { */ $s = 3; continue; case 2: 
+			_r = $recv(channel, true); /* */ $s = 1; case 1: if (_r && _r.$blocking) { _r = _r(); }
+			_tuple$2 = _r; response = _tuple$2[0]; ok = _tuple$2[1];
+			if (response === "") {
+				if (ok) {
+					Log("NinchatClient.call onLog callback", onLog, new ($sliceType($emptyInterface))([new $String("call error")]));
+				} else {
+					Log("NinchatClient.call onLog callback", onLog, new ($sliceType($emptyInterface))([new $String("call timeout")]));
+				}
 				deferred.Reject(new ($sliceType($emptyInterface))([]));
-			/* } */ case 3:
+				return;
+			}
+			_tuple$3 = ParseJSON(response); event = _tuple$3[0]; err = _tuple$3[1];
+			if (!($interfaceIsEqual(err, $ifaceNil))) {
+				Log("NinchatClient.call onLog callback", onLog, new ($sliceType($emptyInterface))([new $String("call response:"), err]));
+				deferred.Reject(new ($sliceType($emptyInterface))([]));
+				return;
+			}
+			events = NewArray();
+			events.push(event);
+			deferred.Resolve(new ($sliceType($emptyInterface))([events]));
 			/* */ case -1: } return; } }; $f.$blocking = true; return $f;
 		}), []);
 		return promise;
-	};
-	PostCall = $pkg.PostCall = function(header, log, address) {
-		var channel = ($chanType(js.Object, false, false)).nil, err = $ifaceNil, $deferred = [], $err = null, _tuple, json, url, xhr;
-		/* */ try { $deferFrames.push($deferred);
-		$deferred.push([(function() {
-			err = jsError($recover());
-		}), []]);
-		_tuple = StringifyJSON(header); json = _tuple[0]; err = _tuple[1];
-		if (!($interfaceIsEqual(err, $ifaceNil))) {
-			return [channel, err];
-		}
-		url = "https://" + address + "/v2/call";
-		channel = new ($chanType(js.Object, false, false))(1);
-		xhr = new ($global.XMLHttpRequest)();
-		xhr.onload = $externalize((function() {
-			var $deferred = [], $err = null, array, _tuple$1, object, err$1;
-			/* */ try { $deferFrames.push($deferred);
-			$deferred.push([(function() {
-				var x;
-				x = $recover();
-				if (!($interfaceIsEqual(x, $ifaceNil))) {
-					console.log(x);
-				}
-			}), []]);
-			array = $ifaceNil;
-			if (($parseInt(xhr.status) >> 0) === 200) {
-				_tuple$1 = ParseJSON($internalize(xhr.response, $String)); object = _tuple$1[0]; err$1 = _tuple$1[1];
-				if (!($interfaceIsEqual(err$1, $ifaceNil))) {
-					log(new ($sliceType($emptyInterface))([err$1]));
-				} else {
-					array = NewArray();
-					array.push(object);
-				}
-			} else {
-				log(new ($sliceType($emptyInterface))([new $String("call status"), new $String($internalize(xhr.status, $String))]));
-			}
-			$go((function($b) {
-				var $this = this, $args = arguments, $r, $s = 0;
-				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { s: while (true) { switch ($s) { case 0:
-				$r = $send(channel, array, true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
-				/* */ case -1: } return; } }; $f.$blocking = true; return $f;
-			}), []);
-			/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); }
-		}), ($funcType([], [], false)));
-		xhr.open($externalize("POST", $String), $externalize(url, $String), $externalize(true, $Bool));
-		xhr.setRequestHeader($externalize("Content-Type", $String), $externalize("application/json", $String));
-		xhr.send($externalize(json, $String));
-		return [channel, err];
-		/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); return [channel, err]; }
 	};
 	Jitter = $pkg.Jitter = function(x, scale) {
 		return x + x * scale * Random();
@@ -2451,9 +2419,6 @@ $packages["ninchatclient"] = (function() {
 	NewObject = $pkg.NewObject = function() {
 		return new ($global.Object)();
 	};
-	EncodeURIComponent = $pkg.EncodeURIComponent = function(s) {
-		return $internalize($global.encodeURIComponent($externalize(s, $String)), $String);
-	};
 	ParseJSON = $pkg.ParseJSON = function(json) {
 		var object = $ifaceNil, err = $ifaceNil, $deferred = [], $err = null;
 		/* */ try { $deferFrames.push($deferred);
@@ -2484,62 +2449,6 @@ $packages["ninchatclient"] = (function() {
 	};
 	ClearTimeout = $pkg.ClearTimeout = function(id) {
 		$global.clearTimeout(id);
-	};
-	JSONP = $pkg.JSONP = function(url, timeout) {
-		var channel = ($chanType(js.Object, false, false)).nil, err = $ifaceNil, _tuple;
-		_tuple = doJSONP(url + "?callback=", timeout); channel = _tuple[0]; err = _tuple[1];
-		return [channel, err];
-	};
-	DataJSONP = $pkg.DataJSONP = function(url, data, timeout) {
-		var channel = ($chanType(js.Object, false, false)).nil, err = $ifaceNil, _tuple, json, _tuple$1;
-		_tuple = StringifyJSON(data); json = _tuple[0]; err = _tuple[1];
-		if (!($interfaceIsEqual(err, $ifaceNil))) {
-			return [channel, err];
-		}
-		_tuple$1 = StringJSONP(url, json, timeout); channel = _tuple$1[0]; err = _tuple$1[1];
-		return [channel, err];
-	};
-	StringJSONP = $pkg.StringJSONP = function(url, json, timeout) {
-		var channel = ($chanType(js.Object, false, false)).nil, err = $ifaceNil, _tuple;
-		_tuple = doJSONP(url + "?data=" + EncodeURIComponent(json) + "&callback=", timeout); channel = _tuple[0]; err = _tuple[1];
-		return [channel, err];
-	};
-	doJSONP = function(url, timeout) {
-		var channel = ($chanType(js.Object, false, false)).nil, err = $ifaceNil, $deferred = [], $err = null, _tuple, callbackId, function$1, callback, timeoutId, document, script, head;
-		/* */ try { $deferFrames.push($deferred);
-		$deferred.push([(function() {
-			err = jsError($recover());
-		}), []]);
-		_tuple = StringifyJSON(new $Int(callbackNum)); callbackId = _tuple[0];
-		callbackNum = ((callbackNum + 1 >> 0)) & 2147483647;
-		function$1 = "_callback" + callbackId;
-		callback = "NinchatClient." + function$1;
-		channel = new ($chanType(js.Object, false, false))(1);
-		timeoutId = SetTimeout((function() {
-			delete module[$externalize(function$1, $String)];
-			$go((function() {
-				$close(channel);
-			}), []);
-		}), timeout);
-		module[$externalize(function$1, $String)] = $externalize((function(object) {
-			ClearTimeout(timeoutId);
-			delete module[$externalize(function$1, $String)];
-			$go((function($b) {
-				var $this = this, $args = arguments, $r, $s = 0;
-				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { s: while (true) { switch ($s) { case 0:
-				$r = $send(channel, object, true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
-				/* */ case -1: } return; } }; $f.$blocking = true; return $f;
-			}), []);
-		}), ($funcType([js.Object], [], false)));
-		document = $global.document;
-		script = document.createElement($externalize("script", $String));
-		script.type = $externalize("text/javascript", $String);
-		script.async = $externalize(true, $Bool);
-		script.src = $externalize(url + callback, $String);
-		head = document.getElementsByTagName($externalize("head", $String))[0];
-		head.appendChild(script);
-		return [channel, err];
-		/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); return [channel, err]; }
 	};
 	Log = $pkg.Log = function(logInvocationName, onLog, tokens) {
 		var message, _ref, _i, x, str, _tuple, y, ok, _tuple$1, y$1, ok$1;
@@ -2573,7 +2482,7 @@ $packages["ninchatclient"] = (function() {
 		jsInvoke(logInvocationName, onLog, new ($sliceType($emptyInterface))([new $String(message)]));
 	};
 	LongPollTransport = $pkg.LongPollTransport = function(s, host, $b) {
-		var $this = this, $args = arguments, connWorked = false, gotOnline = false, $r, $deferred = [], $err = null, $s = 0, url, header, _tuple, response, err, _selection, _r, array, header$1, err$1, _r$1;
+		var $this = this, $args = arguments, connWorked = false, gotOnline = false, $r, $deferred = [], $err = null, $s = 0, url, header, _tuple, creator, err, _selection, _r, _tuple$1, response, ok, _tuple$2, array, err$1, header$1, err$2;
 		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_LongPollTransport = function() { try { $deferFrames.push($deferred); s: while (true) { switch ($s) { case 0:
 		$deferred.push([(function() {
 			var err;
@@ -2582,22 +2491,29 @@ $packages["ninchatclient"] = (function() {
 				s.log(new ($sliceType($emptyInterface))([new $String("poll:"), err]));
 			}
 		}), [true]]);
-		connWorked = true;
 		url = "https://" + host + "/v2/poll";
 		/* if (s.sessionId === $ifaceNil) { */ if (s.sessionId === $ifaceNil) {} else { $s = 1; continue; }
 			s.log(new ($sliceType($emptyInterface))([new $String("session creation")]));
 			header = s.makeCreateSessionAction();
-			_tuple = DataJSONP(url, header, JitterDuration(new Duration(0, 13000), 0.2)); response = _tuple[0]; err = _tuple[1];
+			_tuple = XHR_JSON(url, header, JitterDuration(new Duration(0, 13000), 0.2)); creator = _tuple[0]; err = _tuple[1];
 			if (!($interfaceIsEqual(err, $ifaceNil))) {
 				s.log(new ($sliceType($emptyInterface))([new $String("session creation:"), err]));
 				return [connWorked, gotOnline];
 			}
-			_r = $select([[response], [s.closeNotify]], true); /* */ $s = 3; case 3: if (_r && _r.$blocking) { _r = _r(); }
+			_r = $select([[creator], [s.closeNotify]], true); /* */ $s = 3; case 3: if (_r && _r.$blocking) { _r = _r(); }
 			_selection = _r;
 			if (_selection[0] === 0) {
-				array = _selection[1][0];
-				if (array === $ifaceNil) {
+				_tuple$1 = _selection[1]; response = _tuple$1[0]; ok = _tuple$1[1];
+				if (!ok) {
 					s.log(new ($sliceType($emptyInterface))([new $String("session creation timeout")]));
+					return [connWorked, gotOnline];
+				} else if (response === "") {
+					s.log(new ($sliceType($emptyInterface))([new $String("session creation error")]));
+					return [connWorked, gotOnline];
+				}
+				_tuple$2 = ParseJSON(response); array = _tuple$2[0]; err$1 = _tuple$2[1];
+				if (!($interfaceIsEqual(err$1, $ifaceNil))) {
+					s.log(new ($sliceType($emptyInterface))([new $String("session creation response:"), err$1]));
 					return [connWorked, gotOnline];
 				}
 				header$1 = array[0];
@@ -2608,43 +2524,41 @@ $packages["ninchatclient"] = (function() {
 				longPollClose(s, url);
 				return [connWorked, gotOnline];
 			}
+			connWorked = true;
 			gotOnline = true;
 			s.connState("connected");
 			s.connActive();
 		/* } else { */ $s = 2; continue; case 1: 
 			s.log(new ($sliceType($emptyInterface))([new $String("session resumption")]));
-			err$1 = longPollPing(s, url);
-			if (!($interfaceIsEqual(err$1, $ifaceNil))) {
-				s.log(new ($sliceType($emptyInterface))([new $String("session resumption:"), err$1]));
+			err$2 = longPollPing(s, url);
+			if (!($interfaceIsEqual(err$2, $ifaceNil))) {
+				s.log(new ($sliceType($emptyInterface))([new $String("session resumption:"), err$2]));
 				return [connWorked, gotOnline];
 			}
 		/* } */ case 2:
-		_r$1 = longPollTransfer(s, url, true); /* */ $s = 4; case 4: if (_r$1 && _r$1.$blocking) { _r$1 = _r$1(); }
-		/* if (_r$1) { */ if (_r$1) {} else { $s = 5; continue; }
-			gotOnline = true;
-		/* } */ case 5:
+		$r = longPollTransfer(s, url, new ($ptrType($Bool))(function() { return connWorked; }, function($v) { connWorked = $v; }), new ($ptrType($Bool))(function() { return gotOnline; }, function($v) { gotOnline = $v; }), true); /* */ $s = 4; case 4: if ($r && $r.$blocking) { $r = $r(); }
 		return [connWorked, gotOnline];
 		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); return [connWorked, gotOnline]; } }; $blocking_LongPollTransport.$blocking = true; return $blocking_LongPollTransport;
 	};
-	longPollTransfer = function(s, url, $b) {
-		var $this = this, $args = arguments, gotOnline = false, $r, $s = 0, poller, sender, sendingId, timeouts, err, header, _tuple, x, x$1, action, payload, err$1, frame, _tuple$1, base64, err$2, _tuple$2, _tuple$3, json, err$3, channel, _tuple$4, _tuple$5, x$2, array, _selection, _r, sending, i, header$1, payload$1, object, _tuple$6, json$1, err$4, _tuple$7, ackedActionId, ok;
+	longPollTransfer = function(s, url, connWorked, gotOnline, $b) {
+		var $this = this, $args = arguments, $r, $s = 0, poller, sender, sendingId, failures, err, header, _tuple, x, x$1, action, payload, err$1, frame, _tuple$1, base64, err$2, _tuple$2, _tuple$3, request, err$3, _tuple$4, channel, x$2, response, ok, _selection, _r, _tuple$5, _tuple$6, sending, array, err$4, _tuple$7, i, header$1, payload$1, object, _tuple$8, json, err$5, _tuple$9, ackedActionId, ok$1;
 		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_longPollTransfer = function() { s: while (true) { switch ($s) { case 0:
-		poller = ($chanType(js.Object, false, true)).nil;
-		sender = ($chanType(js.Object, false, true)).nil;
+		poller = ($chanType($String, false, true)).nil;
+		sender = ($chanType($String, false, true)).nil;
 		sendingId = new $Uint64(0, 0);
-		timeouts = 0;
+		failures = 0;
 		s.numSent = 0;
-		/* while (timeouts < 2) { */ case 1: if(!(timeouts < 2)) { $s = 2; continue; }
-			if (poller === ($chanType(js.Object, false, true)).nil) {
+		/* while (failures < 2) { */ case 1: if(!(failures < 2)) { $s = 2; continue; }
+			if (poller === ($chanType($String, false, true)).nil) {
 				err = $ifaceNil;
 				header = s.makeResumeSessionAction(true);
-				_tuple = DataJSONP(url, header, JitterDuration(new Duration(0, 64000), 0.2)); poller = _tuple[0]; err = _tuple[1];
+				_tuple = XHR_JSON(url, header, JitterDuration(new Duration(0, 64000), 0.2)); poller = _tuple[0]; err = _tuple[1];
 				if (!($interfaceIsEqual(err, $ifaceNil))) {
 					s.log(new ($sliceType($emptyInterface))([new $String("poll:"), err]));
-					return gotOnline;
+					return;
 				}
 			}
-			if (sender === ($chanType(js.Object, false, true)).nil && s.numSent < s.sendBuffer.$length) {
+			if (sender === ($chanType($String, false, true)).nil && s.numSent < s.sendBuffer.$length) {
 				action = (x = s.sendBuffer, x$1 = s.numSent, ((x$1 < 0 || x$1 >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + x$1]));
 				if (!(action.Payload === $ifaceNil)) {
 					payload = $ifaceNil;
@@ -2654,7 +2568,7 @@ $packages["ninchatclient"] = (function() {
 						_tuple$1 = ParseDataURI(frame); base64 = _tuple$1[0]; err$2 = _tuple$1[1];
 						if (!($interfaceIsEqual(err$2, $ifaceNil))) {
 							s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$2]));
-							return gotOnline;
+							return;
 						}
 						payload = NewArray();
 						payload.push(base64);
@@ -2662,32 +2576,23 @@ $packages["ninchatclient"] = (function() {
 						_tuple$2 = ParseJSON($internalize(frame, $String)); payload = _tuple$2[0]; err$1 = _tuple$2[1];
 						if (!($interfaceIsEqual(err$1, $ifaceNil))) {
 							s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$1]));
-							return gotOnline;
+							return;
 						}
 					}
 					action.Header.payload = payload;
 				}
 				action.Header.session_id = s.sessionId;
-				_tuple$3 = StringifyJSON(action.Header); json = _tuple$3[0]; err$3 = _tuple$3[1];
+				_tuple$3 = StringifyJSON(action.Header); request = _tuple$3[0]; err$3 = _tuple$3[1];
 				delete action.Header[$externalize("session_id", $String)];
-				if (!($interfaceIsEqual(err$3, $ifaceNil))) {
-					s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$3]));
-					return gotOnline;
-				}
-				channel = ($chanType(js.Object, false, false)).nil;
-				if (json.length <= 2048) {
-					_tuple$4 = StringJSONP(url, json, JitterDuration(new Duration(0, 7000), 0.2)); channel = _tuple$4[0]; err$3 = _tuple$4[1];
-				} else {
-					action.Header.caller_id = s.sessionParams.user_id;
-					action.Header.caller_auth = s.sessionParams.user_auth;
-					_tuple$5 = PostCall(action.Header, $methodVal(s, "log"), s.address); channel = _tuple$5[0]; err$3 = _tuple$5[1];
-					delete action.Header[$externalize("caller_id", $String)];
-					delete action.Header[$externalize("caller_auth", $String)];
-				}
 				delete action.Header[$externalize("payload", $String)];
 				if (!($interfaceIsEqual(err$3, $ifaceNil))) {
 					s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$3]));
-					return gotOnline;
+					return;
+				}
+				_tuple$4 = XHR(url, request, JitterDuration(new Duration(0, 7000), 0.2)); channel = _tuple$4[0]; err$3 = _tuple$4[1];
+				if (!($interfaceIsEqual(err$3, $ifaceNil))) {
+					s.log(new ($sliceType($emptyInterface))([new $String("send:"), err$3]));
+					return;
 				}
 				if ((x$2 = action.Id, (x$2.$high === 0 && x$2.$low === 0))) {
 					s.sendBuffer = $appendSlice($subslice(s.sendBuffer, 0, s.numSent), $subslice(s.sendBuffer, (s.numSent + 1 >> 0)));
@@ -2696,83 +2601,97 @@ $packages["ninchatclient"] = (function() {
 					sendingId = action.Id;
 				}
 			}
-			array = $ifaceNil;
+			response = "";
+			ok = false;
 			_r = $select([[poller], [sender], [s.sendNotify], [s.closeNotify]], true); /* */ $s = 3; case 3: if (_r && _r.$blocking) { _r = _r(); }
 			_selection = _r;
 			if (_selection[0] === 0) {
-				array = _selection[1][0];
-				if (array === $ifaceNil) {
+				_tuple$5 = _selection[1]; response = _tuple$5[0]; ok = _tuple$5[1];
+				if (!ok) {
 					s.log(new ($sliceType($emptyInterface))([new $String("poll timeout")]));
+				} else if (response === "") {
+					s.log(new ($sliceType($emptyInterface))([new $String("poll error")]));
 				}
-				poller = ($chanType(js.Object, false, true)).nil;
+				poller = ($chanType($String, false, true)).nil;
 				s.connActive();
 			} else if (_selection[0] === 1) {
-				array = _selection[1][0];
-				if (array === $ifaceNil) {
+				_tuple$6 = _selection[1]; response = _tuple$6[0]; ok = _tuple$6[1];
+				if (!ok) {
 					s.log(new ($sliceType($emptyInterface))([new $String("send timeout")]));
+				} else if (response === "") {
+					s.log(new ($sliceType($emptyInterface))([new $String("send error")]));
 				} else if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0))) {
 					s.numSent = s.numSent + (1) >> 0;
 				}
-				sender = ($chanType(js.Object, false, true)).nil;
+				sender = ($chanType($String, false, true)).nil;
 				sendingId = new $Uint64(0, 0);
 			} else if (_selection[0] === 2) {
 				sending = _selection[1][0];
 				if (!sending) {
 					longPollClose(s, url);
-					return gotOnline;
+					return;
 				}
 				/* continue; */ $s = 1; continue;
 			} else if (_selection[0] === 3) {
 				longPollClose(s, url);
-				return gotOnline;
+				return;
+			}
+			array = $ifaceNil;
+			if (!(response === "")) {
+				err$4 = $ifaceNil;
+				_tuple$7 = ParseJSON(response); array = _tuple$7[0]; err$4 = _tuple$7[1];
+				if (!($interfaceIsEqual(err$4, $ifaceNil))) {
+					s.log(new ($sliceType($emptyInterface))([new $String("response:"), err$4]));
+				}
 			}
 			if (array === $ifaceNil) {
-				timeouts = timeouts + (1) >> 0;
+				failures = failures + (1) >> 0;
 				s.numSent = 0;
 				/* continue; */ $s = 1; continue;
 			}
-			timeouts = 0;
+			failures = 0;
+			connWorked.$set(true);
 			i = 0;
 			while (i < $parseInt(array.length)) {
 				header$1 = array[i];
 				payload$1 = NewArray();
 				object = header$1.payload;
 				if (!(object === undefined)) {
-					_tuple$6 = StringifyJSON(object); json$1 = _tuple$6[0]; err$4 = _tuple$6[1];
-					if (!($interfaceIsEqual(err$4, $ifaceNil))) {
-						s.log(new ($sliceType($emptyInterface))([new $String("poll payload:"), err$4]));
-						return gotOnline;
+					_tuple$8 = StringifyJSON(object); json = _tuple$8[0]; err$5 = _tuple$8[1];
+					if (!($interfaceIsEqual(err$5, $ifaceNil))) {
+						s.log(new ($sliceType($emptyInterface))([new $String("poll payload:"), err$5]));
+						return;
 					}
-					payload$1.push($externalize(json$1, $String));
+					payload$1.push($externalize(json, $String));
 				}
-				_tuple$7 = s.handleEvent(header$1, payload$1); ackedActionId = _tuple$7[0]; ok = _tuple$7[2];
+				_tuple$9 = s.handleEvent(header$1, payload$1); ackedActionId = _tuple$9[0]; ok$1 = _tuple$9[2];
 				if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0)) && (sendingId.$high < ackedActionId.$high || (sendingId.$high === ackedActionId.$high && sendingId.$low <= ackedActionId.$low))) {
 					sendingId = new $Uint64(0, 0);
 					s.numSent = s.numSent + (1) >> 0;
 				}
-				if (!ok) {
-					return gotOnline;
+				if (!ok$1) {
+					return;
 				}
-				if (!gotOnline) {
-					gotOnline = true;
+				if (!gotOnline.$get()) {
+					gotOnline.$set(true);
 					s.connState("connected");
 				}
 				i = i + (1) >> 0;
 			}
 		/* } */ $s = 1; continue; case 2:
-		return gotOnline;
+		return;
 		/* */ case -1: } return; } }; $blocking_longPollTransfer.$blocking = true; return $blocking_longPollTransfer;
 	};
 	longPollPing = function(s, url) {
 		var err = $ifaceNil, header, _map, _key, _tuple;
 		header = (_map = new $Map(), _key = "action", _map[_key] = { k: _key, v: new $String("ping") }, _key = "session_id", _map[_key] = { k: _key, v: s.sessionId }, _map);
-		_tuple = DataJSONP(url, new ($mapType($String, $emptyInterface))(header), JitterDuration(new Duration(0, 7000), 0.9)); err = _tuple[1];
+		_tuple = XHR_JSON(url, new ($mapType($String, $emptyInterface))(header), JitterDuration(new Duration(0, 7000), 0.9)); err = _tuple[1];
 		return err;
 	};
 	longPollClose = function(s, url) {
 		var header, _map, _key, _tuple, err;
 		header = (_map = new $Map(), _key = "action", _map[_key] = { k: _key, v: new $String("close_session") }, _key = "session_id", _map[_key] = { k: _key, v: s.sessionId }, _map);
-		_tuple = DataJSONP(url, new ($mapType($String, $emptyInterface))(header), JitterDuration(new Duration(0, 7000), 0.9)); err = _tuple[1];
+		_tuple = XHR_JSON(url, new ($mapType($String, $emptyInterface))(header), JitterDuration(new Duration(0, 7000), 0.9)); err = _tuple[1];
 		if (!($interfaceIsEqual(err, $ifaceNil))) {
 			s.log(new ($sliceType($emptyInterface))([new $String("send:"), err]));
 		}
@@ -3029,7 +2948,7 @@ $packages["ninchatclient"] = (function() {
 	};
 	Session.prototype.sendAck = function() { return this.$val.sendAck(); };
 	Session.Ptr.prototype.discover = function($b) {
-		var $this = this, $args = arguments, $r, $deferred = [], $err = null, $s = 0, s, backoff, wsFailed, url, _tuple, response, err, _selection, _r, endpoint, _tuple$1, hosts, err$1, _r$1, _r$2, delay;
+		var $this = this, $args = arguments, $r, $deferred = [], $err = null, $s = 0, s, backoff, wsFailed, url, _tuple, channel, err, _selection, _r, _tuple$1, response, ok, _tuple$2, hosts, err$1, _r$1, _r$2, delay;
 		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_discover = function() { try { $deferFrames.push($deferred); s: while (true) { switch ($s) { case 0:
 		s = $this;
 		s.log(new ($sliceType($emptyInterface))([new $String("opening")]));
@@ -3041,42 +2960,44 @@ $packages["ninchatclient"] = (function() {
 			s.log(new ($sliceType($emptyInterface))([new $String("endpoint discovery")]));
 			s.connState("connecting");
 			url = "https://" + s.address + "/v2/endpoint";
-			_tuple = JSONP(url, JitterDuration(new Duration(0, 7000), 0.1)); response = _tuple[0]; err = _tuple[1];
+			_tuple = XHR(url, "", JitterDuration(new Duration(0, 7000), 0.1)); channel = _tuple[0]; err = _tuple[1];
 			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ if (!($interfaceIsEqual(err, $ifaceNil))) {} else { $s = 3; continue; }
 				s.log(new ($sliceType($emptyInterface))([new $String("endpoint discovery:"), err]));
 			/* } else { */ $s = 4; continue; case 3: 
-				_r = $select([[response], [s.closeNotify]], true); /* */ $s = 5; case 5: if (_r && _r.$blocking) { _r = _r(); }
+				_r = $select([[channel], [s.closeNotify]], true); /* */ $s = 5; case 5: if (_r && _r.$blocking) { _r = _r(); }
 				_selection = _r;
 				/* if (_selection[0] === 0) { */ if (_selection[0] === 0) {} else if (_selection[0] === 1) { $s = 6; continue; } else { $s = 7; continue; }
-					endpoint = _selection[1][0];
-					/* if (endpoint === $ifaceNil) { */ if (endpoint === $ifaceNil) {} else { $s = 8; continue; }
-						s.log(new ($sliceType($emptyInterface))([new $String("endpoint discovery timed out")]));
-					/* } else { */ $s = 9; continue; case 8: 
-						_tuple$1 = GetEndpointHosts(endpoint); hosts = _tuple$1[0]; err$1 = _tuple$1[1];
-						/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ if (!($interfaceIsEqual(err$1, $ifaceNil))) {} else { $s = 10; continue; }
+					_tuple$1 = _selection[1]; response = _tuple$1[0]; ok = _tuple$1[1];
+					/* if (!ok) { */ if (!ok) {} else if (response === "") { $s = 8; continue; } else { $s = 9; continue; }
+						s.log(new ($sliceType($emptyInterface))([new $String("endpoint discovery timeout")]));
+					/* } else if (response === "") { */ $s = 10; continue; case 8: 
+						s.log(new ($sliceType($emptyInterface))([new $String("endpoint discovery error")]));
+					/* } else { */ $s = 10; continue; case 9: 
+						_tuple$2 = GetEndpointHosts(response); hosts = _tuple$2[0]; err$1 = _tuple$2[1];
+						/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ if (!($interfaceIsEqual(err$1, $ifaceNil))) {} else { $s = 11; continue; }
 							s.log(new ($sliceType($emptyInterface))([new $String("endpoint discovery:"), err$1]));
-						/* } else { */ $s = 11; continue; case 10: 
+						/* } else { */ $s = 12; continue; case 11: 
 							s.log(new ($sliceType($emptyInterface))([new $String("endpoint discovered")]));
-							/* if (!$pkg.WebSocketSupported || s.forceLongPoll || wsFailed) { */ if (!$pkg.WebSocketSupported || s.forceLongPoll || wsFailed) {} else { $s = 12; continue; }
-								_r$1 = s.connect(LongPollTransport, hosts, backoff, true); /* */ $s = 14; case 14: if (_r$1 && _r$1.$blocking) { _r$1 = _r$1(); }
+							/* if (!$pkg.WebSocketSupported || s.forceLongPoll || wsFailed) { */ if (!$pkg.WebSocketSupported || s.forceLongPoll || wsFailed) {} else { $s = 13; continue; }
+								_r$1 = s.connect(LongPollTransport, hosts, backoff, true); /* */ $s = 15; case 15: if (_r$1 && _r$1.$blocking) { _r$1 = _r$1(); }
 								_r$1;
-							/* } else { */ $s = 13; continue; case 12: 
-								_r$2 = s.connect(WebSocketTransport, hosts, backoff, true); /* */ $s = 15; case 15: if (_r$2 && _r$2.$blocking) { _r$2 = _r$2(); }
+							/* } else { */ $s = 14; continue; case 13: 
+								_r$2 = s.connect(WebSocketTransport, hosts, backoff, true); /* */ $s = 16; case 16: if (_r$2 && _r$2.$blocking) { _r$2 = _r$2(); }
 								wsFailed = !_r$2;
-							/* } */ case 13:
+							/* } */ case 14:
 							/* continue; */ $s = 1; continue;
-						/* } */ case 11:
-					/* } */ case 9:
+						/* } */ case 12:
+					/* } */ case 10:
 				/* } else if (_selection[0] === 1) { */ $s = 7; continue; case 6: 
 					return;
 				/* } */ case 7:
 			/* } */ case 4:
 			delay = backoff.Failure(new Duration(0, 60000));
-			/* if ((delay.$high > 0 || (delay.$high === 0 && delay.$low > 0))) { */ if ((delay.$high > 0 || (delay.$high === 0 && delay.$low > 0))) {} else { $s = 16; continue; }
+			/* if ((delay.$high > 0 || (delay.$high === 0 && delay.$low > 0))) { */ if ((delay.$high > 0 || (delay.$high === 0 && delay.$low > 0))) {} else { $s = 17; continue; }
 				s.log(new ($sliceType($emptyInterface))([new $String("sleeping")]));
 				s.connState("disconnected");
-				$r = Sleep(delay, true); /* */ $s = 17; case 17: if ($r && $r.$blocking) { $r = $r(); }
-			/* } */ case 16:
+				$r = Sleep(delay, true); /* */ $s = 18; case 18: if ($r && $r.$blocking) { $r = $r(); }
+			/* } */ case 17:
 		/* } */ $s = 1; continue; case 2:
 		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); } }; $blocking_discover.$blocking = true; return $blocking_discover;
 	};
@@ -3800,6 +3721,68 @@ $packages["ninchatclient"] = (function() {
 		/* } */ $s = 1; continue; case 2:
 		/* */ case -1: } return; } } catch(err) { $err = err; } finally { $deferFrames.pop(); if ($curGoroutine.asleep && !$jumpToDefer) { throw null; } $s = -1; $callDeferred($deferred, $err); return [gotEvents, hostHealthy]; } }; $blocking_webSocketReceive.$blocking = true; return $blocking_webSocketReceive;
 	};
+	init = function() {
+		xhrType = $global.XDomainRequest;
+		if (xhrType === undefined) {
+			xhrType = $global.XMLHttpRequest;
+		}
+	};
+	XHR = $pkg.XHR = function(url, data, timeout) {
+		var channel = ($chanType($String, false, false)).nil, err = $ifaceNil, $deferred = [], $err = null, method, request;
+		/* */ try { $deferFrames.push($deferred);
+		$deferred.push([(function() {
+			err = jsError($recover());
+		}), []]);
+		method = "";
+		if (data === "") {
+			method = "GET";
+		} else {
+			method = "POST";
+		}
+		channel = new ($chanType($String, false, false))(1);
+		request = new (xhrType)();
+		request.timeout = $externalize(timeout, Duration);
+		request.onload = $externalize((function() {
+			var response, obj;
+			response = "";
+			obj = request.responseText;
+			if (!(obj === undefined) && !(obj === null)) {
+				response = $internalize(obj, $String);
+			}
+			$go((function($b) {
+				var $this = this, $args = arguments, $r, $s = 0;
+				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { s: while (true) { switch ($s) { case 0:
+				$r = $send(channel, response, true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
+				/* */ case -1: } return; } }; $f.$blocking = true; return $f;
+			}), []);
+		}), ($funcType([], [], false)));
+		request.ontimeout = $externalize((function() {
+			$go((function() {
+				$close(channel);
+			}), []);
+		}), ($funcType([], [], false)));
+		request.onerror = $externalize((function() {
+			$go((function($b) {
+				var $this = this, $args = arguments, $r, $s = 0;
+				/* */ if(!$b) { $nonblockingCall(); }; var $f = function() { s: while (true) { switch ($s) { case 0:
+				$r = $send(channel, "", true); /* */ $s = 1; case 1: if ($r && $r.$blocking) { $r = $r(); }
+				/* */ case -1: } return; } }; $f.$blocking = true; return $f;
+			}), []);
+		}), ($funcType([], [], false)));
+		request.open($externalize(method, $String), $externalize(url, $String));
+		request.send($externalize(data, $String));
+		return [channel, err];
+		/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); return [channel, err]; }
+	};
+	XHR_JSON = $pkg.XHR_JSON = function(url, data, timeout) {
+		var channel = ($chanType($String, false, false)).nil, err = $ifaceNil, _tuple, json, _tuple$1;
+		_tuple = StringifyJSON(data); json = _tuple[0]; err = _tuple[1];
+		if (!($interfaceIsEqual(err, $ifaceNil))) {
+			return [channel, err];
+		}
+		_tuple$1 = XHR(url, json, timeout); channel = _tuple$1[0]; err = _tuple$1[1];
+		return [channel, err];
+	};
 	$pkg.$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $r, $s = 0; var $f = function() { while (true) { switch ($s) { case 0:
@@ -3819,10 +3802,11 @@ $packages["ninchatclient"] = (function() {
 		Timer.init([["C", "C", "", ($chanType($Bool, false, false)), ""], ["id", "id", "ninchatclient", js.Object, ""]]);
 		($ptrType(WebSocket)).methods = [["Close", "Close", "", $funcType([], [$error], false), -1], ["Receive", "Receive", "", $funcType([], [js.Object, $error], false), -1], ["ReceiveJSON", "ReceiveJSON", "", $funcType([], [js.Object, $error], false), -1], ["Send", "Send", "", $funcType([$emptyInterface], [$error], false), -1], ["SendJSON", "SendJSON", "", $funcType([$emptyInterface], [$error], false), -1]];
 		WebSocket.init([["Notify", "Notify", "", ($chanType($Bool, false, false)), ""], ["impl", "impl", "ninchatclient", js.Object, ""], ["open", "open", "ninchatclient", $Bool, ""], ["error", "error", "ninchatclient", $error, ""], ["buffer", "buffer", "ninchatclient", ($sliceType(js.Object)), ""]]);
-		callbackNum = 0;
+		xhrType = $ifaceNil;
 		module = NewObject();
 		sessionEventAckWindow = JitterUint64(new $Uint64(0, 4096), -0.25);
 		$pkg.WebSocketSupported = !($global.WebSocket === undefined);
+		init();
 		main();
 		/* */ } return; } }; $f.$blocking = true; return $f;
 	};
