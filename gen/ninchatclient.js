@@ -3756,6 +3756,8 @@ $packages["ninchatclient"] = (function() {
 				/* */ case -1: } return; } }; $f.$blocking = true; return $f;
 			}), []);
 		}), ($funcType([], [], false)));
+		request.onprogress = $externalize((function() {
+		}), ($funcType([], [], false)));
 		request.ontimeout = $externalize((function() {
 			$go((function() {
 				$close(channel);

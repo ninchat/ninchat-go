@@ -47,6 +47,10 @@ func XHR(url string, data string, timeout Duration) (channel chan string, err er
 		}()
 	})
 
+	request.Set("onprogress", func() {
+		// https://stackoverflow.com/questions/7037627/long-poll-and-ies-xdomainrequest-object
+	})
+
 	request.Set("ontimeout", func() {
 		go func() {
 			close(channel)
