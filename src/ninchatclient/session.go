@@ -294,7 +294,6 @@ func (s *Session) discover() {
 	defer s.connState("disconnected")
 
 	var backoff Backoff
-	var wsFailed bool
 
 	for !s.stopped {
 		s.log("endpoint discovery")
@@ -316,14 +315,13 @@ func (s *Session) discover() {
 				} else {
 					s.log("endpoint discovered")
 
-					if !WebSocketSupported || s.forceLongPoll || wsFailed {
-						s.connect(LongPollTransport, hosts, &backoff)
-					} else {
-						wsFailed = !s.connect(WebSocketTransport, hosts, &backoff)
+					if WebSocketSupported && !s.forceLongPoll {
+						if s.connect(WebSocketTransport, hosts, &backoff) {
+							continue
+						}
 					}
 
-					// no delay; discovery was successful even if connect wasn't
-					continue
+					s.connect(LongPollTransport, hosts, &backoff)
 				}
 
 			case <-s.closeNotify:

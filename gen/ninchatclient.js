@@ -2948,14 +2948,13 @@ $packages["ninchatclient"] = (function() {
 	};
 	Session.prototype.sendAck = function() { return this.$val.sendAck(); };
 	Session.Ptr.prototype.discover = function($b) {
-		var $this = this, $args = arguments, $r, $deferred = [], $err = null, $s = 0, s, backoff, wsFailed, url, _tuple, channel, err, _selection, _r, _tuple$1, response, ok, _tuple$2, hosts, err$1, _r$1, _r$2, delay;
+		var $this = this, $args = arguments, $r, $deferred = [], $err = null, $s = 0, s, backoff, url, _tuple, channel, err, _selection, _r, _tuple$1, response, ok, _tuple$2, hosts, err$1, _r$1, _r$2, delay;
 		/* */ if(!$b) { $nonblockingCall(); }; var $blocking_discover = function() { try { $deferFrames.push($deferred); s: while (true) { switch ($s) { case 0:
 		s = $this;
 		s.log(new ($sliceType($emptyInterface))([new $String("opening")]));
 		$deferred.push([$methodVal(s, "log"), [new ($sliceType($emptyInterface))([new $String("closed")]), true]]);
 		$deferred.push([$methodVal(s, "connState"), ["disconnected", true]]);
 		backoff = new Backoff.Ptr(); $copy(backoff, new Backoff.Ptr(), Backoff);
-		wsFailed = false;
 		/* while (!s.stopped) { */ case 1: if(!(!s.stopped)) { $s = 2; continue; }
 			s.log(new ($sliceType($emptyInterface))([new $String("endpoint discovery")]));
 			s.connState("connecting");
@@ -2978,14 +2977,14 @@ $packages["ninchatclient"] = (function() {
 							s.log(new ($sliceType($emptyInterface))([new $String("endpoint discovery:"), err$1]));
 						/* } else { */ $s = 12; continue; case 11: 
 							s.log(new ($sliceType($emptyInterface))([new $String("endpoint discovered")]));
-							/* if (!$pkg.WebSocketSupported || s.forceLongPoll || wsFailed) { */ if (!$pkg.WebSocketSupported || s.forceLongPoll || wsFailed) {} else { $s = 13; continue; }
-								_r$1 = s.connect(LongPollTransport, hosts, backoff, true); /* */ $s = 15; case 15: if (_r$1 && _r$1.$blocking) { _r$1 = _r$1(); }
-								_r$1;
-							/* } else { */ $s = 14; continue; case 13: 
-								_r$2 = s.connect(WebSocketTransport, hosts, backoff, true); /* */ $s = 16; case 16: if (_r$2 && _r$2.$blocking) { _r$2 = _r$2(); }
-								wsFailed = !_r$2;
-							/* } */ case 14:
-							/* continue; */ $s = 1; continue;
+							/* if ($pkg.WebSocketSupported && !s.forceLongPoll) { */ if ($pkg.WebSocketSupported && !s.forceLongPoll) {} else { $s = 13; continue; }
+								_r$1 = s.connect(WebSocketTransport, hosts, backoff, true); /* */ $s = 14; case 14: if (_r$1 && _r$1.$blocking) { _r$1 = _r$1(); }
+								/* if (_r$1) { */ if (_r$1) {} else { $s = 15; continue; }
+									/* continue; */ $s = 1; continue;
+								/* } */ case 15:
+							/* } */ case 13:
+							_r$2 = s.connect(LongPollTransport, hosts, backoff, true); /* */ $s = 16; case 16: if (_r$2 && _r$2.$blocking) { _r$2 = _r$2(); }
+							_r$2;
 						/* } */ case 12:
 					/* } */ case 10:
 				/* } else if (_selection[0] === 1) { */ $s = 7; continue; case 6: 
