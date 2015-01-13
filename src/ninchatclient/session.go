@@ -96,7 +96,7 @@ func (s *Session) OnEvent(callback js.Object) {
 // OnConnState implements the Session.onConnState(function|null) JavaScript
 // API.
 func (s *Session) OnConnState(callback js.Object) {
-	if callback.IsNull() {
+	if callback == nil {
 		callback = nil
 	}
 
@@ -110,7 +110,7 @@ func (s *Session) OnConnState(callback js.Object) {
 // OnConnActive implements the Session.onConnActive(function|null) JavaScript
 // API.
 func (s *Session) OnConnActive(callback js.Object) {
-	if callback.IsNull() {
+	if callback == nil {
 		callback = nil
 	}
 
@@ -123,7 +123,7 @@ func (s *Session) OnConnActive(callback js.Object) {
 
 // OnLog implements the Session.onLog(function|null) JavaScript API.
 func (s *Session) OnLog(callback js.Object) {
-	if callback.IsNull() {
+	if callback == nil {
 		callback = nil
 	}
 
@@ -132,11 +132,11 @@ func (s *Session) OnLog(callback js.Object) {
 
 // SetParams implements the Session.setParams(object) JavaScript API.
 func (s *Session) SetParams(params js.Object) {
-	if params.Get("message_types").IsUndefined() {
+	if params.Get("message_types") == js.Undefined {
 		panic("message_types parameter not defined")
 	}
 
-	if sessionId := params.Get("session_id"); !sessionId.IsUndefined() && !sessionId.IsNull() {
+	if sessionId := params.Get("session_id"); sessionId != js.Undefined && sessionId != nil {
 		s.sessionId = sessionId
 	}
 
@@ -153,7 +153,7 @@ func (s *Session) SetParams(params js.Object) {
 // SetTransport implements the Session.setTransport(string|null) JavaScript
 // API.
 func (s *Session) SetTransport(name js.Object) {
-	if name.IsNull() {
+	if name == nil {
 		s.forceLongPoll = false
 		return
 	}
@@ -238,7 +238,7 @@ func (s *Session) Send(header, payload js.Object) (promise interface{}) {
 		panic("session already closed")
 	}
 
-	if payload.IsUndefined() || payload.IsNull() || payload.Length() == 0 {
+	if payload == js.Undefined || payload == nil || payload.Length() == 0 {
 		payload = nil
 	}
 
@@ -247,7 +247,7 @@ func (s *Session) Send(header, payload js.Object) (promise interface{}) {
 		Payload: payload,
 	}
 
-	if header.Get("action_id").IsNull() {
+	if header.Get("action_id") == nil {
 		header.Delete("action_id")
 	} else {
 		s.lastActionId++
@@ -378,13 +378,13 @@ func (s *Session) connect(transport Transport, hosts []string, backoff *Backoff)
 // The answer is no if the action could succeed, but would create a new
 // user.
 func (s *Session) canLogin() bool {
-	if value := s.sessionParams.Get("access_key"); !value.IsUndefined() && !value.IsNull() {
+	if value := s.sessionParams.Get("access_key"); value != js.Undefined && value != nil {
 		return true
 	}
 
-	if value := s.sessionParams.Get("user_id"); !value.IsUndefined() && !value.IsNull() {
+	if value := s.sessionParams.Get("user_id"); value != js.Undefined && value != nil {
 		for _, key := range []string{"user_auth", "master_sign"} {
-			if value := s.sessionParams.Get(key); !value.IsUndefined() && !value.IsNull() {
+			if value := s.sessionParams.Get(key); value != js.Undefined && value != nil {
 				return true
 			}
 		}
@@ -393,7 +393,7 @@ func (s *Session) canLogin() bool {
 	}
 
 	for _, key := range []string{"identity_type", "identity_name", "identity_auth"} {
-		if value := s.sessionParams.Get(key); value.IsUndefined() || value.IsNull() {
+		if value := s.sessionParams.Get(key); value == js.Undefined || value == nil {
 			return false
 		}
 	}
@@ -451,7 +451,7 @@ func (s *Session) handleSessionEvent(header js.Object) (ok bool) {
 	}
 
 	for _, param := range []string{"identity_type", "identity_name", "identity_auth"} {
-		if newValue := s.sessionParams.Get(param + "_new"); !newValue.IsUndefined() {
+		if newValue := s.sessionParams.Get(param + "_new"); newValue != js.Undefined {
 			s.sessionParams.Set(param, newValue)
 		}
 	}

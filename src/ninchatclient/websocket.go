@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	WebSocketSupported = !js.Global.Get("WebSocket").IsUndefined()
+	WebSocketSupported = js.Global.Get("WebSocket") != js.Undefined
 )
 
 // WebSocket

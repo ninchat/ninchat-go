@@ -35,7 +35,7 @@ func (a *Action) Name() string {
 
 // GetAddress
 func GetAddress(address js.Object) string {
-	if address.IsUndefined() || address.IsNull() {
+	if address == js.Undefined || address == nil {
 		return defaultAddress
 	} else {
 		return address.Str()
@@ -85,7 +85,7 @@ func GetSessionEventCredentials(header js.Object) (userId, userAuth, sessionId j
 
 	userId = header.Get("user_id")
 
-	if object := header.Get("user_auth"); !object.IsUndefined() {
+	if object := header.Get("user_auth"); object != js.Undefined {
 		userAuth = object
 	}
 
@@ -102,7 +102,7 @@ func GetEventFrames(header js.Object) (frames int, err error) {
 		err = jsError(recover())
 	}()
 
-	if object := header.Get("frames"); !object.IsUndefined() {
+	if object := header.Get("frames"); object != js.Undefined {
 		if frames = object.Int(); frames < 0 {
 			frames = 0
 		}
@@ -117,11 +117,11 @@ func GetEventAndActionId(header js.Object) (eventId uint64, actionId uint64, err
 		err = jsError(recover())
 	}()
 
-	if object := header.Get("event_id"); !object.IsUndefined() {
+	if object := header.Get("event_id"); object != js.Undefined {
 		eventId = object.Uint64()
 	}
 
-	if object := header.Get("action_id"); !object.IsUndefined() {
+	if object := header.Get("action_id"); object != js.Undefined {
 		actionId = object.Uint64()
 	}
 
@@ -136,7 +136,7 @@ func IsEventLastReply(header js.Object, action *Action) (lastReply bool, err err
 
 	lastReply = true
 
-	if historyLength := header.Get("history_length"); !historyLength.IsUndefined() {
+	if historyLength := header.Get("history_length"); historyLength != js.Undefined {
 		if historyLength.Int() > 0 {
 			lastReply = false
 		}
@@ -146,7 +146,7 @@ func IsEventLastReply(header js.Object, action *Action) (lastReply bool, err err
 		users := header.Get("users")
 		channels := header.Get("channels")
 
-		if !users.IsUndefined() || !channels.IsUndefined() {
+		if users != js.Undefined || channels != js.Undefined {
 			lastReply = false
 		}
 	}
@@ -168,7 +168,7 @@ func GetEventError(header js.Object) (errorType, errorReason string, sessionLost
 
 	errorType = header.Get("error_type").Str()
 
-	if object := header.Get("error_reason"); !object.IsUndefined() {
+	if object := header.Get("error_reason"); object != js.Undefined {
 		errorReason = object.Str()
 	}
 

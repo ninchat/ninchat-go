@@ -10,7 +10,7 @@ var (
 
 func init() {
 	xhrType = js.Global.Get("XDomainRequest")
-	if xhrType.IsUndefined() {
+	if xhrType == js.Undefined {
 		xhrType = js.Global.Get("XMLHttpRequest")
 	}
 }
@@ -38,7 +38,7 @@ func XHR(url string, data string, timeout Duration) (channel chan string, err er
 	request.Set("onload", func() {
 		var response string
 
-		if obj := request.Get("responseText"); !obj.IsUndefined() && !obj.IsNull() {
+		if obj := request.Get("responseText"); obj != js.Undefined && obj != nil {
 			response = obj.Str()
 		}
 

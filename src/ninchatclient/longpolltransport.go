@@ -217,7 +217,7 @@ func longPollTransfer(s *Session, url string, connWorked, gotOnline *bool) {
 			header := array.Index(i)
 			payload := NewArray()
 
-			if object := header.Get("payload"); !object.IsUndefined() {
+			if object := header.Get("payload"); object != js.Undefined {
 				json, err := StringifyJSON(object)
 				if err != nil {
 					s.log("poll payload:", err)

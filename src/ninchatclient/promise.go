@@ -31,15 +31,15 @@ func Defer() (d *Deferred, promise map[string]interface{}) {
 // then implements the Promise.then(function|null[, function|null[,
 // function|null]]) JavaScript API.
 func (d *Deferred) then(resolve, reject, notify js.Object) {
-	if !resolve.IsUndefined() && !resolve.IsNull() {
+	if resolve != js.Undefined && resolve != nil {
 		d.resolve = append(d.resolve, resolve)
 	}
 
-	if !reject.IsUndefined() && !reject.IsNull() {
+	if reject != js.Undefined && reject != nil {
 		d.reject = append(d.reject, reject)
 	}
 
-	if !notify.IsUndefined() && !notify.IsNull() {
+	if notify != js.Undefined && notify != nil {
 		d.notify = append(d.notify, notify)
 	}
 }
