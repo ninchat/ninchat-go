@@ -5,13 +5,15 @@ import (
 )
 
 var (
-	xhrType js.Object
+	xhrType                 js.Object
+	xhrRequestHeaderSupport bool
 )
 
 func init() {
 	xhrType = js.Global.Get("XDomainRequest")
 	if xhrType == js.Undefined {
 		xhrType = js.Global.Get("XMLHttpRequest")
+		xhrRequestHeaderSupport = true
 	}
 }
 
@@ -64,6 +66,11 @@ func XHR(url string, data string, timeout Duration) (channel chan string, err er
 	})
 
 	request.Call("open", method, url)
+
+	if data != "" && xhrRequestHeaderSupport {
+		request.Call("setRequestHeader", "Content-Type", "application/json")
+	}
+
 	request.Call("send", data)
 
 	return

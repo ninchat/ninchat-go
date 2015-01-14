@@ -2130,7 +2130,7 @@ $packages["sort"] = (function() {
 	return $pkg;
 })();
 $packages["ninchatclient"] = (function() {
-	var $pkg = {}, errors, js, sort, sliceType, mapType, sliceType$1, ptrType, funcType, ptrType$1, chanType, funcType$1, funcType$2, funcType$3, ptrType$2, sliceType$2, funcType$4, chanType$1, ptrType$3, sliceType$3, funcType$5, funcType$6, funcType$7, funcType$8, funcType$9, ptrType$4, ptrType$5, funcType$10, funcType$11, sliceType$4, sliceType$5, chanType$2, ptrType$6, ptrType$7, Action, Backoff, Deferred, Transport, Session, Time, Duration, Timer, WebSocket, module, sessionEventAckWindow, xhrType, GetAddress, GetEndpointHosts, GetSessionEventCredentials, GetEventFrames, GetEventAndActionId, IsEventLastReply, GetEventError, Call, Jitter, JitterDuration, JitterUint64, jsError, jsInvoke, Atob, ParseDataURI, NewArray, NewArrayBuffer, NewUint8Array, NewObject, ParseJSON, StringifyJSON, Random, SetTimeout, ClearTimeout, Log, LongPollTransport, longPollTransfer, longPollPing, longPollClose, main, Defer, NewSession, Now, NewTimer, Sleep, NewWebSocket, StringifyFrame, WebSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive, init, XHR, XHR_JSON;
+	var $pkg = {}, errors, js, sort, sliceType, mapType, sliceType$1, ptrType, funcType, ptrType$1, chanType, funcType$1, funcType$2, funcType$3, ptrType$2, sliceType$2, funcType$4, chanType$1, ptrType$3, sliceType$3, funcType$5, funcType$6, funcType$7, funcType$8, funcType$9, ptrType$4, ptrType$5, funcType$10, funcType$11, sliceType$4, sliceType$5, chanType$2, ptrType$6, ptrType$7, Action, Backoff, Deferred, Transport, Session, Time, Duration, Timer, WebSocket, module, sessionEventAckWindow, xhrType, xhrRequestHeaderSupport, GetAddress, GetEndpointHosts, GetSessionEventCredentials, GetEventFrames, GetEventAndActionId, IsEventLastReply, GetEventError, Call, Jitter, JitterDuration, JitterUint64, jsError, jsInvoke, Atob, ParseDataURI, NewArray, NewArrayBuffer, NewUint8Array, NewObject, ParseJSON, StringifyJSON, Random, SetTimeout, ClearTimeout, Log, LongPollTransport, longPollTransfer, longPollPing, longPollClose, main, Defer, NewSession, Now, NewTimer, Sleep, NewWebSocket, StringifyFrame, WebSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive, init, XHR, XHR_JSON;
 	errors = $packages["errors"];
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	sort = $packages["sort"];
@@ -3792,6 +3792,7 @@ $packages["ninchatclient"] = (function() {
 		xhrType = $global.XDomainRequest;
 		if (xhrType === undefined) {
 			xhrType = $global.XMLHttpRequest;
+			xhrRequestHeaderSupport = true;
 		}
 	};
 	XHR = $pkg.XHR = function(url, data, timeout) {
@@ -3839,6 +3840,9 @@ $packages["ninchatclient"] = (function() {
 			}), []);
 		}), funcType);
 		request.open($externalize(method, $String), $externalize(url, $String));
+		if (!(data === "") && xhrRequestHeaderSupport) {
+			request.setRequestHeader($externalize("Content-Type", $String), $externalize("application/json", $String));
+		}
 		request.send($externalize(data, $String));
 		return [channel, err];
 		/* */ } catch(err) { $err = err; } finally { $deferFrames.pop(); $callDeferred($deferred, $err); return [channel, err]; }
@@ -3902,6 +3906,7 @@ $packages["ninchatclient"] = (function() {
 		ptrType$5.methods = [["Close", "Close", "", $funcType([], [$error], false), -1], ["Receive", "Receive", "", $funcType([], [js.Object, $error], false), -1], ["ReceiveJSON", "ReceiveJSON", "", $funcType([], [js.Object, $error], false), -1], ["Send", "Send", "", $funcType([$emptyInterface], [$error], false), -1], ["SendJSON", "SendJSON", "", $funcType([$emptyInterface], [$error], false), -1]];
 		WebSocket.init([["Notify", "Notify", "", chanType$1, ""], ["impl", "impl", "ninchatclient", js.Object, ""], ["open", "open", "ninchatclient", $Bool, ""], ["error", "error", "ninchatclient", $error, ""], ["buffer", "buffer", "ninchatclient", sliceType$2, ""]]);
 		xhrType = null;
+		xhrRequestHeaderSupport = false;
 		module = NewObject();
 		sessionEventAckWindow = JitterUint64(new $Uint64(0, 4096), -0.25);
 		$pkg.WebSocketSupported = !($global.WebSocket === undefined);
