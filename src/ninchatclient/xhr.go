@@ -35,7 +35,6 @@ func XHR(url string, data string, timeout Duration) (channel chan string, err er
 	channel = make(chan string, 1)
 
 	request := xhrType.New()
-	request.Set("timeout", timeout)
 
 	request.Set("onload", func() {
 		var response string
@@ -66,6 +65,7 @@ func XHR(url string, data string, timeout Duration) (channel chan string, err er
 	})
 
 	request.Call("open", method, url)
+	request.Set("timeout", timeout)
 
 	if data != "" && xhrRequestHeaderSupport {
 		request.Call("setRequestHeader", "Content-Type", "application/json")

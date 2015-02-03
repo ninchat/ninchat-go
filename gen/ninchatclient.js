@@ -3809,7 +3809,6 @@ $packages["ninchatclient"] = (function() {
 		}
 		channel = new chanType$2(1);
 		request = new (xhrType)();
-		request.timeout = $externalize(timeout, Duration);
 		request.onload = $externalize((function() {
 			var obj, response;
 			response = "";
@@ -3840,6 +3839,7 @@ $packages["ninchatclient"] = (function() {
 			}), []);
 		}), funcType);
 		request.open($externalize(method, $String), $externalize(url, $String));
+		request.timeout = $externalize(timeout, Duration);
 		if (!(data === "") && xhrRequestHeaderSupport) {
 			request.setRequestHeader($externalize("Content-Type", $String), $externalize("application/json", $String));
 		}
