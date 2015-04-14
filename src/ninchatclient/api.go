@@ -142,7 +142,7 @@ func IsEventLastReply(header *js.Object, action *Action) (lastReply bool, err er
 		}
 	}
 
-	if action.name == "search" {
+	if action.Name() == "search" {
 		users := header.Get("users")
 		channels := header.Get("channels")
 

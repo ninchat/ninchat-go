@@ -2527,7 +2527,7 @@ $packages["ninchatclient"] = (function() {
 				lastReply = false;
 			}
 		}
-		if (action.name === "search") {
+		if (action.Name() === "search") {
 			users = header.users;
 			channels = header.channels;
 			if (!(users === undefined) || !(channels === undefined)) {
