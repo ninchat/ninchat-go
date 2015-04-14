@@ -25,7 +25,7 @@ func Now() Time {
 type Timer struct {
 	C chan bool
 
-	id js.Object
+	id *js.Object
 }
 
 func NewTimer(timeout Duration) (timer *Timer) {

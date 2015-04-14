@@ -14,10 +14,10 @@ var (
 type WebSocket struct {
 	Notify chan bool
 
-	impl   js.Object
+	impl   *js.Object
 	open   bool
 	error  error
-	buffer []js.Object
+	buffer []*js.Object
 }
 
 // NewWebSocket
@@ -29,7 +29,7 @@ func NewWebSocket(url string) (ws *WebSocket) {
 
 	ws.impl.Set("binaryType", "arraybuffer")
 
-	ws.impl.Set("onopen", func(js.Object) {
+	ws.impl.Set("onopen", func(*js.Object) {
 		ws.open = true
 
 		go func() {
@@ -37,7 +37,7 @@ func NewWebSocket(url string) (ws *WebSocket) {
 		}()
 	})
 
-	ws.impl.Set("onmessage", func(object js.Object) {
+	ws.impl.Set("onmessage", func(object *js.Object) {
 		ws.buffer = append(ws.buffer, object.Get("data"))
 
 		go func() {
@@ -48,7 +48,7 @@ func NewWebSocket(url string) (ws *WebSocket) {
 		}()
 	})
 
-	ws.impl.Set("onclose", func(js.Object) {
+	ws.impl.Set("onclose", func(*js.Object) {
 		ws.open = false
 
 		go func() {
@@ -56,7 +56,7 @@ func NewWebSocket(url string) (ws *WebSocket) {
 		}()
 	})
 
-	ws.impl.Set("onerror", func(object js.Object) {
+	ws.impl.Set("onerror", func(object *js.Object) {
 		ws.error = errors.New("WebSocket error event")
 	})
 
@@ -89,7 +89,7 @@ func (ws *WebSocket) SendJSON(object interface{}) (err error) {
 }
 
 // Receive
-func (ws *WebSocket) Receive() (data js.Object, err error) {
+func (ws *WebSocket) Receive() (data *js.Object, err error) {
 	if err = ws.error; err != nil {
 		return
 	}
@@ -107,7 +107,7 @@ func (ws *WebSocket) Receive() (data js.Object, err error) {
 }
 
 // ReceiveJSON
-func (ws *WebSocket) ReceiveJSON() (object js.Object, err error) {
+func (ws *WebSocket) ReceiveJSON() (object *js.Object, err error) {
 	data, err := ws.Receive()
 	if err != nil || data == nil {
 		return
@@ -129,7 +129,7 @@ func (ws *WebSocket) Close() (err error) {
 }
 
 // StringifyFrame
-func StringifyFrame(data js.Object) (s string) {
+func StringifyFrame(data *js.Object) (s string) {
 	s, ok := data.Interface().(string)
 	if ok {
 		return

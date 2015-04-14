@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	xhrType                 js.Object
+	xhrType                 *js.Object
 	xhrRequestHeaderSupport bool
 )
 
@@ -40,7 +40,7 @@ func XHR(url string, data string, timeout Duration) (channel chan string, err er
 		var response string
 
 		if obj := request.Get("responseText"); obj != js.Undefined && obj != nil {
-			response = obj.Str()
+			response = obj.String()
 		}
 
 		go func() {

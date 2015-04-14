@@ -18,8 +18,8 @@ const (
 // Action
 type Action struct {
 	Id       uint64
-	Header   js.Object
-	Payload  js.Object
+	Header   *js.Object
+	Payload  *js.Object
 	Deferred *Deferred
 
 	name string
@@ -27,18 +27,18 @@ type Action struct {
 
 func (a *Action) Name() string {
 	if a.name == "" {
-		a.name = a.Header.Get("action").Str()
+		a.name = a.Header.Get("action").String()
 	}
 
 	return a.name
 }
 
 // GetAddress
-func GetAddress(address js.Object) string {
+func GetAddress(address *js.Object) string {
 	if address == js.Undefined || address == nil {
 		return defaultAddress
 	} else {
-		return address.Str()
+		return address.String()
 	}
 }
 
@@ -65,21 +65,21 @@ func GetEndpointHosts(response string) (hosts []string, err error) {
 	hosts = make([]string, jsHosts.Length())
 
 	for i := 0; i < jsHosts.Length(); i++ {
-		hosts[i] = jsHosts.Index(i).Str()
+		hosts[i] = jsHosts.Index(i).String()
 	}
 
 	return
 }
 
 // GetSessionEventCredentials
-func GetSessionEventCredentials(header js.Object) (userId, userAuth, sessionId js.Object, eventId uint64, ok bool, err error) {
+func GetSessionEventCredentials(header *js.Object) (userId, userAuth, sessionId *js.Object, eventId uint64, ok bool, err error) {
 	defer func() {
 		if e := jsError(recover()); e != nil {
 			err = e
 		}
 	}()
 
-	if header.Get("event").Str() != "session_created" {
+	if header.Get("event").String() != "session_created" {
 		return
 	}
 
@@ -97,7 +97,7 @@ func GetSessionEventCredentials(header js.Object) (userId, userAuth, sessionId j
 }
 
 // GetEventFrames
-func GetEventFrames(header js.Object) (frames int, err error) {
+func GetEventFrames(header *js.Object) (frames int, err error) {
 	defer func() {
 		err = jsError(recover())
 	}()
@@ -112,7 +112,7 @@ func GetEventFrames(header js.Object) (frames int, err error) {
 }
 
 // GetEventAndActionId
-func GetEventAndActionId(header js.Object) (eventId uint64, actionId uint64, err error) {
+func GetEventAndActionId(header *js.Object) (eventId uint64, actionId uint64, err error) {
 	defer func() {
 		err = jsError(recover())
 	}()
@@ -129,7 +129,7 @@ func GetEventAndActionId(header js.Object) (eventId uint64, actionId uint64, err
 }
 
 // IsEventLastReply
-func IsEventLastReply(header js.Object, action *Action) (lastReply bool, err error) {
+func IsEventLastReply(header *js.Object, action *Action) (lastReply bool, err error) {
 	defer func() {
 		err = jsError(recover())
 	}()
@@ -155,21 +155,21 @@ func IsEventLastReply(header js.Object, action *Action) (lastReply bool, err err
 }
 
 // GetEventError
-func GetEventError(header js.Object) (errorType, errorReason string, sessionLost bool, err error) {
+func GetEventError(header *js.Object) (errorType, errorReason string, sessionLost bool, err error) {
 	defer func() {
 		if e := jsError(recover()); e != nil {
 			err = e
 		}
 	}()
 
-	if header.Get("event").Str() != "error" {
+	if header.Get("event").String() != "error" {
 		return
 	}
 
-	errorType = header.Get("error_type").Str()
+	errorType = header.Get("error_type").String()
 
 	if object := header.Get("error_reason"); object != js.Undefined {
-		errorReason = object.Str()
+		errorReason = object.String()
 	}
 
 	switch errorType {

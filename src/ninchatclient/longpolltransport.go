@@ -104,12 +104,12 @@ func longPollTransfer(s *Session, url string, connWorked, gotOnline *bool) {
 			action := s.sendBuffer[s.numSent]
 
 			if action.Payload != nil {
-				var payload js.Object
+				var payload *js.Object
 				var err error
 
 				frame := action.Payload.Index(0)
 
-				if action.Header.Get("action").Str() == "update_user" {
+				if action.Header.Get("action").String() == "update_user" {
 					base64, err := ParseDataURI(frame)
 					if err != nil {
 						s.log("send:", err)
@@ -119,7 +119,7 @@ func longPollTransfer(s *Session, url string, connWorked, gotOnline *bool) {
 					payload = NewArray()
 					payload.Call("push", base64)
 				} else {
-					if payload, err = ParseJSON(frame.Str()); err != nil {
+					if payload, err = ParseJSON(frame.String()); err != nil {
 						s.log("send:", err)
 						return
 					}
@@ -193,7 +193,7 @@ func longPollTransfer(s *Session, url string, connWorked, gotOnline *bool) {
 			return
 		}
 
-		var array js.Object
+		var array *js.Object
 
 		if response != "" {
 			var err error

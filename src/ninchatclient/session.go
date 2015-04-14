@@ -34,15 +34,15 @@ type Transport func(s *Session, host string) (connWorked, gotOnline bool)
 
 // Session hides the details of Ninchat API connection management.
 type Session struct {
-	onSessionEvent js.Object
-	onEvent        js.Object
-	onConnState    js.Object
-	onConnActive   js.Object
-	onLog          js.Object
+	onSessionEvent *js.Object
+	onEvent        *js.Object
+	onConnState    *js.Object
+	onConnActive   *js.Object
+	onLog          *js.Object
 	address        string
 	forceLongPoll  bool
-	sessionParams  js.Object
-	sessionId      js.Object
+	sessionParams  *js.Object
+	sessionId      *js.Object
 
 	latestConnState  string
 	latestConnActive Time
@@ -84,18 +84,18 @@ func NewSession() map[string]interface{} {
 
 // OnSessionEvent implements the Session.onSessionEvent(function) JavaScript
 // API.
-func (s *Session) OnSessionEvent(callback js.Object) {
+func (s *Session) OnSessionEvent(callback *js.Object) {
 	s.onSessionEvent = callback
 }
 
 // OnEvent implements the Session.onEvent(function) JavaScript API.
-func (s *Session) OnEvent(callback js.Object) {
+func (s *Session) OnEvent(callback *js.Object) {
 	s.onEvent = callback
 }
 
 // OnConnState implements the Session.onConnState(function|null) JavaScript
 // API.
-func (s *Session) OnConnState(callback js.Object) {
+func (s *Session) OnConnState(callback *js.Object) {
 	if callback == nil {
 		callback = nil
 	}
@@ -109,7 +109,7 @@ func (s *Session) OnConnState(callback js.Object) {
 
 // OnConnActive implements the Session.onConnActive(function|null) JavaScript
 // API.
-func (s *Session) OnConnActive(callback js.Object) {
+func (s *Session) OnConnActive(callback *js.Object) {
 	if callback == nil {
 		callback = nil
 	}
@@ -122,7 +122,7 @@ func (s *Session) OnConnActive(callback js.Object) {
 }
 
 // OnLog implements the Session.onLog(function|null) JavaScript API.
-func (s *Session) OnLog(callback js.Object) {
+func (s *Session) OnLog(callback *js.Object) {
 	if callback == nil {
 		callback = nil
 	}
@@ -131,7 +131,7 @@ func (s *Session) OnLog(callback js.Object) {
 }
 
 // SetParams implements the Session.setParams(object) JavaScript API.
-func (s *Session) SetParams(params js.Object) {
+func (s *Session) SetParams(params *js.Object) {
 	if params.Get("message_types") == js.Undefined {
 		panic("message_types parameter not defined")
 	}
@@ -152,13 +152,13 @@ func (s *Session) SetParams(params js.Object) {
 
 // SetTransport implements the Session.setTransport(string|null) JavaScript
 // API.
-func (s *Session) SetTransport(name js.Object) {
+func (s *Session) SetTransport(name *js.Object) {
 	if name == nil {
 		s.forceLongPoll = false
 		return
 	}
 
-	switch string := name.Str(); string {
+	switch string := name.String(); string {
 	case "websocket":
 		panic("websocket transport cannot be forced")
 
@@ -171,7 +171,7 @@ func (s *Session) SetTransport(name js.Object) {
 }
 
 // SetAddress implements the Session.setAddress(string|null) JavaScript API.
-func (s *Session) SetAddress(address js.Object) {
+func (s *Session) SetAddress(address *js.Object) {
 	s.address = GetAddress(address)
 }
 
@@ -229,7 +229,7 @@ func (s *Session) Close() {
 }
 
 // Send implements the Session.send(object[, array]) JavaScript API.
-func (s *Session) Send(header, payload js.Object) (promise interface{}) {
+func (s *Session) Send(header, payload *js.Object) (promise interface{}) {
 	if s.sendNotify == nil {
 		panic("session not initialized")
 	}
@@ -402,7 +402,7 @@ func (s *Session) canLogin() bool {
 }
 
 // makeCreateSessionAction makes a create_session action header.
-func (s *Session) makeCreateSessionAction() (header js.Object) {
+func (s *Session) makeCreateSessionAction() (header *js.Object) {
 	header = s.sessionParams
 	header.Set("action", "create_session")
 
@@ -411,7 +411,7 @@ func (s *Session) makeCreateSessionAction() (header js.Object) {
 
 // makeResumeSessionAction makes a resume_session action header for
 // initializing new connections, or polling and acknowledging events.
-func (s *Session) makeResumeSessionAction(session bool) (header js.Object) {
+func (s *Session) makeResumeSessionAction(session bool) (header *js.Object) {
 	header = NewObject()
 	header.Set("action", "resume_session")
 	header.Set("event_id", s.receivedEventId)
@@ -427,7 +427,7 @@ func (s *Session) makeResumeSessionAction(session bool) (header js.Object) {
 }
 
 // handleSessionEvent establishes a session or fails.
-func (s *Session) handleSessionEvent(header js.Object) (ok bool) {
+func (s *Session) handleSessionEvent(header *js.Object) (ok bool) {
 	userId, userAuth, sessionId, eventId, ok, err := GetSessionEventCredentials(header)
 
 	if err != nil {
@@ -477,7 +477,7 @@ func (s *Session) handleSessionEvent(header js.Object) (ok bool) {
 
 // handleEvent parses the event header partially, does whatever is necessary,
 // and usually passes the event to client code.
-func (s *Session) handleEvent(header, payload js.Object) (actionId uint64, sessionLost, needsAck, ok bool) {
+func (s *Session) handleEvent(header, payload *js.Object) (actionId uint64, sessionLost, needsAck, ok bool) {
 	eventId, actionId, err := GetEventAndActionId(header)
 	if err != nil {
 		s.log("event:", err)

@@ -68,7 +68,7 @@ func WebSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 // webSocketHandshake creates or resumes a session, and runs I/O loops after
 // that.
 func webSocketHandshake(s *Session, ws *WebSocket) (gotOnline, hostHealthy bool) {
-	var header js.Object
+	var header *js.Object
 
 	if s.sessionId == nil {
 		s.log("session creation")
@@ -83,7 +83,7 @@ func webSocketHandshake(s *Session, ws *WebSocket) (gotOnline, hostHealthy bool)
 	}
 
 	if s.sessionId == nil {
-		var header js.Object
+		var header *js.Object
 
 		timer := NewTimer(JitterDuration(sessionCreateTimeout, 0.2))
 
@@ -180,7 +180,7 @@ func webSocketSend(s *Session, ws *WebSocket, fail chan bool, done chan<- bool) 
 				for i := 0; i < action.Payload.Length(); i++ {
 					frame := action.Payload.Index(i)
 
-					if action.Header.Get("action").Str() == "update_user" {
+					if action.Header.Get("action").String() == "update_user" {
 						if _, ok := frame.Interface().(string); ok {
 							base64, err := ParseDataURI(frame)
 							if err != nil {
@@ -268,8 +268,8 @@ func webSocketSend(s *Session, ws *WebSocket, fail chan bool, done chan<- bool) 
 // webSocketReceive receives events.  It stops if the server doesn't send
 // anything for some time.
 func webSocketReceive(s *Session, ws *WebSocket, fail chan bool) (gotEvents, hostHealthy bool) {
-	var header js.Object
-	var payload js.Object
+	var header *js.Object
+	var payload *js.Object
 	var frames int
 
 	watchdog := NewTimer(JitterDuration(minReceiveTimeout, 0.3))

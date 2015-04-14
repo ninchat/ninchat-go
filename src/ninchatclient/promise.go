@@ -12,9 +12,9 @@ const (
 
 // Deferred
 type Deferred struct {
-	resolve []js.Object
-	reject  []js.Object
-	notify  []js.Object
+	resolve []*js.Object
+	reject  []*js.Object
+	notify  []*js.Object
 }
 
 // Defer
@@ -30,7 +30,7 @@ func Defer() (d *Deferred, promise map[string]interface{}) {
 
 // then implements the Promise.then(function|null[, function|null[,
 // function|null]]) JavaScript API.
-func (d *Deferred) then(resolve, reject, notify js.Object) {
+func (d *Deferred) then(resolve, reject, notify *js.Object) {
 	if resolve != js.Undefined && resolve != nil {
 		d.resolve = append(d.resolve, resolve)
 	}

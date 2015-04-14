@@ -5,7 +5,7 @@ import (
 )
 
 // Log passes a log message to a callback, if a callback is defined.
-func Log(logInvocationName string, onLog js.Object, tokens ...interface{}) {
+func Log(logInvocationName string, onLog *js.Object, tokens ...interface{}) {
 	if onLog == js.Undefined || onLog == nil {
 		return
 	}
