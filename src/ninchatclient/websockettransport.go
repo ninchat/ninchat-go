@@ -54,12 +54,18 @@ func WebSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 			connectTimer.Stop()
 		}
 
+		goingAway := ws.GoingAway
+
 		ws.Close()
 		ws = nil
 
-		s.log("disconnected")
+		if goingAway {
+			s.log("disconnected (server is going away)")
+		} else {
+			s.log("disconnected")
+		}
 
-		if !gotOnline || !hostHealthy || s.stopped {
+		if !gotOnline || !hostHealthy || s.stopped || goingAway {
 			return
 		}
 	}

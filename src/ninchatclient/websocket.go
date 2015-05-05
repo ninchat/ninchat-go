@@ -12,7 +12,8 @@ var (
 
 // WebSocket
 type WebSocket struct {
-	Notify chan bool
+	Notify    chan bool
+	GoingAway bool
 
 	impl   *js.Object
 	open   bool
@@ -48,7 +49,8 @@ func NewWebSocket(url string) (ws *WebSocket) {
 		}()
 	})
 
-	ws.impl.Set("onclose", func(*js.Object) {
+	ws.impl.Set("onclose", func(object *js.Object) {
+		ws.GoingAway = object.Get("code").Int() == 1001
 		ws.open = false
 
 		go func() {

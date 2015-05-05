@@ -2347,10 +2347,11 @@ $packages["ninchatclient"] = (function() {
 		this.C = C_;
 		this.id = id_;
 	});
-	WebSocket = $pkg.WebSocket = $newType(0, $kindStruct, "main.WebSocket", "WebSocket", "ninchatclient", function(Notify_, impl_, open_, error_, buffer_) {
+	WebSocket = $pkg.WebSocket = $newType(0, $kindStruct, "main.WebSocket", "WebSocket", "ninchatclient", function(Notify_, GoingAway_, impl_, open_, error_, buffer_) {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.Notify = chanType$1.nil;
+			this.GoingAway = false;
 			this.impl = null;
 			this.open = false;
 			this.error = $ifaceNil;
@@ -2358,6 +2359,7 @@ $packages["ninchatclient"] = (function() {
 			return;
 		}
 		this.Notify = Notify_;
+		this.GoingAway = GoingAway_;
 		this.impl = impl_;
 		this.open = open_;
 		this.error = error_;
@@ -3865,7 +3867,7 @@ $packages["ninchatclient"] = (function() {
 	NewWebSocket = function(url) {
 		var $ptr, url, ws;
 		ws = ptrType$6.nil;
-		ws = new WebSocket.ptr(new chanType$1(1), new ($global.WebSocket)($externalize(url, $String)), false, $ifaceNil, sliceType$2.nil);
+		ws = new WebSocket.ptr(new chanType$1(1), false, new ($global.WebSocket)($externalize(url, $String)), false, $ifaceNil, sliceType$2.nil);
 		ws.impl.binaryType = $externalize("arraybuffer", $String);
 		ws.impl.onopen = $externalize((function(param) {
 			var $ptr, param;
@@ -3887,8 +3889,9 @@ $packages["ninchatclient"] = (function() {
 				/* */ if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._selection = _selection; $f.$r = $r; return $f;
 			}), []);
 		}), funcType$5);
-		ws.impl.onclose = $externalize((function(param) {
-			var $ptr, param;
+		ws.impl.onclose = $externalize((function(object) {
+			var $ptr, object;
+			ws.GoingAway = ($parseInt(object.code) >> 0) === 1001;
 			ws.open = false;
 			$go((function() {
 				var $ptr;
@@ -3993,8 +3996,8 @@ $packages["ninchatclient"] = (function() {
 	};
 	$pkg.StringifyFrame = StringifyFrame;
 	WebSocketTransport = function(s, host) {
-		var $ptr, _r, _r$1, _selection, _tuple, connWorked, connectTimer, connected, gotOnline, host, hostHealthy, s, ws, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _selection = $f._selection; _tuple = $f._tuple; connWorked = $f.connWorked; connectTimer = $f.connectTimer; connected = $f.connected; gotOnline = $f.gotOnline; host = $f.host; hostHealthy = $f.hostHealthy; s = $f.s; ws = $f.ws; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		var $ptr, _r, _r$1, _selection, _tuple, connWorked, connectTimer, connected, goingAway, gotOnline, host, hostHealthy, s, ws, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _selection = $f._selection; _tuple = $f._tuple; connWorked = $f.connWorked; connectTimer = $f.connectTimer; connected = $f.connected; goingAway = $f.goingAway; gotOnline = $f.gotOnline; host = $f.host; hostHealthy = $f.hostHealthy; s = $f.s; ws = $f.ws; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		ws = [ws];
 		connWorked = false;
 		gotOnline = false;
@@ -4041,14 +4044,22 @@ $packages["ninchatclient"] = (function() {
 			/* } else if (_selection[0] === 2) { */ case 7:
 				connectTimer.Stop();
 			/* } */ case 8:
+			goingAway = ws[0].GoingAway;
 			ws[0].Close();
 			ws[0] = ptrType$6.nil;
-			$r = s.log(new sliceType$1([new $String("disconnected")])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			if (!gotOnline || !hostHealthy || s.stopped) {
+			/* */ if (goingAway) { $s = 17; continue; }
+			/* */ $s = 18; continue;
+			/* if (goingAway) { */ case 17:
+				$r = s.log(new sliceType$1([new $String("disconnected (server is going away)")])); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = 19; continue;
+			/* } else { */ case 18:
+				$r = s.log(new sliceType$1([new $String("disconnected")])); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 19:
+			if (!gotOnline || !hostHealthy || s.stopped || goingAway) {
 				return [connWorked, gotOnline];
 			}
 		/* } */ $s = 1; continue; case 2:
-		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [connWorked, gotOnline]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: WebSocketTransport }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._selection = _selection; $f._tuple = _tuple; $f.connWorked = connWorked; $f.connectTimer = connectTimer; $f.connected = connected; $f.gotOnline = gotOnline; $f.host = host; $f.hostHealthy = hostHealthy; $f.s = s; $f.ws = ws; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [connWorked, gotOnline]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: WebSocketTransport }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._selection = _selection; $f._tuple = _tuple; $f.connWorked = connWorked; $f.connectTimer = connectTimer; $f.connected = connected; $f.goingAway = goingAway; $f.gotOnline = gotOnline; $f.host = host; $f.hostHealthy = hostHealthy; $f.s = s; $f.ws = ws; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	$pkg.WebSocketTransport = WebSocketTransport;
 	webSocketHandshake = function(s, ws) {
@@ -4518,7 +4529,7 @@ $packages["ninchatclient"] = (function() {
 	Transport.init([ptrType$8, $String], [$Bool, $Bool], false);
 	Session.init([{prop: "onSessionEvent", name: "onSessionEvent", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "onEvent", name: "onEvent", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "onConnState", name: "onConnState", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "onConnActive", name: "onConnActive", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "onLog", name: "onLog", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "address", name: "address", pkg: "ninchatclient", typ: $String, tag: ""}, {prop: "forceLongPoll", name: "forceLongPoll", pkg: "ninchatclient", typ: $Bool, tag: ""}, {prop: "sessionParams", name: "sessionParams", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "sessionId", name: "sessionId", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "latestConnState", name: "latestConnState", pkg: "ninchatclient", typ: $String, tag: ""}, {prop: "latestConnActive", name: "latestConnActive", pkg: "ninchatclient", typ: Time, tag: ""}, {prop: "lastActionId", name: "lastActionId", pkg: "ninchatclient", typ: $Uint64, tag: ""}, {prop: "sendNotify", name: "sendNotify", pkg: "ninchatclient", typ: chanType$1, tag: ""}, {prop: "sendBuffer", name: "sendBuffer", pkg: "ninchatclient", typ: sliceType$3, tag: ""}, {prop: "numSent", name: "numSent", pkg: "ninchatclient", typ: $Int, tag: ""}, {prop: "sendEventAck", name: "sendEventAck", pkg: "ninchatclient", typ: $Bool, tag: ""}, {prop: "receivedEventId", name: "receivedEventId", pkg: "ninchatclient", typ: $Uint64, tag: ""}, {prop: "ackedEventId", name: "ackedEventId", pkg: "ninchatclient", typ: $Uint64, tag: ""}, {prop: "closeNotify", name: "closeNotify", pkg: "ninchatclient", typ: chanType$1, tag: ""}, {prop: "closed", name: "closed", pkg: "ninchatclient", typ: $Bool, tag: ""}, {prop: "stopped", name: "stopped", pkg: "ninchatclient", typ: $Bool, tag: ""}]);
 	Timer.init([{prop: "C", name: "C", pkg: "", typ: chanType$1, tag: ""}, {prop: "id", name: "id", pkg: "ninchatclient", typ: ptrType$2, tag: ""}]);
-	WebSocket.init([{prop: "Notify", name: "Notify", pkg: "", typ: chanType$1, tag: ""}, {prop: "impl", name: "impl", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "open", name: "open", pkg: "ninchatclient", typ: $Bool, tag: ""}, {prop: "error", name: "error", pkg: "ninchatclient", typ: $error, tag: ""}, {prop: "buffer", name: "buffer", pkg: "ninchatclient", typ: sliceType$2, tag: ""}]);
+	WebSocket.init([{prop: "Notify", name: "Notify", pkg: "", typ: chanType$1, tag: ""}, {prop: "GoingAway", name: "GoingAway", pkg: "", typ: $Bool, tag: ""}, {prop: "impl", name: "impl", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "open", name: "open", pkg: "ninchatclient", typ: $Bool, tag: ""}, {prop: "error", name: "error", pkg: "ninchatclient", typ: $error, tag: ""}, {prop: "buffer", name: "buffer", pkg: "ninchatclient", typ: sliceType$2, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
