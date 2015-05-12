@@ -41,7 +41,7 @@ type Session struct {
 	onLog          *js.Object
 	address        string
 	forceLongPoll  bool
-	sessionParams  *js.Object
+	sessionParams  map[string]*js.Object
 	sessionId      *js.Object
 
 	latestConnState  string
@@ -131,16 +131,16 @@ func (s *Session) OnLog(callback *js.Object) {
 }
 
 // SetParams implements the Session.setParams(object) JavaScript API.
-func (s *Session) SetParams(params *js.Object) {
-	if params.Get("message_types") == js.Undefined {
+func (s *Session) SetParams(params map[string]*js.Object) {
+	if params["message_types"] == nil {
 		panic("message_types parameter not defined")
 	}
 
-	if sessionId := params.Get("session_id"); sessionId != js.Undefined && sessionId != nil {
+	if sessionId := params["session_id"]; sessionId != nil {
 		s.sessionId = sessionId
 	}
 
-	params.Delete("session_id")
+	delete(params, "session_id")
 
 	s.sessionParams = params
 
@@ -378,33 +378,58 @@ func (s *Session) connect(transport Transport, hosts []string, backoff *Backoff)
 // The answer is no if the action could succeed, but would create a new
 // user.
 func (s *Session) canLogin() bool {
-	if value := s.sessionParams.Get("access_key"); value != js.Undefined && value != nil {
+	if s.sessionParams["access_key"] != nil {
 		return true
 	}
 
-	if value := s.sessionParams.Get("user_id"); value != js.Undefined && value != nil {
-		for _, key := range []string{"user_auth", "master_sign"} {
-			if value := s.sessionParams.Get(key); value != js.Undefined && value != nil {
-				return true
-			}
-		}
-
-		return false
+	if s.sessionParams["user_id"] != nil {
+		return s.sessionParams["user_auth"] != nil || s.sessionParams["master_sign"] != nil
 	}
 
-	for _, key := range []string{"identity_type", "identity_name", "identity_auth"} {
-		if value := s.sessionParams.Get(key); value == js.Undefined || value == nil {
-			return false
-		}
-	}
-
-	return true
+	return s.sessionParams["identity_type"] != nil && s.sessionParams["identity_name"] != nil && s.sessionParams["identity_auth"] != nil
 }
 
 // makeCreateSessionAction makes a create_session action header.
 func (s *Session) makeCreateSessionAction() (header *js.Object) {
-	header = s.sessionParams
+	header = NewObject()
 	header.Set("action", "create_session")
+
+	if userId := s.sessionParams["user_id"]; userId == nil {
+		// Client code is responsible for specifying correct parameters.
+
+		for key, value := range s.sessionParams {
+			header.Set(key, value)
+		}
+	} else {
+		// This might be automatic session recreation, try to be smart.
+
+		if userAuth := s.sessionParams["user_auth"]; userAuth != nil {
+			header.Set("user_id", userId)
+			header.Set("user_auth", userAuth)
+		} else if masterSign := s.sessionParams["master_sign"]; masterSign != nil {
+			header.Set("user_id", userId)
+			header.Set("master_sign", masterSign)
+		} else if identityType := s.sessionParams["identity_type"]; identityType != nil {
+			header.Set("identity_type", identityType)
+			header.Set("identity_name", s.sessionParams["identity_name"])
+			header.Set("identity_auth", s.sessionParams["identity_auth"])
+		} else {
+			// Fallback: let the server decide.  (But still make sure that we
+			// won't be creating a new user by accident.)
+
+			header.Set("user_id", userId)
+		}
+
+		for key, value := range s.sessionParams {
+			switch key {
+			case "user_id", "user_auth", "identity_type", "identity_name", "identity_auth", "access_key", "master_sign":
+				// skipped
+
+			default:
+				header.Set(key, value)
+			}
+		}
+	}
 
 	return
 }
@@ -444,20 +469,24 @@ func (s *Session) handleSessionEvent(header *js.Object) (ok bool) {
 		return
 	}
 
-	s.sessionParams.Set("user_id", userId)
+	delete(s.sessionParams, "user_attrs")
+	delete(s.sessionParams, "user_settings")
+	delete(s.sessionParams, "identity_attrs")
+	delete(s.sessionParams, "access_key")
+	delete(s.sessionParams, "master_sign")
+
+	s.sessionParams["user_id"] = userId
 
 	if userAuth != nil {
-		s.sessionParams.Set("user_auth", userAuth)
+		s.sessionParams["user_auth"] = userAuth
 	}
 
 	for _, param := range []string{"identity_type", "identity_name", "identity_auth"} {
-		if newValue := s.sessionParams.Get(param + "_new"); newValue != js.Undefined {
-			s.sessionParams.Set(param, newValue)
+		if newValue := s.sessionParams[param+"_new"]; newValue != nil {
+			delete(s.sessionParams, param+"_new")
+			s.sessionParams[param] = newValue
 		}
 	}
-
-	s.sessionParams.Delete("access_key")
-	s.sessionParams.Delete("master_sign")
 
 	s.sessionId = sessionId
 
