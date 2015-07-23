@@ -1,10 +1,3 @@
 /bin/
 /pkg/
-/src/github.com/inconshreveable/mousetrap/
-/src/github.com/kardianos/osext/
-/src/github.com/neelance/sourcemap/
-/src/github.com/spf13/cobra/
-/src/github.com/spf13/pflag/
-/src/golang.org/x/crypto/
-/src/golang.org/x/tools/
-/src/gopkg.in/fsnotify.v1/
+/src/
