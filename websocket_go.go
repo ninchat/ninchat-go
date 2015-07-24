@@ -5,6 +5,7 @@ package ninchat
 import (
 	"crypto/tls"
 	"encoding/json"
+	"strings"
 	"sync"
 	"time"
 
@@ -53,7 +54,8 @@ func newWebSocket(url string, timeout duration) (ws *webSocket) {
 			)
 
 			if typ, data, ws.err = ws.conn.ReadMessage(); ws.err != nil {
-				// TODO: goingAway
+				// XXX: this will break eventually
+				ws.goingAway = strings.HasPrefix(ws.err.Error(), "websocket: close 1001 ")
 				return
 			}
 
@@ -69,6 +71,7 @@ func newWebSocket(url string, timeout duration) (ws *webSocket) {
 				}
 
 			default:
+				// XXX: is this possible?
 			}
 		}
 	}()
