@@ -4,7 +4,6 @@ package ninchat
 
 import (
 	"crypto/tls"
-	"encoding/base64"
 	"encoding/json"
 	"sync"
 	"time"
@@ -85,13 +84,13 @@ func (ws *webSocket) sendJSON(object interface{}) error {
 	return ws.conn.WriteJSON(object)
 }
 
-func (ws *webSocket) base64Send(s string) (err error) {
-	data, err := base64.StdEncoding.DecodeString(s)
-	if err != nil {
-		return
+func (ws *webSocket) sendPayload(action *Action) (err error) {
+	for _, data := range action.Payload {
+		if err = ws.send(data); err != nil {
+			return
+		}
 	}
-
-	return ws.send(data)
+	return
 }
 
 func (ws *webSocket) receive() (data []byte) {

@@ -116,21 +116,29 @@ func (ws *webSocket) sendJSON(object map[string]interface{}) (err error) {
 	return
 }
 
-func (ws *webSocket) base64Send(s string) (err error) {
+func (ws *webSocket) sendPayload(action *Action) (err error) {
 	defer func() {
 		err = jsError(recover())
 	}()
 
-	string := js.Global.Call("atob", s)
-	length := string.Length()
-	buffer := js.Global.Get("ArrayBuffer").New(length)
-	array := js.Global.Get("Uint8Array").New(buffer)
+	decodeDataURI := (action.String() == "update_user")
 
-	for i := 0; i < length; i++ {
-		array.SetIndex(i, string.Call("charCodeAt", i))
+	for _, data := range action.Payload {
+		if decodeDataURI {
+			base64 := data.Call("split", ",").Index(1)
+			binaryString := js.Global.Call("atob", base64)
+			length := binaryString.Length()
+			data = js.Global.Get("ArrayBuffer").New(length)
+			array := js.Global.Get("Uint8Array").New(data)
+
+			for i := 0; i < length; i++ {
+				array.SetIndex(i, binaryString.Call("charCodeAt", i))
+			}
+		}
+
+		ws.impl.Call("send", data)
 	}
 
-	ws.impl.Call("send", buffer)
 	return
 }
 

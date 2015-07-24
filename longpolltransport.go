@@ -87,16 +87,12 @@ func longPollTransfer(s *Session, url string, connWorked, gotOnline *bool) {
 			action := s.sendBuffer[s.numSent]
 
 			if action.Payload != nil {
-				frame := action.Payload[0]
-
 				if action.String() == "update_user" {
-					action.Params["payload"] = []interface{}{
-						parseDataURI(dataString(frame)),
-					}
+					action.Params["payload"] = longPollBinaryPayload(action)
 				} else {
 					var object map[string]interface{}
 
-					if err := jsonUnmarshalObject(frame, &object); err != nil {
+					if err := jsonUnmarshalObject(action.Payload[0], &object); err != nil {
 						s.log("send:", err)
 						return
 					}

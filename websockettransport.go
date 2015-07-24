@@ -169,20 +169,10 @@ func webSocketSend(s *Session, ws *webSocket, fail chan struct{}, done chan<- st
 			}
 
 			if action.Payload != nil {
-				for _, frame := range action.Payload {
-					var err error
-
-					if action.String() == "update_user" {
-						err = ws.base64Send(parseDataURI(dataString(frame)))
-					} else {
-						err = ws.send(frame)
-					}
-
-					if err != nil {
-						s.log("send:", err)
-						fail <- struct{}{}
-						return
-					}
+				if err := ws.sendPayload(action); err != nil {
+					s.log("send:", err)
+					fail <- struct{}{}
+					return
 				}
 			}
 
