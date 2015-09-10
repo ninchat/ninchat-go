@@ -5,7 +5,6 @@ package ninchat
 import (
 	"crypto/tls"
 	"encoding/json"
-	"strings"
 	"sync"
 	"time"
 
@@ -54,8 +53,9 @@ func newWebSocket(url string, timeout duration) (ws *webSocket) {
 			)
 
 			if typ, data, ws.err = ws.conn.ReadMessage(); ws.err != nil {
-				// XXX: this will break eventually
-				ws.goingAway = strings.HasPrefix(ws.err.Error(), "websocket: close 1001 ")
+				if err, ok := ws.err.(*websocket.CloseError); ok {
+					ws.goingAway = (err.Code == websocket.CloseGoingAway)
+				}
 				return
 			}
 
