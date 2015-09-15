@@ -313,6 +313,13 @@ func (s *Session) connect(transport transport, hosts []string, backoff *backoff)
 		for _, host := range hosts {
 			s.connState("connecting")
 
+			for i, c := range s.Address {
+				if c == '/' {
+					host += s.Address[i:]
+					break
+				}
+			}
+
 			//gopherjs:blocking
 			connWorked, gotOnline := transport(s, host)
 
