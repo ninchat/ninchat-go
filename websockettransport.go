@@ -77,6 +77,7 @@ func webSocketHandshake(s *Session, ws *webSocket) (gotOnline, hostHealthy bool)
 	if s.sessionId == nil {
 		var params map[string]interface{}
 
+		connected := true
 		timer := newTimer(jitterDuration(sessionCreateTimeout, 0.2))
 
 		for {
@@ -91,13 +92,14 @@ func webSocketHandshake(s *Session, ws *webSocket) (gotOnline, hostHealthy bool)
 				break
 			}
 
+			if !connected {
+				s.log("disconnected during session creation:", ws.err)
+				timer.Stop()
+				return
+			}
+
 			select {
-			case _, connected := <-ws.notify:
-				if !connected {
-					s.log("disconnected during session creation:", ws.err)
-					timer.Stop()
-					return
-				}
+			case _, connected = <-ws.notify:
 
 			case <-timer.C:
 				s.log("session creation timeout")

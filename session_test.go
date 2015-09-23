@@ -11,18 +11,10 @@ var messageData = []byte("{\"text\":\"hello\"}")
 
 var imageData = []byte("\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x00\x00\x00\x00:~\x9bU\x00\x00\x00\nIDAT\x08\xd7c`\x00\x00\x00\x02\x00\x01\xe2!\xbc3\x00\x00\x00\x00IEND\xaeB`\x82")
 
-func TestSession(t *testing.T) {
-	testSession(t, "")
-}
+func openSession(t *testing.T, transport string, params map[string]interface{}) (session *ninchat.Session, events chan *ninchat.Event) {
+	events = make(chan *ninchat.Event, 10)
 
-func TestSessionLongpoll(t *testing.T) {
-	testSession(t, "longpoll")
-}
-
-func testSession(t *testing.T, transport string) {
-	events := make(chan *ninchat.Event, 10)
-
-	session := &ninchat.Session{
+	session = &ninchat.Session{
 		OnSessionEvent: func(event *ninchat.Event) {
 			t.Log("SESSION EVENT:", event.Params)
 			events <- event
@@ -46,15 +38,28 @@ func testSession(t *testing.T, transport string) {
 		},
 	}
 
-	session.SetParams(map[string]interface{}{
+	session.SetParams(params)
+	session.SetTransport(transport)
+	session.Open()
+	return
+}
+
+func TestSession(t *testing.T) {
+	testSession(t, "")
+}
+
+func TestSessionLongpoll(t *testing.T) {
+	testSession(t, "longpoll")
+}
+
+func testSession(t *testing.T, transport string) {
+	params := map[string]interface{}{
 		"message_types": []string{
 			"*",
 		},
-	})
+	}
 
-	session.SetTransport(transport)
-
-	session.Open()
+	session, events := openSession(t, transport, params)
 	defer session.Close()
 
 	var (
@@ -115,5 +120,34 @@ func testSession(t *testing.T, transport string) {
 		case "user_deleted":
 			return
 		}
+	}
+}
+
+func TestLoginFailure(t *testing.T) {
+	testLoginFailure(t, "")
+}
+
+func TestLoginFailureLongpoll(t *testing.T) {
+	testLoginFailure(t, "longpoll")
+}
+
+func testLoginFailure(t *testing.T, transport string) {
+	params := map[string]interface{}{
+		"identity_type": "email",
+		"identity_name": "nonexistent@example.invalid",
+		"identity_auth": "asdf",
+		"message_types": []string{},
+	}
+
+	session, events := openSession(t, transport, params)
+	defer session.Close()
+
+	event := <-events
+	if event.String() == "error" {
+		if errorType, _ := event.Str("error_type"); errorType != "identity_not_found" {
+			t.Error(errorType)
+		}
+	} else {
+		t.Error(event.String())
 	}
 }

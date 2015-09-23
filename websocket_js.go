@@ -63,7 +63,9 @@ func newWebSocket(url string, timeout duration) (ws *webSocket) {
 		ws.open = true
 
 		go func() {
-			ws.notify <- struct{}{}
+			if !notifyClosed {
+				ws.notify <- struct{}{}
+			}
 		}()
 	})
 
@@ -71,9 +73,11 @@ func newWebSocket(url string, timeout duration) (ws *webSocket) {
 		ws.buf = append(ws.buf, object.Get("data"))
 
 		go func() {
-			select {
-			case ws.notify <- struct{}{}:
-			default:
+			if !notifyClosed {
+				select {
+				case ws.notify <- struct{}{}:
+				default:
+				}
 			}
 		}()
 	})
