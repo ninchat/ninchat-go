@@ -37,14 +37,15 @@ func newWebSocket(url string, timeout duration) (ws *webSocket) {
 		notify: make(chan struct{}, 1),
 	}
 
+	if ws.conn, _, ws.err = dialer.Dial(url, nil); ws.err != nil {
+		close(ws.notify)
+		return
+	}
+
+	ws.notify <- struct{}{}
+
 	go func() {
 		defer close(ws.notify)
-
-		if ws.conn, _, ws.err = dialer.Dial(url, nil); ws.err != nil {
-			return
-		}
-
-		ws.notify <- struct{}{}
 
 		for {
 			var (
@@ -119,5 +120,7 @@ func (ws *webSocket) receiveJSON() (object map[string]interface{}, err error) {
 }
 
 func (ws *webSocket) close() {
-	ws.conn.Close()
+	if ws.conn != nil {
+		ws.conn.Close()
+	}
 }
