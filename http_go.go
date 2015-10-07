@@ -32,16 +32,15 @@ func getResponseData(req *httpRequest, timeout duration) (data []byte, err error
 	}
 
 	resp, err := client.Do((*http.Request)(req))
+	if err != nil {
+		return
+	}
 
 	if resp.Body != nil {
 		defer resp.Body.Close()
 	}
 
-	if err == nil {
-		data, err = ioutil.ReadAll(resp.Body)
-	}
-
-	return
+	return ioutil.ReadAll(resp.Body)
 }
 
 func putResponseToChannel(req *httpRequest, timeout duration, c chan<- httpResponse) {
