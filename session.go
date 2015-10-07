@@ -106,6 +106,7 @@ func (s *Session) SetParams(params map[string]interface{}) {
 
 	if s.sendNotify != nil && !s.running {
 		// opened + stopped -> restart
+		s.running = true
 		go s.discover()
 	}
 }
