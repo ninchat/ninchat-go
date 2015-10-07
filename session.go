@@ -47,6 +47,13 @@ type Session struct {
 	//
 	OnEvent func(*Event)
 
+	// OnClose is an optional session closure handler.  It will be invoked
+	// after a Close call has been fully processed.  It won't be invoked if an
+	// "error" event is received via OnSessionEvent (unless SetParams is called
+	// again).
+	//
+	OnClose func()
+
 	// OnConnState is an optional connection state change monitor.  It will be
 	// called with one of the following strings:
 	//
@@ -252,6 +259,13 @@ func (s *Session) sendAck() {
 func (s *Session) discover() {
 	s.log("opening")
 	defer s.log("closed")
+
+	defer func() {
+		if s.closed && s.OnClose != nil {
+			s.OnClose()
+		}
+	}()
+
 	defer s.connState("disconnected")
 
 	var backoff backoff
