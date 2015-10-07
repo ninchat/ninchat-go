@@ -312,11 +312,8 @@ func (s *Session) discover() {
 			return
 		}
 
-		if delay := backoff.failure(maxBackoffDelay); delay > 0 {
-			s.log("sleeping")
-			s.connState("disconnected")
-
-			sleep(delay)
+		if !s.backOff(&backoff) {
+			return
 		}
 	}
 }
@@ -351,13 +348,32 @@ func (s *Session) connect(transport transport, hosts []string, backoff *backoff)
 				return
 			}
 
-			if delay := backoff.failure(maxBackoffDelay); delay > 0 {
-				s.log("sleeping")
-				s.connState("disconnected")
-
-				sleep(delay)
+			if !s.backOff(backoff) {
+				return
 			}
 		}
+	}
+
+	return
+}
+
+// backOff sleeps for a time.  False is returned if session was closed while
+// sleeping.
+func (s *Session) backOff(b *backoff) (ok bool) {
+	delay := b.failure(maxBackoffDelay)
+	if delay == 0 {
+		ok = true
+		return
+	}
+
+	s.log("sleeping")
+	s.connState("disconnected")
+
+	select {
+	case <-newTimer(delay).C:
+		ok = true
+
+	case <-s.closeNotify:
 	}
 
 	return

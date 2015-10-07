@@ -39,7 +39,3 @@ func (timer *timer) Stop() {
 	timer.impl.Stop()
 	timer.impl = nil
 }
-
-func sleep(delay duration) {
-	time.Sleep(time.Duration(delay))
-}

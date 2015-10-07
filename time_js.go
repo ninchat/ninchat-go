@@ -52,7 +52,3 @@ func (timer *timer) Stop() {
 		timer.id = nil
 	}
 }
-
-func sleep(delay duration) {
-	<-newTimer(delay).C
-}
