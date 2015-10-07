@@ -6,7 +6,7 @@ PYTHON	:= python
 
 export GOPATH
 
-check: check-client check-api check-message
+check: check-client check-api check-message check-model
 
 check-client: check-client-go check-client-js
 
@@ -30,6 +30,11 @@ check-message:
 	$(GO) vet ./ninchatmessage
 	$(GO) test -v ./ninchatmessage
 
+check-model:
+	$(GOFMT) -d -s ninchatmodel/*.go
+	$(GO) vet ./ninchatmodel
+	$(GO) test -v ./ninchatmodel
+
 bin/gopherjs:
 	$(GO) get github.com/gopherjs/gopherjs
 	$(GO) build -o bin/gopherjs github.com/gopherjs/gopherjs
@@ -42,4 +47,4 @@ api:
 clean:
 	rm -rf bin pkg
 
-.PHONY: check check-client check-client-go check-client-js check-api check-message api clean
+.PHONY: check check-client check-client-go check-client-js check-api check-message check-model api clean
