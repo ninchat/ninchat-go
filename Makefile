@@ -8,9 +8,9 @@ check: check-go check-js
 
 check-go:
 	$(GO) get github.com/gorilla/websocket
-	$(GOFMT) -d -s *.go
-	$(GO) vet .
-	$(GO) test -v .
+	$(GOFMT) -d -s *.go ninchat*/*.go
+	$(GO) vet . ./ninchatmessage
+	$(GO) test -v . ./ninchatmessage
 
 check-js: bin/gopherjs
 	bin/gopherjs build
