@@ -8,15 +8,15 @@ import (
 	"encoding/json"
 )
 
-// Message is implemented by all message types in this package.
-type Message interface {
+// Content is implemented by all message types in this package.
+type Content interface {
 	MessageType() string
 	Marshal() (payload [][]byte, err error)
 	Unmarshal(payload [][]byte) error
 }
 
-func marshalJSON(m Message) (payload [][]byte, err error) {
-	data, err := json.Marshal(m)
+func marshalJSON(c Content) (payload [][]byte, err error) {
+	data, err := json.Marshal(c)
 	if err == nil {
 		payload = [][]byte{data}
 	}
