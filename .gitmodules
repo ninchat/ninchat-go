@@ -1,0 +1,3 @@
+[submodule "src/github.com/ninchat/ninchat-python"]
+	path = src/github.com/ninchat/ninchat-python
+	url = https://github.com/ninchat/ninchat-python.git

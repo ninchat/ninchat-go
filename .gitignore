@@ -1,3 +1,14 @@
 /bin/
 /pkg/
-/src/
+/src/github.com/cpuguy83/
+/src/github.com/dgrijalva/
+/src/github.com/gopherjs/
+/src/github.com/gorilla/
+/src/github.com/inconshreveable/
+/src/github.com/kardianos/
+/src/github.com/neelance/
+/src/github.com/russross/
+/src/github.com/shurcooL/
+/src/github.com/spf13/
+/src/golang.org/
+/src/gopkg.in/
