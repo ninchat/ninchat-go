@@ -172,7 +172,7 @@ def print_header():
 
 def print_action(action):
 	print
-	print '// {} holds parameters for the `{}` action.'.format(title(action.name), action.name)
+	print '// {} action.'.format(title(action.name), action.name)
 	print 'type {} struct {{'.format(title(action.name))
 
 	action_id = action.params.get("action_id")
@@ -232,8 +232,8 @@ def print_action(action):
 	reply = unaryreplies[action.name]
 	if reply:
 		print
-		print '// Call the `{}` action synchronously.'.format(action.name)
-		print 'func (action *{}) Call(session *ninchat.Session) (reply *{}, err error) {{'.format(title(action.name), title(reply))
+		print '// Invoke the action synchronously.'.format(action.name)
+		print 'func (action *{}) Invoke(session *ninchat.Session) (reply *{}, err error) {{'.format(title(action.name), title(reply))
 		print '  var buf {}'.format(title(reply))
 		print
 		print '  ok, err := unaryCall(session, action, &buf)'
@@ -250,7 +250,7 @@ def print_action(action):
 
 def print_event(event):
 	print
-	print '// {} event parameters.'.format(title(event.name))
+	print '// {} event.'.format(title(event.name))
 	print 'type {} struct {{'.format(title(event.name))
 
 	print_params(event.params, require=True)
@@ -325,7 +325,6 @@ def print_init_params(params, require, objfmt="{}"):
 
 def print_attrs(attrs, objectname, commentname):
 	print
-	print '// {}Attrs holds {} attributes.'.format(objectname, commentname)
 	print 'type {}Attrs struct {{'.format(objectname)
 
 	for _, a in sorted(attrs.items()):

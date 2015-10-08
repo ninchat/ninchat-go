@@ -6,7 +6,7 @@ package ninchatapi
 import "errors"
 import ninchat ".."
 
-// AcceptAudience holds parameters for the `accept_audience` action.
+// AcceptAudience action.
 type AcceptAudience struct {
 	QueueId *string `json:"queue_id,omitempty"`
 }
@@ -31,8 +31,8 @@ func (action *AcceptAudience) newClientAction() (clientAction *ninchat.Action, e
 	return
 }
 
-// Call the `accept_audience` action synchronously.
-func (action *AcceptAudience) Call(session *ninchat.Session) (reply *DialogueUpdated, err error) {
+// Invoke the action synchronously.
+func (action *AcceptAudience) Invoke(session *ninchat.Session) (reply *DialogueUpdated, err error) {
 	var buf DialogueUpdated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -47,7 +47,7 @@ func (action *AcceptAudience) Call(session *ninchat.Session) (reply *DialogueUpd
 	return nil, nil
 }
 
-// AddMember holds parameters for the `add_member` action.
+// AddMember action.
 type AddMember struct {
 	QueueId *string `json:"queue_id,omitempty"`
 	UserId  *string `json:"user_id,omitempty"`
@@ -79,8 +79,8 @@ func (action *AddMember) newClientAction() (clientAction *ninchat.Action, err er
 	return
 }
 
-// Call the `add_member` action synchronously.
-func (action *AddMember) Call(session *ninchat.Session) (reply *MemberJoined, err error) {
+// Invoke the action synchronously.
+func (action *AddMember) Invoke(session *ninchat.Session) (reply *MemberJoined, err error) {
 	var buf MemberJoined
 
 	ok, err := unaryCall(session, action, &buf)
@@ -95,7 +95,7 @@ func (action *AddMember) Call(session *ninchat.Session) (reply *MemberJoined, er
 	return nil, nil
 }
 
-// CloseSession holds parameters for the `close_session` action.
+// CloseSession action.
 type CloseSession struct {
 }
 
@@ -114,7 +114,7 @@ func (action *CloseSession) newClientAction() (clientAction *ninchat.Action, err
 	return
 }
 
-// CreateAccess holds parameters for the `create_access` action.
+// CreateAccess action.
 type CreateAccess struct {
 	AccessType  *string `json:"access_type,omitempty"`
 	ChannelId   *string `json:"channel_id,omitempty"`
@@ -154,8 +154,8 @@ func (action *CreateAccess) newClientAction() (clientAction *ninchat.Action, err
 	return
 }
 
-// Call the `create_access` action synchronously.
-func (action *CreateAccess) Call(session *ninchat.Session) (reply *AccessCreated, err error) {
+// Invoke the action synchronously.
+func (action *CreateAccess) Invoke(session *ninchat.Session) (reply *AccessCreated, err error) {
 	var buf AccessCreated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -170,7 +170,7 @@ func (action *CreateAccess) Call(session *ninchat.Session) (reply *AccessCreated
 	return nil, nil
 }
 
-// CreateChannel holds parameters for the `create_channel` action.
+// CreateChannel action.
 type CreateChannel struct {
 	ChannelAttrs *ChannelAttrs `json:"channel_attrs,omitempty"`
 	RealmId      *string       `json:"realm_id,omitempty"`
@@ -198,8 +198,8 @@ func (action *CreateChannel) newClientAction() (clientAction *ninchat.Action, er
 	return
 }
 
-// Call the `create_channel` action synchronously.
-func (action *CreateChannel) Call(session *ninchat.Session) (reply *ChannelJoined, err error) {
+// Invoke the action synchronously.
+func (action *CreateChannel) Invoke(session *ninchat.Session) (reply *ChannelJoined, err error) {
 	var buf ChannelJoined
 
 	ok, err := unaryCall(session, action, &buf)
@@ -214,7 +214,7 @@ func (action *CreateChannel) Call(session *ninchat.Session) (reply *ChannelJoine
 	return nil, nil
 }
 
-// CreateIdentity holds parameters for the `create_identity` action.
+// CreateIdentity action.
 type CreateIdentity struct {
 	IdentityAttrs   *IdentityAttrs `json:"identity_attrs,omitempty"`
 	IdentityAuthNew *string        `json:"identity_auth_new,omitempty"`
@@ -256,8 +256,8 @@ func (action *CreateIdentity) newClientAction() (clientAction *ninchat.Action, e
 	return
 }
 
-// Call the `create_identity` action synchronously.
-func (action *CreateIdentity) Call(session *ninchat.Session) (reply *IdentityCreated, err error) {
+// Invoke the action synchronously.
+func (action *CreateIdentity) Invoke(session *ninchat.Session) (reply *IdentityCreated, err error) {
 	var buf IdentityCreated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -272,7 +272,7 @@ func (action *CreateIdentity) Call(session *ninchat.Session) (reply *IdentityCre
 	return nil, nil
 }
 
-// CreateMasterKey holds parameters for the `create_master_key` action.
+// CreateMasterKey action.
 type CreateMasterKey struct {
 }
 
@@ -290,8 +290,8 @@ func (action *CreateMasterKey) newClientAction() (clientAction *ninchat.Action, 
 	return
 }
 
-// Call the `create_master_key` action synchronously.
-func (action *CreateMasterKey) Call(session *ninchat.Session) (reply *MasterKeyCreated, err error) {
+// Invoke the action synchronously.
+func (action *CreateMasterKey) Invoke(session *ninchat.Session) (reply *MasterKeyCreated, err error) {
 	var buf MasterKeyCreated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -306,7 +306,7 @@ func (action *CreateMasterKey) Call(session *ninchat.Session) (reply *MasterKeyC
 	return nil, nil
 }
 
-// CreateQueue holds parameters for the `create_queue` action.
+// CreateQueue action.
 type CreateQueue struct {
 	QueueAttrs *QueueAttrs `json:"queue_attrs,omitempty"`
 	RealmId    *string     `json:"realm_id,omitempty"`
@@ -338,8 +338,8 @@ func (action *CreateQueue) newClientAction() (clientAction *ninchat.Action, err 
 	return
 }
 
-// Call the `create_queue` action synchronously.
-func (action *CreateQueue) Call(session *ninchat.Session) (reply *QueueCreated, err error) {
+// Invoke the action synchronously.
+func (action *CreateQueue) Invoke(session *ninchat.Session) (reply *QueueCreated, err error) {
 	var buf QueueCreated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -354,7 +354,7 @@ func (action *CreateQueue) Call(session *ninchat.Session) (reply *QueueCreated, 
 	return nil, nil
 }
 
-// CreateRealm holds parameters for the `create_realm` action.
+// CreateRealm action.
 type CreateRealm struct {
 	ChannelAttrs *ChannelAttrs `json:"channel_attrs,omitempty"`
 	RealmAttrs   *RealmAttrs   `json:"realm_attrs,omitempty"`
@@ -382,8 +382,8 @@ func (action *CreateRealm) newClientAction() (clientAction *ninchat.Action, err 
 	return
 }
 
-// Call the `create_realm` action synchronously.
-func (action *CreateRealm) Call(session *ninchat.Session) (reply *RealmJoined, err error) {
+// Invoke the action synchronously.
+func (action *CreateRealm) Invoke(session *ninchat.Session) (reply *RealmJoined, err error) {
 	var buf RealmJoined
 
 	ok, err := unaryCall(session, action, &buf)
@@ -398,7 +398,7 @@ func (action *CreateRealm) Call(session *ninchat.Session) (reply *RealmJoined, e
 	return nil, nil
 }
 
-// DeleteIdentity holds parameters for the `delete_identity` action.
+// DeleteIdentity action.
 type DeleteIdentity struct {
 	IdentityAuth *string `json:"identity_auth,omitempty"`
 	IdentityName *string `json:"identity_name,omitempty"`
@@ -435,8 +435,8 @@ func (action *DeleteIdentity) newClientAction() (clientAction *ninchat.Action, e
 	return
 }
 
-// Call the `delete_identity` action synchronously.
-func (action *DeleteIdentity) Call(session *ninchat.Session) (reply *IdentityDeleted, err error) {
+// Invoke the action synchronously.
+func (action *DeleteIdentity) Invoke(session *ninchat.Session) (reply *IdentityDeleted, err error) {
 	var buf IdentityDeleted
 
 	ok, err := unaryCall(session, action, &buf)
@@ -451,7 +451,7 @@ func (action *DeleteIdentity) Call(session *ninchat.Session) (reply *IdentityDel
 	return nil, nil
 }
 
-// DeleteMasterKey holds parameters for the `delete_master_key` action.
+// DeleteMasterKey action.
 type DeleteMasterKey struct {
 	MasterKeyId     *string `json:"master_key_id,omitempty"`
 	MasterKeySecret *string `json:"master_key_secret,omitempty"`
@@ -486,8 +486,8 @@ func (action *DeleteMasterKey) newClientAction() (clientAction *ninchat.Action, 
 	return
 }
 
-// Call the `delete_master_key` action synchronously.
-func (action *DeleteMasterKey) Call(session *ninchat.Session) (reply *MasterKeyDeleted, err error) {
+// Invoke the action synchronously.
+func (action *DeleteMasterKey) Invoke(session *ninchat.Session) (reply *MasterKeyDeleted, err error) {
 	var buf MasterKeyDeleted
 
 	ok, err := unaryCall(session, action, &buf)
@@ -502,7 +502,7 @@ func (action *DeleteMasterKey) Call(session *ninchat.Session) (reply *MasterKeyD
 	return nil, nil
 }
 
-// DeleteQueue holds parameters for the `delete_queue` action.
+// DeleteQueue action.
 type DeleteQueue struct {
 	QueueId *string `json:"queue_id,omitempty"`
 }
@@ -527,8 +527,8 @@ func (action *DeleteQueue) newClientAction() (clientAction *ninchat.Action, err 
 	return
 }
 
-// Call the `delete_queue` action synchronously.
-func (action *DeleteQueue) Call(session *ninchat.Session) (reply *QueueDeleted, err error) {
+// Invoke the action synchronously.
+func (action *DeleteQueue) Invoke(session *ninchat.Session) (reply *QueueDeleted, err error) {
 	var buf QueueDeleted
 
 	ok, err := unaryCall(session, action, &buf)
@@ -543,7 +543,7 @@ func (action *DeleteQueue) Call(session *ninchat.Session) (reply *QueueDeleted, 
 	return nil, nil
 }
 
-// DeleteRealm holds parameters for the `delete_realm` action.
+// DeleteRealm action.
 type DeleteRealm struct {
 	RealmId *string `json:"realm_id,omitempty"`
 }
@@ -568,8 +568,8 @@ func (action *DeleteRealm) newClientAction() (clientAction *ninchat.Action, err 
 	return
 }
 
-// Call the `delete_realm` action synchronously.
-func (action *DeleteRealm) Call(session *ninchat.Session) (reply *RealmDeleted, err error) {
+// Invoke the action synchronously.
+func (action *DeleteRealm) Invoke(session *ninchat.Session) (reply *RealmDeleted, err error) {
 	var buf RealmDeleted
 
 	ok, err := unaryCall(session, action, &buf)
@@ -584,7 +584,7 @@ func (action *DeleteRealm) Call(session *ninchat.Session) (reply *RealmDeleted, 
 	return nil, nil
 }
 
-// DeleteUser holds parameters for the `delete_user` action.
+// DeleteUser action.
 type DeleteUser struct {
 	UserAuth *string `json:"user_auth,omitempty"`
 }
@@ -609,8 +609,8 @@ func (action *DeleteUser) newClientAction() (clientAction *ninchat.Action, err e
 	return
 }
 
-// Call the `delete_user` action synchronously.
-func (action *DeleteUser) Call(session *ninchat.Session) (reply *UserDeleted, err error) {
+// Invoke the action synchronously.
+func (action *DeleteUser) Invoke(session *ninchat.Session) (reply *UserDeleted, err error) {
 	var buf UserDeleted
 
 	ok, err := unaryCall(session, action, &buf)
@@ -625,7 +625,7 @@ func (action *DeleteUser) Call(session *ninchat.Session) (reply *UserDeleted, er
 	return nil, nil
 }
 
-// DescribeAccess holds parameters for the `describe_access` action.
+// DescribeAccess action.
 type DescribeAccess struct {
 	ActionIdDisabled bool
 	AccessKey        *string `json:"access_key,omitempty"`
@@ -655,8 +655,8 @@ func (action *DescribeAccess) newClientAction() (clientAction *ninchat.Action, e
 	return
 }
 
-// Call the `describe_access` action synchronously.
-func (action *DescribeAccess) Call(session *ninchat.Session) (reply *AccessFound, err error) {
+// Invoke the action synchronously.
+func (action *DescribeAccess) Invoke(session *ninchat.Session) (reply *AccessFound, err error) {
 	var buf AccessFound
 
 	ok, err := unaryCall(session, action, &buf)
@@ -671,7 +671,7 @@ func (action *DescribeAccess) Call(session *ninchat.Session) (reply *AccessFound
 	return nil, nil
 }
 
-// DescribeChannel holds parameters for the `describe_channel` action.
+// DescribeChannel action.
 type DescribeChannel struct {
 	ChannelId *string `json:"channel_id,omitempty"`
 }
@@ -696,8 +696,8 @@ func (action *DescribeChannel) newClientAction() (clientAction *ninchat.Action, 
 	return
 }
 
-// Call the `describe_channel` action synchronously.
-func (action *DescribeChannel) Call(session *ninchat.Session) (reply *ChannelFound, err error) {
+// Invoke the action synchronously.
+func (action *DescribeChannel) Invoke(session *ninchat.Session) (reply *ChannelFound, err error) {
 	var buf ChannelFound
 
 	ok, err := unaryCall(session, action, &buf)
@@ -712,7 +712,7 @@ func (action *DescribeChannel) Call(session *ninchat.Session) (reply *ChannelFou
 	return nil, nil
 }
 
-// DescribeIdentity holds parameters for the `describe_identity` action.
+// DescribeIdentity action.
 type DescribeIdentity struct {
 	IdentityName *string `json:"identity_name,omitempty"`
 	IdentityType *string `json:"identity_type,omitempty"`
@@ -744,8 +744,8 @@ func (action *DescribeIdentity) newClientAction() (clientAction *ninchat.Action,
 	return
 }
 
-// Call the `describe_identity` action synchronously.
-func (action *DescribeIdentity) Call(session *ninchat.Session) (reply *IdentityFound, err error) {
+// Invoke the action synchronously.
+func (action *DescribeIdentity) Invoke(session *ninchat.Session) (reply *IdentityFound, err error) {
 	var buf IdentityFound
 
 	ok, err := unaryCall(session, action, &buf)
@@ -760,7 +760,7 @@ func (action *DescribeIdentity) Call(session *ninchat.Session) (reply *IdentityF
 	return nil, nil
 }
 
-// DescribeMaster holds parameters for the `describe_master` action.
+// DescribeMaster action.
 type DescribeMaster struct {
 }
 
@@ -778,8 +778,8 @@ func (action *DescribeMaster) newClientAction() (clientAction *ninchat.Action, e
 	return
 }
 
-// Call the `describe_master` action synchronously.
-func (action *DescribeMaster) Call(session *ninchat.Session) (reply *MasterFound, err error) {
+// Invoke the action synchronously.
+func (action *DescribeMaster) Invoke(session *ninchat.Session) (reply *MasterFound, err error) {
 	var buf MasterFound
 
 	ok, err := unaryCall(session, action, &buf)
@@ -794,7 +794,7 @@ func (action *DescribeMaster) Call(session *ninchat.Session) (reply *MasterFound
 	return nil, nil
 }
 
-// DescribeQueue holds parameters for the `describe_queue` action.
+// DescribeQueue action.
 type DescribeQueue struct {
 	QueueId *string `json:"queue_id,omitempty"`
 }
@@ -819,8 +819,8 @@ func (action *DescribeQueue) newClientAction() (clientAction *ninchat.Action, er
 	return
 }
 
-// Call the `describe_queue` action synchronously.
-func (action *DescribeQueue) Call(session *ninchat.Session) (reply *QueueFound, err error) {
+// Invoke the action synchronously.
+func (action *DescribeQueue) Invoke(session *ninchat.Session) (reply *QueueFound, err error) {
 	var buf QueueFound
 
 	ok, err := unaryCall(session, action, &buf)
@@ -835,7 +835,7 @@ func (action *DescribeQueue) Call(session *ninchat.Session) (reply *QueueFound, 
 	return nil, nil
 }
 
-// DescribeRealm holds parameters for the `describe_realm` action.
+// DescribeRealm action.
 type DescribeRealm struct {
 	RealmId *string `json:"realm_id,omitempty"`
 }
@@ -860,8 +860,8 @@ func (action *DescribeRealm) newClientAction() (clientAction *ninchat.Action, er
 	return
 }
 
-// Call the `describe_realm` action synchronously.
-func (action *DescribeRealm) Call(session *ninchat.Session) (reply *RealmFound, err error) {
+// Invoke the action synchronously.
+func (action *DescribeRealm) Invoke(session *ninchat.Session) (reply *RealmFound, err error) {
 	var buf RealmFound
 
 	ok, err := unaryCall(session, action, &buf)
@@ -876,7 +876,7 @@ func (action *DescribeRealm) Call(session *ninchat.Session) (reply *RealmFound, 
 	return nil, nil
 }
 
-// DescribeRealmQueues holds parameters for the `describe_realm_queues` action.
+// DescribeRealmQueues action.
 type DescribeRealmQueues struct {
 	RealmId *string `json:"realm_id,omitempty"`
 }
@@ -901,8 +901,8 @@ func (action *DescribeRealmQueues) newClientAction() (clientAction *ninchat.Acti
 	return
 }
 
-// Call the `describe_realm_queues` action synchronously.
-func (action *DescribeRealmQueues) Call(session *ninchat.Session) (reply *RealmQueuesFound, err error) {
+// Invoke the action synchronously.
+func (action *DescribeRealmQueues) Invoke(session *ninchat.Session) (reply *RealmQueuesFound, err error) {
 	var buf RealmQueuesFound
 
 	ok, err := unaryCall(session, action, &buf)
@@ -917,7 +917,7 @@ func (action *DescribeRealmQueues) Call(session *ninchat.Session) (reply *RealmQ
 	return nil, nil
 }
 
-// DescribeUser holds parameters for the `describe_user` action.
+// DescribeUser action.
 type DescribeUser struct {
 	UserId *string `json:"user_id,omitempty"`
 }
@@ -940,8 +940,8 @@ func (action *DescribeUser) newClientAction() (clientAction *ninchat.Action, err
 	return
 }
 
-// Call the `describe_user` action synchronously.
-func (action *DescribeUser) Call(session *ninchat.Session) (reply *UserFound, err error) {
+// Invoke the action synchronously.
+func (action *DescribeUser) Invoke(session *ninchat.Session) (reply *UserFound, err error) {
 	var buf UserFound
 
 	ok, err := unaryCall(session, action, &buf)
@@ -956,7 +956,7 @@ func (action *DescribeUser) Call(session *ninchat.Session) (reply *UserFound, er
 	return nil, nil
 }
 
-// DiscardHistory holds parameters for the `discard_history` action.
+// DiscardHistory action.
 type DiscardHistory struct {
 	MessageId *string `json:"message_id,omitempty"`
 	UserId    *string `json:"user_id,omitempty"`
@@ -988,8 +988,8 @@ func (action *DiscardHistory) newClientAction() (clientAction *ninchat.Action, e
 	return
 }
 
-// Call the `discard_history` action synchronously.
-func (action *DiscardHistory) Call(session *ninchat.Session) (reply *HistoryDiscarded, err error) {
+// Invoke the action synchronously.
+func (action *DiscardHistory) Invoke(session *ninchat.Session) (reply *HistoryDiscarded, err error) {
 	var buf HistoryDiscarded
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1004,7 +1004,7 @@ func (action *DiscardHistory) Call(session *ninchat.Session) (reply *HistoryDisc
 	return nil, nil
 }
 
-// FollowChannel holds parameters for the `follow_channel` action.
+// FollowChannel action.
 type FollowChannel struct {
 	AccessKey *string `json:"access_key,omitempty"`
 	ChannelId *string `json:"channel_id,omitempty"`
@@ -1032,8 +1032,8 @@ func (action *FollowChannel) newClientAction() (clientAction *ninchat.Action, er
 	return
 }
 
-// Call the `follow_channel` action synchronously.
-func (action *FollowChannel) Call(session *ninchat.Session) (reply *ChannelFound, err error) {
+// Invoke the action synchronously.
+func (action *FollowChannel) Invoke(session *ninchat.Session) (reply *ChannelFound, err error) {
 	var buf ChannelFound
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1048,7 +1048,7 @@ func (action *FollowChannel) Call(session *ninchat.Session) (reply *ChannelFound
 	return nil, nil
 }
 
-// JoinChannel holds parameters for the `join_channel` action.
+// JoinChannel action.
 type JoinChannel struct {
 	AccessKey   *string     `json:"access_key,omitempty"`
 	ChannelId   *string     `json:"channel_id,omitempty"`
@@ -1086,8 +1086,8 @@ func (action *JoinChannel) newClientAction() (clientAction *ninchat.Action, err 
 	return
 }
 
-// Call the `join_channel` action synchronously.
-func (action *JoinChannel) Call(session *ninchat.Session) (reply *ChannelJoined, err error) {
+// Invoke the action synchronously.
+func (action *JoinChannel) Invoke(session *ninchat.Session) (reply *ChannelJoined, err error) {
 	var buf ChannelJoined
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1102,7 +1102,7 @@ func (action *JoinChannel) Call(session *ninchat.Session) (reply *ChannelJoined,
 	return nil, nil
 }
 
-// LoadHistory holds parameters for the `load_history` action.
+// LoadHistory action.
 type LoadHistory struct {
 	ChannelId       *string  `json:"channel_id,omitempty"`
 	FilterProperty  *string  `json:"filter_property,omitempty"`
@@ -1160,7 +1160,7 @@ func (action *LoadHistory) newClientAction() (clientAction *ninchat.Action, err 
 	return
 }
 
-// PartChannel holds parameters for the `part_channel` action.
+// PartChannel action.
 type PartChannel struct {
 	ChannelId *string `json:"channel_id,omitempty"`
 }
@@ -1185,8 +1185,8 @@ func (action *PartChannel) newClientAction() (clientAction *ninchat.Action, err 
 	return
 }
 
-// Call the `part_channel` action synchronously.
-func (action *PartChannel) Call(session *ninchat.Session) (reply *ChannelParted, err error) {
+// Invoke the action synchronously.
+func (action *PartChannel) Invoke(session *ninchat.Session) (reply *ChannelParted, err error) {
 	var buf ChannelParted
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1201,7 +1201,7 @@ func (action *PartChannel) Call(session *ninchat.Session) (reply *ChannelParted,
 	return nil, nil
 }
 
-// Ping holds parameters for the `ping` action.
+// Ping action.
 type Ping struct {
 	ActionIdDisabled bool
 }
@@ -1224,8 +1224,8 @@ func (action *Ping) newClientAction() (clientAction *ninchat.Action, err error) 
 	return
 }
 
-// Call the `ping` action synchronously.
-func (action *Ping) Call(session *ninchat.Session) (reply *Pong, err error) {
+// Invoke the action synchronously.
+func (action *Ping) Invoke(session *ninchat.Session) (reply *Pong, err error) {
 	var buf Pong
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1240,7 +1240,7 @@ func (action *Ping) Call(session *ninchat.Session) (reply *Pong, err error) {
 	return nil, nil
 }
 
-// RemoveMember holds parameters for the `remove_member` action.
+// RemoveMember action.
 type RemoveMember struct {
 	ChannelId *string `json:"channel_id,omitempty"`
 	QueueId   *string `json:"queue_id,omitempty"`
@@ -1280,8 +1280,8 @@ func (action *RemoveMember) newClientAction() (clientAction *ninchat.Action, err
 	return
 }
 
-// Call the `remove_member` action synchronously.
-func (action *RemoveMember) Call(session *ninchat.Session) (reply *MemberParted, err error) {
+// Invoke the action synchronously.
+func (action *RemoveMember) Invoke(session *ninchat.Session) (reply *MemberParted, err error) {
 	var buf MemberParted
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1296,7 +1296,7 @@ func (action *RemoveMember) Call(session *ninchat.Session) (reply *MemberParted,
 	return nil, nil
 }
 
-// RequestAudience holds parameters for the `request_audience` action.
+// RequestAudience action.
 type RequestAudience struct {
 	AudienceMetadata map[string]interface{} `json:"audience_metadata,omitempty"`
 	QueueId          *string                `json:"queue_id,omitempty"`
@@ -1326,8 +1326,8 @@ func (action *RequestAudience) newClientAction() (clientAction *ninchat.Action, 
 	return
 }
 
-// Call the `request_audience` action synchronously.
-func (action *RequestAudience) Call(session *ninchat.Session) (reply *AudienceEnqueued, err error) {
+// Invoke the action synchronously.
+func (action *RequestAudience) Invoke(session *ninchat.Session) (reply *AudienceEnqueued, err error) {
 	var buf AudienceEnqueued
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1342,7 +1342,7 @@ func (action *RequestAudience) Call(session *ninchat.Session) (reply *AudienceEn
 	return nil, nil
 }
 
-// RequestIdentityAuthResetAccess holds parameters for the `request_identity_auth_reset_access` action.
+// RequestIdentityAuthResetAccess action.
 type RequestIdentityAuthResetAccess struct {
 	ActionIdDisabled bool
 	IdentityName     *string `json:"identity_name,omitempty"`
@@ -1379,8 +1379,8 @@ func (action *RequestIdentityAuthResetAccess) newClientAction() (clientAction *n
 	return
 }
 
-// Call the `request_identity_auth_reset_access` action synchronously.
-func (action *RequestIdentityAuthResetAccess) Call(session *ninchat.Session) (reply *AccessCreated, err error) {
+// Invoke the action synchronously.
+func (action *RequestIdentityAuthResetAccess) Invoke(session *ninchat.Session) (reply *AccessCreated, err error) {
 	var buf AccessCreated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1395,7 +1395,7 @@ func (action *RequestIdentityAuthResetAccess) Call(session *ninchat.Session) (re
 	return nil, nil
 }
 
-// RequestIdentityVerifyAccess holds parameters for the `request_identity_verify_access` action.
+// RequestIdentityVerifyAccess action.
 type RequestIdentityVerifyAccess struct {
 	ActionIdDisabled bool
 	IdentityName     *string `json:"identity_name,omitempty"`
@@ -1432,8 +1432,8 @@ func (action *RequestIdentityVerifyAccess) newClientAction() (clientAction *ninc
 	return
 }
 
-// Call the `request_identity_verify_access` action synchronously.
-func (action *RequestIdentityVerifyAccess) Call(session *ninchat.Session) (reply *AccessCreated, err error) {
+// Invoke the action synchronously.
+func (action *RequestIdentityVerifyAccess) Invoke(session *ninchat.Session) (reply *AccessCreated, err error) {
 	var buf AccessCreated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1448,7 +1448,7 @@ func (action *RequestIdentityVerifyAccess) Call(session *ninchat.Session) (reply
 	return nil, nil
 }
 
-// ResetIdentityAuth holds parameters for the `reset_identity_auth` action.
+// ResetIdentityAuth action.
 type ResetIdentityAuth struct {
 	AccessKey       *string `json:"access_key,omitempty"`
 	IdentityAuthNew *string `json:"identity_auth_new,omitempty"`
@@ -1481,8 +1481,8 @@ func (action *ResetIdentityAuth) newClientAction() (clientAction *ninchat.Action
 	return
 }
 
-// Call the `reset_identity_auth` action synchronously.
-func (action *ResetIdentityAuth) Call(session *ninchat.Session) (reply *IdentityUpdated, err error) {
+// Invoke the action synchronously.
+func (action *ResetIdentityAuth) Invoke(session *ninchat.Session) (reply *IdentityUpdated, err error) {
 	var buf IdentityUpdated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1497,7 +1497,7 @@ func (action *ResetIdentityAuth) Call(session *ninchat.Session) (reply *Identity
 	return nil, nil
 }
 
-// ResumeSession holds parameters for the `resume_session` action.
+// ResumeSession action.
 type ResumeSession struct {
 }
 
@@ -1516,7 +1516,7 @@ func (action *ResumeSession) newClientAction() (clientAction *ninchat.Action, er
 	return
 }
 
-// Search holds parameters for the `search` action.
+// Search action.
 type Search struct {
 	SearchTerm *string `json:"search_term,omitempty"`
 }
@@ -1541,7 +1541,7 @@ func (action *Search) newClientAction() (clientAction *ninchat.Action, err error
 	return
 }
 
-// SendAccess holds parameters for the `send_access` action.
+// SendAccess action.
 type SendAccess struct {
 	AccessKey    *string `json:"access_key,omitempty"`
 	IdentityName *string `json:"identity_name,omitempty"`
@@ -1579,8 +1579,8 @@ func (action *SendAccess) newClientAction() (clientAction *ninchat.Action, err e
 	return
 }
 
-// Call the `send_access` action synchronously.
-func (action *SendAccess) Call(session *ninchat.Session) (reply *AccessFound, err error) {
+// Invoke the action synchronously.
+func (action *SendAccess) Invoke(session *ninchat.Session) (reply *AccessFound, err error) {
 	var buf AccessFound
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1595,7 +1595,7 @@ func (action *SendAccess) Call(session *ninchat.Session) (reply *AccessFound, er
 	return nil, nil
 }
 
-// SendMessage holds parameters for the `send_message` action.
+// SendMessage action.
 type SendMessage struct {
 	ActionIdDisabled    bool
 	ChannelId           *string  `json:"channel_id,omitempty"`
@@ -1662,8 +1662,8 @@ func (action *SendMessage) newClientAction() (clientAction *ninchat.Action, err 
 	return
 }
 
-// Call the `send_message` action synchronously.
-func (action *SendMessage) Call(session *ninchat.Session) (reply *MessageReceived, err error) {
+// Invoke the action synchronously.
+func (action *SendMessage) Invoke(session *ninchat.Session) (reply *MessageReceived, err error) {
 	var buf MessageReceived
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1678,7 +1678,7 @@ func (action *SendMessage) Call(session *ninchat.Session) (reply *MessageReceive
 	return nil, nil
 }
 
-// UpdateChannel holds parameters for the `update_channel` action.
+// UpdateChannel action.
 type UpdateChannel struct {
 	ChannelAttrs *ChannelAttrs `json:"channel_attrs,omitempty"`
 	ChannelId    *string       `json:"channel_id,omitempty"`
@@ -1710,8 +1710,8 @@ func (action *UpdateChannel) newClientAction() (clientAction *ninchat.Action, er
 	return
 }
 
-// Call the `update_channel` action synchronously.
-func (action *UpdateChannel) Call(session *ninchat.Session) (reply *ChannelUpdated, err error) {
+// Invoke the action synchronously.
+func (action *UpdateChannel) Invoke(session *ninchat.Session) (reply *ChannelUpdated, err error) {
 	var buf ChannelUpdated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1726,7 +1726,7 @@ func (action *UpdateChannel) Call(session *ninchat.Session) (reply *ChannelUpdat
 	return nil, nil
 }
 
-// UpdateDialogue holds parameters for the `update_dialogue` action.
+// UpdateDialogue action.
 type UpdateDialogue struct {
 	DialogueStatus *string     `json:"dialogue_status,omitempty"`
 	MemberAttrs    interface{} `json:"member_attrs"`
@@ -1761,8 +1761,8 @@ func (action *UpdateDialogue) newClientAction() (clientAction *ninchat.Action, e
 	return
 }
 
-// Call the `update_dialogue` action synchronously.
-func (action *UpdateDialogue) Call(session *ninchat.Session) (reply *DialogueUpdated, err error) {
+// Invoke the action synchronously.
+func (action *UpdateDialogue) Invoke(session *ninchat.Session) (reply *DialogueUpdated, err error) {
 	var buf DialogueUpdated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1777,7 +1777,7 @@ func (action *UpdateDialogue) Call(session *ninchat.Session) (reply *DialogueUpd
 	return nil, nil
 }
 
-// UpdateIdentity holds parameters for the `update_identity` action.
+// UpdateIdentity action.
 type UpdateIdentity struct {
 	IdentityAttrs *IdentityAttrs `json:"identity_attrs,omitempty"`
 	IdentityName  *string        `json:"identity_name,omitempty"`
@@ -1816,8 +1816,8 @@ func (action *UpdateIdentity) newClientAction() (clientAction *ninchat.Action, e
 	return
 }
 
-// Call the `update_identity` action synchronously.
-func (action *UpdateIdentity) Call(session *ninchat.Session) (reply *IdentityUpdated, err error) {
+// Invoke the action synchronously.
+func (action *UpdateIdentity) Invoke(session *ninchat.Session) (reply *IdentityUpdated, err error) {
 	var buf IdentityUpdated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1832,7 +1832,7 @@ func (action *UpdateIdentity) Call(session *ninchat.Session) (reply *IdentityUpd
 	return nil, nil
 }
 
-// UpdateIdentityAuth holds parameters for the `update_identity_auth` action.
+// UpdateIdentityAuth action.
 type UpdateIdentityAuth struct {
 	IdentityAuth    *string `json:"identity_auth,omitempty"`
 	IdentityAuthNew *string `json:"identity_auth_new,omitempty"`
@@ -1876,8 +1876,8 @@ func (action *UpdateIdentityAuth) newClientAction() (clientAction *ninchat.Actio
 	return
 }
 
-// Call the `update_identity_auth` action synchronously.
-func (action *UpdateIdentityAuth) Call(session *ninchat.Session) (reply *IdentityUpdated, err error) {
+// Invoke the action synchronously.
+func (action *UpdateIdentityAuth) Invoke(session *ninchat.Session) (reply *IdentityUpdated, err error) {
 	var buf IdentityUpdated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1892,7 +1892,7 @@ func (action *UpdateIdentityAuth) Call(session *ninchat.Session) (reply *Identit
 	return nil, nil
 }
 
-// UpdateMember holds parameters for the `update_member` action.
+// UpdateMember action.
 type UpdateMember struct {
 	ChannelId   *string     `json:"channel_id,omitempty"`
 	MemberAttrs interface{} `json:"member_attrs"`
@@ -1934,8 +1934,8 @@ func (action *UpdateMember) newClientAction() (clientAction *ninchat.Action, err
 	return
 }
 
-// Call the `update_member` action synchronously.
-func (action *UpdateMember) Call(session *ninchat.Session) (reply *MemberUpdated, err error) {
+// Invoke the action synchronously.
+func (action *UpdateMember) Invoke(session *ninchat.Session) (reply *MemberUpdated, err error) {
 	var buf MemberUpdated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -1950,7 +1950,7 @@ func (action *UpdateMember) Call(session *ninchat.Session) (reply *MemberUpdated
 	return nil, nil
 }
 
-// UpdateMessage holds parameters for the `update_message` action.
+// UpdateMessage action.
 type UpdateMessage struct {
 	ChannelId     *string `json:"channel_id,omitempty"`
 	MessageHidden bool    `json:"message_hidden,omitempty"`
@@ -1989,8 +1989,8 @@ func (action *UpdateMessage) newClientAction() (clientAction *ninchat.Action, er
 	return
 }
 
-// Call the `update_message` action synchronously.
-func (action *UpdateMessage) Call(session *ninchat.Session) (reply *MessageUpdated, err error) {
+// Invoke the action synchronously.
+func (action *UpdateMessage) Invoke(session *ninchat.Session) (reply *MessageUpdated, err error) {
 	var buf MessageUpdated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -2005,7 +2005,7 @@ func (action *UpdateMessage) Call(session *ninchat.Session) (reply *MessageUpdat
 	return nil, nil
 }
 
-// UpdateQueue holds parameters for the `update_queue` action.
+// UpdateQueue action.
 type UpdateQueue struct {
 	QueueAttrs *QueueAttrs `json:"queue_attrs,omitempty"`
 	QueueId    *string     `json:"queue_id,omitempty"`
@@ -2037,8 +2037,8 @@ func (action *UpdateQueue) newClientAction() (clientAction *ninchat.Action, err 
 	return
 }
 
-// Call the `update_queue` action synchronously.
-func (action *UpdateQueue) Call(session *ninchat.Session) (reply *QueueUpdated, err error) {
+// Invoke the action synchronously.
+func (action *UpdateQueue) Invoke(session *ninchat.Session) (reply *QueueUpdated, err error) {
 	var buf QueueUpdated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -2053,7 +2053,7 @@ func (action *UpdateQueue) Call(session *ninchat.Session) (reply *QueueUpdated, 
 	return nil, nil
 }
 
-// UpdateRealm holds parameters for the `update_realm` action.
+// UpdateRealm action.
 type UpdateRealm struct {
 	RealmAttrs *RealmAttrs `json:"realm_attrs,omitempty"`
 	RealmId    *string     `json:"realm_id,omitempty"`
@@ -2085,8 +2085,8 @@ func (action *UpdateRealm) newClientAction() (clientAction *ninchat.Action, err 
 	return
 }
 
-// Call the `update_realm` action synchronously.
-func (action *UpdateRealm) Call(session *ninchat.Session) (reply *RealmUpdated, err error) {
+// Invoke the action synchronously.
+func (action *UpdateRealm) Invoke(session *ninchat.Session) (reply *RealmUpdated, err error) {
 	var buf RealmUpdated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -2101,7 +2101,7 @@ func (action *UpdateRealm) Call(session *ninchat.Session) (reply *RealmUpdated, 
 	return nil, nil
 }
 
-// UpdateSession holds parameters for the `update_session` action.
+// UpdateSession action.
 type UpdateSession struct {
 	ChannelId   *string `json:"channel_id,omitempty"`
 	MessageId   *string `json:"message_id,omitempty"`
@@ -2140,7 +2140,7 @@ func (action *UpdateSession) newClientAction() (clientAction *ninchat.Action, er
 	return
 }
 
-// UpdateUser holds parameters for the `update_user` action.
+// UpdateUser action.
 type UpdateUser struct {
 	PayloadAttrs []string               `json:"payload_attrs,omitempty"`
 	UserAttrs    *UserAttrs             `json:"user_attrs,omitempty"`
@@ -2175,8 +2175,8 @@ func (action *UpdateUser) newClientAction() (clientAction *ninchat.Action, err e
 	return
 }
 
-// Call the `update_user` action synchronously.
-func (action *UpdateUser) Call(session *ninchat.Session) (reply *UserUpdated, err error) {
+// Invoke the action synchronously.
+func (action *UpdateUser) Invoke(session *ninchat.Session) (reply *UserUpdated, err error) {
 	var buf UserUpdated
 
 	ok, err := unaryCall(session, action, &buf)
@@ -2191,7 +2191,7 @@ func (action *UpdateUser) Call(session *ninchat.Session) (reply *UserUpdated, er
 	return nil, nil
 }
 
-// VerifyIdentity holds parameters for the `verify_identity` action.
+// VerifyIdentity action.
 type VerifyIdentity struct {
 	ActionIdDisabled bool
 	AccessKey        *string `json:"access_key,omitempty"`
@@ -2228,8 +2228,8 @@ func (action *VerifyIdentity) newClientAction() (clientAction *ninchat.Action, e
 	return
 }
 
-// Call the `verify_identity` action synchronously.
-func (action *VerifyIdentity) Call(session *ninchat.Session) (reply *IdentityUpdated, err error) {
+// Invoke the action synchronously.
+func (action *VerifyIdentity) Invoke(session *ninchat.Session) (reply *IdentityUpdated, err error) {
 	var buf IdentityUpdated
 
 	ok, err := unaryCall(session, action, &buf)

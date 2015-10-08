@@ -5,7 +5,7 @@ package ninchatapi
 
 import ninchat ".."
 
-// AccessCreated event parameters.
+// AccessCreated event.
 type AccessCreated struct {
 	AccessKey  *string `json:"access_key,omitempty"`
 	AccessType string  `json:"access_type"`
@@ -37,7 +37,7 @@ func (target *AccessCreated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// AccessFound event parameters.
+// AccessFound event.
 type AccessFound struct {
 	AccessType   string        `json:"access_type"`
 	ChannelAttrs *ChannelAttrs `json:"channel_attrs,omitempty"`
@@ -126,7 +126,7 @@ func (target *AccessFound) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// AudienceEnqueued event parameters.
+// AudienceEnqueued event.
 type AudienceEnqueued struct {
 	QueueAttrs    *QueueAttrs `json:"queue_attrs"`
 	QueueId       string      `json:"queue_id"`
@@ -166,7 +166,7 @@ func (target *AudienceEnqueued) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// ChannelDeleted event parameters.
+// ChannelDeleted event.
 type ChannelDeleted struct {
 	ChannelId string `json:"channel_id"`
 }
@@ -191,7 +191,7 @@ func (target *ChannelDeleted) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// ChannelFound event parameters.
+// ChannelFound event.
 type ChannelFound struct {
 	ChannelAttrs   *ChannelAttrs   `json:"channel_attrs"`
 	ChannelId      string          `json:"channel_id"`
@@ -246,7 +246,7 @@ func (target *ChannelFound) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// ChannelJoined event parameters.
+// ChannelJoined event.
 type ChannelJoined struct {
 	ChannelAttrs   *ChannelAttrs   `json:"channel_attrs"`
 	ChannelId      string          `json:"channel_id"`
@@ -294,7 +294,7 @@ func (target *ChannelJoined) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// ChannelMemberJoined event parameters.
+// ChannelMemberJoined event.
 type ChannelMemberJoined struct {
 	ChannelId   string      `json:"channel_id"`
 	MemberAttrs interface{} `json:"member_attrs"`
@@ -341,7 +341,7 @@ func (target *ChannelMemberJoined) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// ChannelMemberParted event parameters.
+// ChannelMemberParted event.
 type ChannelMemberParted struct {
 	ChannelId *string `json:"channel_id,omitempty"`
 	RealmId   *string `json:"realm_id,omitempty"`
@@ -380,7 +380,7 @@ func (target *ChannelMemberParted) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// ChannelMemberUpdated event parameters.
+// ChannelMemberUpdated event.
 type ChannelMemberUpdated struct {
 	ChannelId   *string     `json:"channel_id,omitempty"`
 	MemberAttrs interface{} `json:"member_attrs"`
@@ -426,7 +426,7 @@ func (target *ChannelMemberUpdated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// ChannelParted event parameters.
+// ChannelParted event.
 type ChannelParted struct {
 	ChannelId string `json:"channel_id"`
 }
@@ -451,7 +451,7 @@ func (target *ChannelParted) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// ChannelUpdated event parameters.
+// ChannelUpdated event.
 type ChannelUpdated struct {
 	ChannelAttrs *ChannelAttrs `json:"channel_attrs"`
 	ChannelId    string        `json:"channel_id"`
@@ -491,7 +491,7 @@ func (target *ChannelUpdated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// DialogueUpdated event parameters.
+// DialogueUpdated event.
 type DialogueUpdated struct {
 	AudienceMetadata map[string]interface{} `json:"audience_metadata,omitempty"`
 	DialogueMembers  *DialogueMembers       `json:"dialogue_members"`
@@ -538,7 +538,7 @@ func (target *DialogueUpdated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// Error event parameters.
+// Error event.
 type Error struct {
 	ChannelId    *string `json:"channel_id,omitempty"`
 	ErrorReason  *string `json:"error_reason,omitempty"`
@@ -619,7 +619,7 @@ func (target *Error) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// HistoryDiscarded event parameters.
+// HistoryDiscarded event.
 type HistoryDiscarded struct {
 	ChannelId *string `json:"channel_id,omitempty"`
 	MessageId string  `json:"message_id"`
@@ -658,7 +658,7 @@ func (target *HistoryDiscarded) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// HistoryResults event parameters.
+// HistoryResults event.
 type HistoryResults struct {
 	ChannelId     *string `json:"channel_id,omitempty"`
 	HistoryLength int     `json:"history_length"`
@@ -697,7 +697,7 @@ func (target *HistoryResults) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// IdentityCreated event parameters.
+// IdentityCreated event.
 type IdentityCreated struct {
 	IdentityAttrs *IdentityAttrs `json:"identity_attrs"`
 	IdentityName  string         `json:"identity_name"`
@@ -737,7 +737,7 @@ func (target *IdentityCreated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// IdentityDeleted event parameters.
+// IdentityDeleted event.
 type IdentityDeleted struct {
 	IdentityName string `json:"identity_name"`
 	IdentityType string `json:"identity_type"`
@@ -769,7 +769,7 @@ func (target *IdentityDeleted) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// IdentityFound event parameters.
+// IdentityFound event.
 type IdentityFound struct {
 	IdentityAttrs *IdentityAttrs `json:"identity_attrs,omitempty"`
 	IdentityName  string         `json:"identity_name"`
@@ -816,7 +816,7 @@ func (target *IdentityFound) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// IdentityUpdated event parameters.
+// IdentityUpdated event.
 type IdentityUpdated struct {
 	IdentityAttrs *IdentityAttrs `json:"identity_attrs"`
 	IdentityName  string         `json:"identity_name"`
@@ -856,7 +856,7 @@ func (target *IdentityUpdated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// MasterFound event parameters.
+// MasterFound event.
 type MasterFound struct {
 	MasterKeys *MasterKeys `json:"master_keys"`
 }
@@ -882,7 +882,7 @@ func (target *MasterFound) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// MasterKeyCreated event parameters.
+// MasterKeyCreated event.
 type MasterKeyCreated struct {
 	MasterKeyId     string  `json:"master_key_id"`
 	MasterKeySecret *string `json:"master_key_secret,omitempty"`
@@ -914,7 +914,7 @@ func (target *MasterKeyCreated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// MasterKeyDeleted event parameters.
+// MasterKeyDeleted event.
 type MasterKeyDeleted struct {
 	MasterKeyId string `json:"master_key_id"`
 }
@@ -939,7 +939,7 @@ func (target *MasterKeyDeleted) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// MessageReceived event parameters.
+// MessageReceived event.
 type MessageReceived struct {
 	ChannelId           *string  `json:"channel_id,omitempty"`
 	HistoryLength       *int     `json:"history_length,omitempty"`
@@ -1040,7 +1040,7 @@ func (target *MessageReceived) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// MessageUpdated event parameters.
+// MessageUpdated event.
 type MessageUpdated struct {
 	ChannelId     *string `json:"channel_id,omitempty"`
 	MessageHidden bool    `json:"message_hidden,omitempty"`
@@ -1077,7 +1077,7 @@ func (target *MessageUpdated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// Pong event parameters.
+// Pong event.
 type Pong struct {
 }
 
@@ -1093,7 +1093,7 @@ func (target *Pong) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// QueueCreated event parameters.
+// QueueCreated event.
 type QueueCreated struct {
 	QueueAttrs *QueueAttrs `json:"queue_attrs"`
 	QueueId    string      `json:"queue_id"`
@@ -1133,7 +1133,7 @@ func (target *QueueCreated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// QueueDeleted event parameters.
+// QueueDeleted event.
 type QueueDeleted struct {
 	QueueId string  `json:"queue_id"`
 	RealmId *string `json:"realm_id,omitempty"`
@@ -1165,7 +1165,7 @@ func (target *QueueDeleted) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// QueueFound event parameters.
+// QueueFound event.
 type QueueFound struct {
 	QueueAttrs    *QueueAttrs   `json:"queue_attrs"`
 	QueueId       string        `json:"queue_id"`
@@ -1220,7 +1220,7 @@ func (target *QueueFound) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// QueueJoined event parameters.
+// QueueJoined event.
 type QueueJoined struct {
 	QueueAttrs *QueueAttrs `json:"queue_attrs"`
 	QueueId    string      `json:"queue_id"`
@@ -1260,7 +1260,7 @@ func (target *QueueJoined) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// QueueMemberJoined event parameters.
+// QueueMemberJoined event.
 type QueueMemberJoined struct {
 	MemberAttrs interface{} `json:"member_attrs"`
 	QueueId     string      `json:"queue_id"`
@@ -1307,7 +1307,7 @@ func (target *QueueMemberJoined) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// QueueMemberParted event parameters.
+// QueueMemberParted event.
 type QueueMemberParted struct {
 	QueueId string `json:"queue_id"`
 	UserId  string `json:"user_id"`
@@ -1339,7 +1339,7 @@ func (target *QueueMemberParted) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// QueueParted event parameters.
+// QueueParted event.
 type QueueParted struct {
 	QueueId string  `json:"queue_id"`
 	RealmId *string `json:"realm_id,omitempty"`
@@ -1371,7 +1371,7 @@ func (target *QueueParted) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// QueueUpdated event parameters.
+// QueueUpdated event.
 type QueueUpdated struct {
 	QueueAttrs    *QueueAttrs `json:"queue_attrs"`
 	QueueId       string      `json:"queue_id"`
@@ -1418,7 +1418,7 @@ func (target *QueueUpdated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// RealmDeleted event parameters.
+// RealmDeleted event.
 type RealmDeleted struct {
 	RealmId string `json:"realm_id"`
 }
@@ -1443,7 +1443,7 @@ func (target *RealmDeleted) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// RealmFound event parameters.
+// RealmFound event.
 type RealmFound struct {
 	RealmAttrs   *RealmAttrs   `json:"realm_attrs"`
 	RealmId      string        `json:"realm_id"`
@@ -1484,7 +1484,7 @@ func (target *RealmFound) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// RealmJoined event parameters.
+// RealmJoined event.
 type RealmJoined struct {
 	RealmAttrs   *RealmAttrs   `json:"realm_attrs"`
 	RealmId      string        `json:"realm_id"`
@@ -1525,7 +1525,7 @@ func (target *RealmJoined) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// RealmMemberJoined event parameters.
+// RealmMemberJoined event.
 type RealmMemberJoined struct {
 	MemberAttrs interface{} `json:"member_attrs"`
 	RealmId     string      `json:"realm_id"`
@@ -1572,7 +1572,7 @@ func (target *RealmMemberJoined) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// RealmMemberParted event parameters.
+// RealmMemberParted event.
 type RealmMemberParted struct {
 	ChannelId *string `json:"channel_id,omitempty"`
 	RealmId   *string `json:"realm_id,omitempty"`
@@ -1611,7 +1611,7 @@ func (target *RealmMemberParted) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// RealmMemberUpdated event parameters.
+// RealmMemberUpdated event.
 type RealmMemberUpdated struct {
 	MemberAttrs interface{} `json:"member_attrs"`
 	RealmId     string      `json:"realm_id"`
@@ -1650,7 +1650,7 @@ func (target *RealmMemberUpdated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// RealmParted event parameters.
+// RealmParted event.
 type RealmParted struct {
 	RealmId string `json:"realm_id"`
 }
@@ -1675,7 +1675,7 @@ func (target *RealmParted) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// RealmQueuesFound event parameters.
+// RealmQueuesFound event.
 type RealmQueuesFound struct {
 	RealmId     string       `json:"realm_id"`
 	RealmQueues *RealmQueues `json:"realm_queues"`
@@ -1708,7 +1708,7 @@ func (target *RealmQueuesFound) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// RealmUpdated event parameters.
+// RealmUpdated event.
 type RealmUpdated struct {
 	RealmAttrs *RealmAttrs `json:"realm_attrs"`
 	RealmId    string      `json:"realm_id"`
@@ -1741,7 +1741,7 @@ func (target *RealmUpdated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// SearchResults event parameters.
+// SearchResults event.
 type SearchResults struct {
 	Channels *Channels `json:"channels,omitempty"`
 	Users    *Users    `json:"users,omitempty"`
@@ -1775,7 +1775,7 @@ func (target *SearchResults) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// SessionCreated event parameters.
+// SessionCreated event.
 type SessionCreated struct {
 	SessionHost      *string                `json:"session_host,omitempty"`
 	SessionId        string                 `json:"session_id"`
@@ -1892,7 +1892,7 @@ func (target *SessionCreated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// SessionStatusUpdated event parameters.
+// SessionStatusUpdated event.
 type SessionStatusUpdated struct {
 	ChannelId *string `json:"channel_id,omitempty"`
 	MessageId string  `json:"message_id"`
@@ -1931,7 +1931,7 @@ func (target *SessionStatusUpdated) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// UserDeleted event parameters.
+// UserDeleted event.
 type UserDeleted struct {
 	UserId string `json:"user_id"`
 }
@@ -1956,7 +1956,7 @@ func (target *UserDeleted) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// UserFound event parameters.
+// UserFound event.
 type UserFound struct {
 	AudienceMetadata map[string]interface{} `json:"audience_metadata,omitempty"`
 	DialogueMembers  *DialogueMembers       `json:"dialogue_members,omitempty"`
@@ -2074,7 +2074,7 @@ func (target *UserFound) init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
-// UserUpdated event parameters.
+// UserUpdated event.
 type UserUpdated struct {
 	UserAccount  *UserAccount           `json:"user_account,omitempty"`
 	UserAttrs    *UserAttrs             `json:"user_attrs"`

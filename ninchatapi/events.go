@@ -8,8 +8,7 @@ type eventInit interface {
 	init(*ninchat.Event) error
 }
 
-// MemberJoined is a union of `channel_member_joined`, `queue_member_joined`
-// and `realm_member_joined` events.
+// MemberJoined is a union of target-specific events.
 type MemberJoined struct {
 	Channel *ChannelMemberJoined
 	Queue   *QueueMemberJoined
@@ -32,8 +31,7 @@ func (union *MemberJoined) init(clientEvent *ninchat.Event) (err error) {
 	}
 }
 
-// MemberParted is a union of `channel_member_parted`, `queue_member_parted`
-// and `realm_member_parted` events.
+// MemberParted is a union of target-specific events.
 type MemberParted struct {
 	Channel *ChannelMemberParted
 	Queue   *QueueMemberParted
@@ -56,8 +54,7 @@ func (union *MemberParted) init(clientEvent *ninchat.Event) (err error) {
 	}
 }
 
-// MemberUpdated is a union of `channel_member_updated` and
-// `realm_member_updated` events.
+// MemberUpdated is a union of target-specific events.
 type MemberUpdated struct {
 	Channel *ChannelMemberUpdated
 	Realm   *RealmMemberUpdated
@@ -76,7 +73,7 @@ func (union *MemberUpdated) init(clientEvent *ninchat.Event) (err error) {
 	}
 }
 
-// ChannelMembers represents the `channel_members` parameter.
+// ChannelMembers parameter type.
 type ChannelMembers map[string]*ChannelMemberEntry
 
 func (target *ChannelMembers) init(source map[string]interface{}) {
@@ -88,7 +85,7 @@ type ChannelMemberEntry struct {
 	UserAttrs   *UserAttrs                     `json:"user_attrs,omitempty"`
 }
 
-// Channels represents the `search_results` event's `channels` parameter.
+// Channels parameter type.
 type Channels map[string]*ChannelResult
 
 func (target *Channels) init(source map[string]interface{}) {
@@ -101,21 +98,21 @@ type ChannelResult struct {
 	Weight       *float64      `json:"weight,omitempty"`
 }
 
-// DialogueMembers represents the `dialogue_members` parameter.
+// DialogueMembers parameter type.
 type DialogueMembers map[string]*DialogueMemberAttrs
 
 func (target *DialogueMembers) init(source map[string]interface{}) {
 	// TODO
 }
 
-// MasterKeys represents the `master_keys` parameter.
+// MasterKeys parameter type.
 type MasterKeys map[string]struct{}
 
 func (target *MasterKeys) init(source map[string]interface{}) {
 	// TODO
 }
 
-// QueueMembers represents the `queue_members` parameter.
+// QueueMembers parameter type.
 type QueueMembers map[string]*QueueMemberEntry
 
 func (target *QueueMembers) init(source map[string]interface{}) {
@@ -127,7 +124,7 @@ type QueueMemberEntry struct {
 	UserAttrs   *UserAttrs          `json:"user_attrs,omitempty"`
 }
 
-// RealmMembers represents the `realm_members` parameter.
+// RealmMembers parameter type.
 type RealmMembers map[string]*RealmMemberEntry
 
 func (target *RealmMembers) init(source map[string]interface{}) {
@@ -139,7 +136,7 @@ type RealmMemberEntry struct {
 	UserAttrs   *UserAttrs                   `json:"user_attrs,omitempty"`
 }
 
-// RealmQueues represents the `realm_queues` parameter.
+// RealmQueues parameter type.
 type RealmQueues map[string]*RealmQueueEntry
 
 func (target *RealmQueues) init(source map[string]interface{}) {
@@ -151,7 +148,7 @@ type RealmQueueEntry struct {
 	QueuePosition *int        `json:"queue_position,omitempty"`
 }
 
-// UserAccount represents the `user_account` parameter.
+// UserAccount parameter type.
 type UserAccount struct {
 	Channels      *UserAccountObjects       `json:"channels,omitempty"`
 	QueueMembers  *UserAccountMembers       `json:"queue_members,omitempty"`
@@ -184,7 +181,7 @@ type UserAccountSubscription struct {
 	Renewal      *int                `json:"renewal,omitempty"`
 }
 
-// UserChannels represents the `user_channels` parameter.
+// UserChannels parameter type.
 type UserChannels map[string]*UserChannelEntry
 
 func (target *UserChannels) init(source map[string]interface{}) {
@@ -197,7 +194,7 @@ type UserChannelEntry struct {
 	RealmId       *string       `json:"realm_id,omitempty"`
 }
 
-// UserDialogues represents the `user_dialogues` parameter.
+// UserDialogues parameter type.
 type UserDialogues map[string]*UserDialogueEntry
 
 func (target *UserDialogues) init(source map[string]interface{}) {
@@ -210,14 +207,14 @@ type UserDialogueEntry struct {
 	DialogueStatus   *string                `json:"dialogue_status,omitempty"`
 }
 
-// UserIdentities represents the `user_identities` parameter.
+// UserIdentities parameter type.
 type UserIdentities map[string]map[string]*IdentityAttrs
 
 func (target *UserIdentities) init(source map[string]interface{}) {
 	// TODO
 }
 
-// UserQueues represents the `user_queues` parameter.
+// UserQueues parameter type.
 type UserQueues map[string]*UserQueueEntry
 
 func (target *UserQueues) init(source map[string]interface{}) {
@@ -229,21 +226,21 @@ type UserQueueEntry struct {
 	RealmId    *string     `json:"realm_id,omitempty"`
 }
 
-// UserRealms represents the `user_realms` parameter.
+// UserRealms parameter type.
 type UserRealms map[string]*RealmAttrs
 
 func (target *UserRealms) init(source map[string]interface{}) {
 	// TODO
 }
 
-// UserRealmsMember represents the `user_realms_member` parameter.
+// UserRealmsMember parameter type.
 type UserRealmsMember map[string]*RealmMemberAttrs
 
 func (target *UserRealmsMember) init(source map[string]interface{}) {
 	// TODO
 }
 
-// Users represents the `search_results` event's `users` parameter.
+// Users parameter type.
 type Users map[string]*UserResult
 
 func (target *Users) init(source map[string]interface{}) {

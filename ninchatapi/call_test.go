@@ -13,7 +13,7 @@ func TestCall(t *testing.T) {
 		ChannelId: &channelId,
 	}
 
-	reply, err := action.Call(nil)
+	reply, err := action.Invoke(nil)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -79,7 +79,7 @@ func testSession(t *testing.T, transport string) {
 		Payload: [][]byte{
 			messageData,
 		},
-	}).Call(session)
+	}).Invoke(session)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,7 +97,7 @@ func testSession(t *testing.T, transport string) {
 		Payload: [][]byte{
 			imageData,
 		},
-	}).Call(session)
+	}).Invoke(session)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -108,7 +108,7 @@ func testSession(t *testing.T, transport string) {
 		t.Error("Iconurl")
 	}
 
-	if _, err = (&ninchatapi.DeleteUser{UserAuth: &userAuth}).Call(session); err != nil {
+	if _, err = (&ninchatapi.DeleteUser{UserAuth: &userAuth}).Invoke(session); err != nil {
 		t.Fatal(err)
 	}
 }

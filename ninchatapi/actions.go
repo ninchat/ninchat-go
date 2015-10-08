@@ -8,7 +8,7 @@ type action interface {
 	newClientAction() (*ninchat.Action, error)
 }
 
-// Call
+// Call an action with or without a session.
 func Call(session *ninchat.Session, events chan<- *ninchat.Event, action action) (err error) {
 	clientAction, err := action.newClientAction()
 	if err != nil {
@@ -44,7 +44,7 @@ func Call(session *ninchat.Session, events chan<- *ninchat.Event, action action)
 	return
 }
 
-// Send
+// Send an action.
 func Send(session *ninchat.Session, action action) (err error) {
 	clientAction, err := action.newClientAction()
 	if err != nil {
