@@ -63,18 +63,15 @@ func testSession(t *testing.T, transport string) {
 	session, events := openSession(t, transport, params)
 	defer session.Close()
 
-	sessionEvent := <-events
-	if sessionEvent.String() != "session_created" {
-		t.Fail()
+	sessionEvent, err := ninchatapi.NewSessionCreated(<-events)
+	if err != nil {
+		t.Fatal(err)
 	}
-
-	userId := sessionEvent.Params["user_id"].(string)
-	userAuth := sessionEvent.Params["user_auth"].(string)
 
 	messageType := "ninchat.com/text"
 
 	messageEvent, err := (&ninchatapi.SendMessage{
-		UserId:      &userId,
+		UserId:      &sessionEvent.UserId,
 		MessageType: &messageType,
 		Payload: [][]byte{
 			messageData,
@@ -108,7 +105,9 @@ func testSession(t *testing.T, transport string) {
 		t.Error("Iconurl")
 	}
 
-	if _, err = (&ninchatapi.DeleteUser{UserAuth: &userAuth}).Invoke(session); err != nil {
+	if _, err = (&ninchatapi.DeleteUser{
+		UserAuth: sessionEvent.UserAuth,
+	}).Invoke(session); err != nil {
 		t.Fatal(err)
 	}
 }

@@ -8,6 +8,15 @@ type eventInit interface {
 	init(*ninchat.Event) error
 }
 
+// NewSessionCreated.
+func NewSessionCreated(clientEvent *ninchat.Event) (event *SessionCreated, err error) {
+	if clientEvent != nil {
+		event = new(SessionCreated)
+		err = event.init(clientEvent)
+	}
+	return
+}
+
 // MemberJoined is a union of target-specific events.
 type MemberJoined struct {
 	Channel *ChannelMemberJoined
