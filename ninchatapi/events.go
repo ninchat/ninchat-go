@@ -81,8 +81,8 @@ func (target *ChannelMembers) init(source map[string]interface{}) {
 }
 
 type ChannelMemberEntry struct {
-	MemberAttrs map[string]*ChannelMemberAttrs `json:"member_attrs,omitempty"`
-	UserAttrs   *UserAttrs                     `json:"user_attrs,omitempty"`
+	MemberAttrs map[string]*ChannelMemberAttrs `json:"member_attrs"`
+	UserAttrs   *UserAttrs                     `json:"user_attrs"`
 }
 
 // Channels parameter type.
@@ -93,9 +93,9 @@ func (target *Channels) init(source map[string]interface{}) {
 }
 
 type ChannelResult struct {
-	ChannelAttrs *ChannelAttrs `json:"channel_attrs,omitempty"`
+	ChannelAttrs *ChannelAttrs `json:"channel_attrs"`
 	RealmId      *string       `json:"realm_id,omitempty"`
-	Weight       *float64      `json:"weight,omitempty"`
+	Weight       float64       `json:"weight"`
 }
 
 // DialogueMembers parameter type.
@@ -120,8 +120,8 @@ func (target *QueueMembers) init(source map[string]interface{}) {
 }
 
 type QueueMemberEntry struct {
-	MemberAttrs map[string]struct{} `json:"member_attrs,omitempty"`
-	UserAttrs   *UserAttrs          `json:"user_attrs,omitempty"`
+	MemberAttrs map[string]struct{} `json:"member_attrs"`
+	UserAttrs   *UserAttrs          `json:"user_attrs"`
 }
 
 // RealmMembers parameter type.
@@ -132,8 +132,8 @@ func (target *RealmMembers) init(source map[string]interface{}) {
 }
 
 type RealmMemberEntry struct {
-	MemberAttrs map[string]*RealmMemberAttrs `json:"member_attrs,omitempty"`
-	UserAttrs   *UserAttrs                   `json:"user_attrs,omitempty"`
+	MemberAttrs map[string]*RealmMemberAttrs `json:"member_attrs"`
+	UserAttrs   *UserAttrs                   `json:"user_attrs"`
 }
 
 // RealmQueues parameter type.
@@ -144,7 +144,7 @@ func (target *RealmQueues) init(source map[string]interface{}) {
 }
 
 type RealmQueueEntry struct {
-	QueueAttrs    *QueueAttrs `json:"queue_attrs,omitempty"`
+	QueueAttrs    *QueueAttrs `json:"queue_attrs"`
 	QueuePosition *int        `json:"queue_position,omitempty"`
 }
 
@@ -162,19 +162,19 @@ func (target *UserAccount) init(source map[string]interface{}) {
 }
 
 type UserAccountMembers struct {
-	Quota *int `json:"quota,omitempty"`
+	Quota int `json:"quota"`
 }
 
 type UserAccountObjects struct {
-	Available *int `json:"available,omitempty"`
-	Quota     *int `json:"quota,omitempty"`
+	Available int `json:"available"`
+	Quota     int `json:"quota"`
 }
 
 type UserAccountSubscription struct {
 	Active       bool                `json:"active,omitempty"`
 	Channels     *UserAccountObjects `json:"channels,omitempty"`
 	Expiration   *int                `json:"expiration,omitempty"`
-	Plan         *string             `json:"plan,omitempty"`
+	Plan         string              `json:"plan"`
 	QueueMembers *UserAccountMembers `json:"queue_members,omitempty"`
 	Queues       *UserAccountObjects `json:"queues,omitempty"`
 	Realms       *UserAccountObjects `json:"realms,omitempty"`
@@ -189,7 +189,7 @@ func (target *UserChannels) init(source map[string]interface{}) {
 }
 
 type UserChannelEntry struct {
-	ChannelAttrs  *ChannelAttrs `json:"channel_attrs,omitempty"`
+	ChannelAttrs  *ChannelAttrs `json:"channel_attrs"`
 	ChannelStatus *string       `json:"channel_status,omitempty"`
 	RealmId       *string       `json:"realm_id,omitempty"`
 }
@@ -222,8 +222,8 @@ func (target *UserQueues) init(source map[string]interface{}) {
 }
 
 type UserQueueEntry struct {
-	QueueAttrs *QueueAttrs `json:"queue_attrs,omitempty"`
-	RealmId    *string     `json:"realm_id,omitempty"`
+	QueueAttrs *QueueAttrs `json:"queue_attrs"`
+	RealmId    string      `json:"realm_id"`
 }
 
 // UserRealms parameter type.
@@ -248,6 +248,6 @@ func (target *Users) init(source map[string]interface{}) {
 }
 
 type UserResult struct {
-	UserAttrs *UserAttrs `json:"user_attrs,omitempty"`
-	Weight    *float64   `json:"weight,omitempty"`
+	UserAttrs *UserAttrs `json:"user_attrs"`
+	Weight    float64    `json:"weight"`
 }
