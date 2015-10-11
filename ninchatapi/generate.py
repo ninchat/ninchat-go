@@ -143,8 +143,6 @@ def main():
 
 		print
 		print 'import ('
-		print '  "errors"'
-		print
 		print '  "github.com/ninchat/ninchat-go"'
 		print ')'
 
@@ -225,7 +223,7 @@ def print_action(action):
 
 			if p.required:
 				print '  } else {'
-				print '    return nil, errors.New("{} requires {} parameter")'.format(action.name, p.name)
+				print '    return nil, newRequestMalformedError("{} action requires {} parameter")'.format(action.name, p.name)
 
 			print '  }'
 
@@ -271,7 +269,7 @@ def print_event(event):
 	print
 	print 'func (target *{}) init(clientEvent *ninchat.Event) error {{'.format(title(event.name))
 	print '  if clientEvent.String() != "{}" {{'.format(event.name)
-	print '    return &EventError{clientEvent}'
+	print '    return &UnexpectedEventError{clientEvent}'
 	print '  }'
 
 	params = event.params.copy()

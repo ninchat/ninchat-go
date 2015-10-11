@@ -18,7 +18,7 @@ func (*AccessCreated) String() string {
 
 func (target *AccessCreated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "access_created" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -58,7 +58,7 @@ func (*AccessFound) String() string {
 
 func (target *AccessFound) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "access_found" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -140,7 +140,7 @@ func (*AudienceEnqueued) String() string {
 
 func (target *AudienceEnqueued) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "audience_enqueued" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -178,7 +178,7 @@ func (*ChannelDeleted) String() string {
 
 func (target *ChannelDeleted) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_deleted" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -207,7 +207,7 @@ func (*ChannelFound) String() string {
 
 func (target *ChannelFound) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_found" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -261,7 +261,7 @@ func (*ChannelJoined) String() string {
 
 func (target *ChannelJoined) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_joined" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -309,7 +309,7 @@ func (*ChannelMemberJoined) String() string {
 
 func (target *ChannelMemberJoined) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_member_joined" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -355,7 +355,7 @@ func (*ChannelMemberParted) String() string {
 
 func (target *ChannelMemberParted) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_member_parted" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -395,7 +395,7 @@ func (*ChannelMemberUpdated) String() string {
 
 func (target *ChannelMemberUpdated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_member_updated" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -438,7 +438,7 @@ func (*ChannelParted) String() string {
 
 func (target *ChannelParted) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_parted" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -465,7 +465,7 @@ func (*ChannelUpdated) String() string {
 
 func (target *ChannelUpdated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_updated" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -506,7 +506,7 @@ func (*DialogueUpdated) String() string {
 
 func (target *DialogueUpdated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "dialogue_updated" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -558,7 +558,7 @@ func (*Error) String() string {
 
 func (target *Error) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "error" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -633,7 +633,7 @@ func (*HistoryDiscarded) String() string {
 
 func (target *HistoryDiscarded) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "history_discarded" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -672,7 +672,7 @@ func (*HistoryResults) String() string {
 
 func (target *HistoryResults) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "history_results" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -711,7 +711,7 @@ func (*IdentityCreated) String() string {
 
 func (target *IdentityCreated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "identity_created" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -750,7 +750,7 @@ func (*IdentityDeleted) String() string {
 
 func (target *IdentityDeleted) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "identity_deleted" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -784,7 +784,7 @@ func (*IdentityFound) String() string {
 
 func (target *IdentityFound) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "identity_found" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -830,7 +830,7 @@ func (*IdentityUpdated) String() string {
 
 func (target *IdentityUpdated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "identity_updated" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -868,7 +868,7 @@ func (*MasterFound) String() string {
 
 func (target *MasterFound) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "master_found" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -895,7 +895,7 @@ func (*MasterKeyCreated) String() string {
 
 func (target *MasterKeyCreated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "master_key_created" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -926,7 +926,7 @@ func (*MasterKeyDeleted) String() string {
 
 func (target *MasterKeyDeleted) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "master_key_deleted" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -963,7 +963,7 @@ func (*MessageReceived) String() string {
 
 func (target *MessageReceived) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "message_received" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1054,7 +1054,7 @@ func (*MessageUpdated) String() string {
 
 func (target *MessageUpdated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "message_updated" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1088,7 +1088,7 @@ func (*Pong) String() string {
 
 func (target *Pong) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "pong" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	return nil
@@ -1107,7 +1107,7 @@ func (*QueueCreated) String() string {
 
 func (target *QueueCreated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_created" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1146,7 +1146,7 @@ func (*QueueDeleted) String() string {
 
 func (target *QueueDeleted) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_deleted" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1181,7 +1181,7 @@ func (*QueueFound) String() string {
 
 func (target *QueueFound) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_found" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1234,7 +1234,7 @@ func (*QueueJoined) String() string {
 
 func (target *QueueJoined) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_joined" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1275,7 +1275,7 @@ func (*QueueMemberJoined) String() string {
 
 func (target *QueueMemberJoined) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_member_joined" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1320,7 +1320,7 @@ func (*QueueMemberParted) String() string {
 
 func (target *QueueMemberParted) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_member_parted" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1352,7 +1352,7 @@ func (*QueueParted) String() string {
 
 func (target *QueueParted) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_parted" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1386,7 +1386,7 @@ func (*QueueUpdated) String() string {
 
 func (target *QueueUpdated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_updated" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1430,7 +1430,7 @@ func (*RealmDeleted) String() string {
 
 func (target *RealmDeleted) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_deleted" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1457,7 +1457,7 @@ func (*RealmFound) String() string {
 
 func (target *RealmFound) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_found" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1498,7 +1498,7 @@ func (*RealmJoined) String() string {
 
 func (target *RealmJoined) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_joined" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1540,7 +1540,7 @@ func (*RealmMemberJoined) String() string {
 
 func (target *RealmMemberJoined) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_member_joined" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1586,7 +1586,7 @@ func (*RealmMemberParted) String() string {
 
 func (target *RealmMemberParted) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_member_parted" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1625,7 +1625,7 @@ func (*RealmMemberUpdated) String() string {
 
 func (target *RealmMemberUpdated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_member_updated" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1662,7 +1662,7 @@ func (*RealmParted) String() string {
 
 func (target *RealmParted) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_parted" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1688,7 +1688,7 @@ func (*RealmQueuesFound) String() string {
 
 func (target *RealmQueuesFound) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_queues_found" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1721,7 +1721,7 @@ func (*RealmUpdated) String() string {
 
 func (target *RealmUpdated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_updated" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1754,7 +1754,7 @@ func (*SearchResults) String() string {
 
 func (target *SearchResults) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "search_results" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1799,7 +1799,7 @@ func (*SessionCreated) String() string {
 
 func (target *SessionCreated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "session_created" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1906,7 +1906,7 @@ func (*SessionStatusUpdated) String() string {
 
 func (target *SessionStatusUpdated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "session_status_updated" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1943,7 +1943,7 @@ func (*UserDeleted) String() string {
 
 func (target *UserDeleted) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "user_deleted" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -1980,7 +1980,7 @@ func (*UserFound) String() string {
 
 func (target *UserFound) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "user_found" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params
@@ -2089,7 +2089,7 @@ func (*UserUpdated) String() string {
 
 func (target *UserUpdated) init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "user_updated" {
-		return &EventError{clientEvent}
+		return &UnexpectedEventError{clientEvent}
 	}
 
 	source := clientEvent.Params

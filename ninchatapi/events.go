@@ -36,7 +36,7 @@ func (union *MemberJoined) init(clientEvent *ninchat.Event) (err error) {
 		return union.Realm.init(clientEvent)
 
 	default:
-		return &EventError{clientEvent}
+		return newError(clientEvent)
 	}
 }
 
@@ -59,7 +59,7 @@ func (union *MemberParted) init(clientEvent *ninchat.Event) (err error) {
 		return union.Realm.init(clientEvent)
 
 	default:
-		return &EventError{clientEvent}
+		return newError(clientEvent)
 	}
 }
 
@@ -78,7 +78,7 @@ func (union *MemberUpdated) init(clientEvent *ninchat.Event) (err error) {
 		return union.Realm.init(clientEvent)
 
 	default:
-		return &EventError{clientEvent}
+		return newError(clientEvent)
 	}
 }
 

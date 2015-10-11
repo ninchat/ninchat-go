@@ -4,28 +4,41 @@ import (
 	"github.com/ninchat/ninchat-go"
 )
 
-// EventError wraps an "error" event or an unexpected event.
-type EventError struct {
+// Error describes an "error" event.
+func (event *Error) Error() (s string) {
+	s = event.ErrorType
+	if event.ErrorReason != nil {
+		s += ": " + *event.ErrorReason
+	}
+	return
+}
+
+// newError parses an "error" event.
+func newError(clientEvent *ninchat.Event) (e *Error) {
+	e = new(Error)
+	e.init(clientEvent)
+	return
+}
+
+// newRequestMalformedError synthesizes an "error" event.
+func newRequestMalformedError(reason string) *Error {
+	return &Error{
+		ErrorType:   "request_malformed",
+		ErrorReason: &reason,
+	}
+}
+
+// UnexpectedEventError wraps an event and implements the error interface.
+type UnexpectedEventError struct {
 	Event *ninchat.Event
 }
 
-// String returns the event type.
-func (err *EventError) String() string {
-	return err.Event.String()
+// Error returns an error description.
+func (e *UnexpectedEventError) Error() string {
+	return "unexpected event type: " + e.Event.String()
 }
 
-// Error returns a detailed error description.
-func (err *EventError) Error() (s string) {
-	switch name := err.Event.String(); name {
-	case "error":
-		s, _ = err.Event.Str("error_type")
-		if r, ok := err.Event.Str("error_reason"); ok {
-			s += ": " + r
-		}
-
-	default:
-		s = "unexpected event type: " + name
-	}
-
-	return
+// String returns an error description.
+func (e *UnexpectedEventError) String() string {
+	return e.Error()
 }
