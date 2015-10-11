@@ -1,6 +1,6 @@
-// ninchatapi provides typed wrappers for Ninchat API actions, events and
-// attributes.
+// Wrappers for Ninchat API actions, events and attributes.
 //
-// https://ninchat.com/api
+// Generated from JSON declarations found at:
+// https://github.com/ninchat/ninchat-api/tree/v2/json
 //
 package ninchatapi
