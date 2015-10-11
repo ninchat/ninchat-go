@@ -4,7 +4,7 @@ import (
 	"github.com/ninchat/ninchat-go"
 )
 
-// EventError wraps an `error` event or an unexpected event.
+// EventError wraps an "error" event or an unexpected event.
 type EventError struct {
 	Event *ninchat.Event
 }
