@@ -186,9 +186,17 @@ type UserAccountMembers struct {
 	Quota int `json:"quota"`
 }
 
+func (target *UserAccountMembers) MergeFrom(source map[string]interface{}) {
+	// TODO
+}
+
 type UserAccountObjects struct {
 	Available int `json:"available"`
 	Quota     int `json:"quota"`
+}
+
+func (target *UserAccountObjects) MergeFrom(source map[string]interface{}) {
+	// TODO
 }
 
 type UserAccountSubscription struct {
