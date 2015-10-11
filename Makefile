@@ -6,16 +6,28 @@ PYTHON	:= python
 
 export GOPATH
 
-check: check-go check-js
+check: check-client check-api check-message
 
-check-go:
+check-client: check-client-go check-client-js
+
+check-client-go:
 	$(GO) get github.com/gorilla/websocket
-	$(GOFMT) -d -s *.go ninchat*/*.go
-	$(GO) vet . ./ninchatmessage ./ninchatapi
-	$(GO) test -v . ./ninchatmessage ./ninchatapi
+	$(GOFMT) -d -s *.go
+	$(GO) vet .
+	$(GO) test -v .
 
-check-js: bin/gopherjs
+check-client-js: bin/gopherjs
 	bin/gopherjs build
+
+check-api:
+	$(GOFMT) -d -s ninchatapi/*.go
+	$(GO) vet ./ninchatapi
+	$(GO) test -v ./ninchatapi
+
+check-message:
+	$(GOFMT) -d -s ninchatmessage/*.go
+	$(GO) vet ./ninchatmessage
+	$(GO) test -v ./ninchatmessage
 
 bin/gopherjs:
 	$(GO) get github.com/gopherjs/gopherjs
@@ -29,4 +41,4 @@ api:
 clean:
 	rm -rf bin pkg
 
-.PHONY: check check-go check-js api clean
+.PHONY: check check-client check-client-go check-client-js check-api check-message api clean
