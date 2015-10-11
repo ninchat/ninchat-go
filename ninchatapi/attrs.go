@@ -6,7 +6,7 @@ type UserInfoAttr struct {
 	Url     *string `json:"url,omitempty"`
 }
 
-func (target *UserInfoAttr) init(source map[string]interface{}) {
+func (target *UserInfoAttr) MergeFrom(source map[string]interface{}) {
 	// TODO
 }
 
@@ -17,7 +17,7 @@ type RealmOwnerAccountAttr struct {
 	Queues       *UserAccountObjects `json:"queues"`
 }
 
-func (target *RealmOwnerAccountAttr) init(source map[string]interface{}) {
+func (target *RealmOwnerAccountAttr) MergeFrom(source map[string]interface{}) {
 	// TODO
 }
 
@@ -26,6 +26,6 @@ type RealmThemeAttr struct {
 	Color *string `json:"color,omitempty"`
 }
 
-func (target *RealmThemeAttr) init(source map[string]interface{}) {
+func (target *RealmThemeAttr) MergeFrom(source map[string]interface{}) {
 	// TODO
 }

@@ -16,7 +16,7 @@ func (event *Error) Error() (s string) {
 // newError parses an "error" event.
 func newError(clientEvent *ninchat.Event) (e *Error) {
 	e = new(Error)
-	e.init(clientEvent)
+	e.MergeFrom(clientEvent)
 	return
 }
 

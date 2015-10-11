@@ -189,6 +189,7 @@ def print_action(action):
 
 	print '}'
 	print
+	print '// String returns "{}".'.format(action.name)
 	print 'func (*{}) String() string {{'.format(title(action.name))
 	print '  return "{}"'.format(action.name)
 	print '}'
@@ -263,11 +264,14 @@ def print_event(event):
 
 	print '}'
 	print
+	print '// String returns "{}".'.format(event.name)
 	print 'func (*{}) String() string {{'.format(title(event.name))
 	print '  return "{}"'.format(event.name)
 	print '}'
 	print
-	print 'func (target *{}) init(clientEvent *ninchat.Event) error {{'.format(title(event.name))
+	print '// MergeFrom fills in the parameters specified by the clientEvent.  An'
+	print '// UnexpectedEventError is returned if its type is not "{}".'.format(event.name)
+	print 'func (target *{}) MergeFrom(clientEvent *ninchat.Event) error {{'.format(title(event.name))
 	print '  if clientEvent.String() != "{}" {{'.format(event.name)
 	print '    return &UnexpectedEventError{clientEvent}'
 	print '  }'
@@ -306,7 +310,7 @@ def print_init_params(params, require, objfmt="{}"):
 				print 'target.{} = y'.format(title(p.name))
 			else:
 				print 'target.{} = new({})'.format(title(p.name), objfmt.format(title(p.name)))
-				print 'target.{}.init(y)'.format(title(p.name))
+				print 'target.{}.MergeFrom(y)'.format(title(p.name))
 
 			print '}'
 		elif p.type == "string array":
@@ -340,7 +344,8 @@ def print_attrs(attrs, objectname, commentname):
 
 	print '}'
 	print
-	print 'func (target *{}Attrs) init(source map[string]interface{{}}) {{'.format(objectname)
+	print '// MergeFrom fills in the parameters specified by the source.'
+	print 'func (target *{}Attrs) MergeFrom(source map[string]interface{{}}) {{'.format(objectname)
 
 	print_init_params(attrs, require=False, objfmt=objectname + "{}Attr")
 

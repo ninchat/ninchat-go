@@ -56,7 +56,7 @@ func Send(session *ninchat.Session, action Action) (err error) {
 	return
 }
 
-func unaryCall(session *ninchat.Session, action Action, event eventInit) (ok bool, err error) {
+func unaryCall(session *ninchat.Session, action Action, event Event) (ok bool, err error) {
 	c := make(chan *ninchat.Event, 1) // XXX: why doesn't this work without buffering?
 
 	if err = Call(session, c, action); err != nil {
@@ -75,7 +75,7 @@ func unaryCall(session *ninchat.Session, action Action, event eventInit) (ok boo
 	if clientEvent.String() == "error" {
 		err = newError(clientEvent)
 	} else {
-		err = event.init(clientEvent)
+		err = event.MergeFrom(clientEvent)
 	}
 	return
 }

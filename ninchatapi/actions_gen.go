@@ -11,6 +11,7 @@ type AcceptAudience struct {
 	QueueId *string `json:"queue_id,omitempty"`
 }
 
+// String returns "accept_audience".
 func (*AcceptAudience) String() string {
 	return "accept_audience"
 }
@@ -53,6 +54,7 @@ type AddMember struct {
 	UserId  *string `json:"user_id,omitempty"`
 }
 
+// String returns "add_member".
 func (*AddMember) String() string {
 	return "add_member"
 }
@@ -99,6 +101,7 @@ func (action *AddMember) Invoke(session *ninchat.Session) (reply *MemberJoined, 
 type CloseSession struct {
 }
 
+// String returns "close_session".
 func (*CloseSession) String() string {
 	return "close_session"
 }
@@ -122,6 +125,7 @@ type CreateAccess struct {
 	UserId      *string `json:"user_id,omitempty"`
 }
 
+// String returns "create_access".
 func (*CreateAccess) String() string {
 	return "create_access"
 }
@@ -176,6 +180,7 @@ type CreateChannel struct {
 	RealmId      *string       `json:"realm_id,omitempty"`
 }
 
+// String returns "create_channel".
 func (*CreateChannel) String() string {
 	return "create_channel"
 }
@@ -222,6 +227,7 @@ type CreateIdentity struct {
 	IdentityType    *string        `json:"identity_type,omitempty"`
 }
 
+// String returns "create_identity".
 func (*CreateIdentity) String() string {
 	return "create_identity"
 }
@@ -276,6 +282,7 @@ func (action *CreateIdentity) Invoke(session *ninchat.Session) (reply *IdentityC
 type CreateMasterKey struct {
 }
 
+// String returns "create_master_key".
 func (*CreateMasterKey) String() string {
 	return "create_master_key"
 }
@@ -312,6 +319,7 @@ type CreateQueue struct {
 	RealmId    *string     `json:"realm_id,omitempty"`
 }
 
+// String returns "create_queue".
 func (*CreateQueue) String() string {
 	return "create_queue"
 }
@@ -360,6 +368,7 @@ type CreateRealm struct {
 	RealmAttrs   *RealmAttrs   `json:"realm_attrs,omitempty"`
 }
 
+// String returns "create_realm".
 func (*CreateRealm) String() string {
 	return "create_realm"
 }
@@ -405,6 +414,7 @@ type DeleteIdentity struct {
 	IdentityType *string `json:"identity_type,omitempty"`
 }
 
+// String returns "delete_identity".
 func (*DeleteIdentity) String() string {
 	return "delete_identity"
 }
@@ -458,6 +468,7 @@ type DeleteMasterKey struct {
 	UserAuth        *string `json:"user_auth,omitempty"`
 }
 
+// String returns "delete_master_key".
 func (*DeleteMasterKey) String() string {
 	return "delete_master_key"
 }
@@ -507,6 +518,7 @@ type DeleteQueue struct {
 	QueueId *string `json:"queue_id,omitempty"`
 }
 
+// String returns "delete_queue".
 func (*DeleteQueue) String() string {
 	return "delete_queue"
 }
@@ -548,6 +560,7 @@ type DeleteRealm struct {
 	RealmId *string `json:"realm_id,omitempty"`
 }
 
+// String returns "delete_realm".
 func (*DeleteRealm) String() string {
 	return "delete_realm"
 }
@@ -589,6 +602,7 @@ type DeleteUser struct {
 	UserAuth *string `json:"user_auth,omitempty"`
 }
 
+// String returns "delete_user".
 func (*DeleteUser) String() string {
 	return "delete_user"
 }
@@ -631,6 +645,7 @@ type DescribeAccess struct {
 	AccessKey        *string `json:"access_key,omitempty"`
 }
 
+// String returns "describe_access".
 func (*DescribeAccess) String() string {
 	return "describe_access"
 }
@@ -676,6 +691,7 @@ type DescribeChannel struct {
 	ChannelId *string `json:"channel_id,omitempty"`
 }
 
+// String returns "describe_channel".
 func (*DescribeChannel) String() string {
 	return "describe_channel"
 }
@@ -718,6 +734,7 @@ type DescribeIdentity struct {
 	IdentityType *string `json:"identity_type,omitempty"`
 }
 
+// String returns "describe_identity".
 func (*DescribeIdentity) String() string {
 	return "describe_identity"
 }
@@ -764,6 +781,7 @@ func (action *DescribeIdentity) Invoke(session *ninchat.Session) (reply *Identit
 type DescribeMaster struct {
 }
 
+// String returns "describe_master".
 func (*DescribeMaster) String() string {
 	return "describe_master"
 }
@@ -799,6 +817,7 @@ type DescribeQueue struct {
 	QueueId *string `json:"queue_id,omitempty"`
 }
 
+// String returns "describe_queue".
 func (*DescribeQueue) String() string {
 	return "describe_queue"
 }
@@ -840,6 +859,7 @@ type DescribeRealm struct {
 	RealmId *string `json:"realm_id,omitempty"`
 }
 
+// String returns "describe_realm".
 func (*DescribeRealm) String() string {
 	return "describe_realm"
 }
@@ -881,6 +901,7 @@ type DescribeRealmQueues struct {
 	RealmId *string `json:"realm_id,omitempty"`
 }
 
+// String returns "describe_realm_queues".
 func (*DescribeRealmQueues) String() string {
 	return "describe_realm_queues"
 }
@@ -922,6 +943,7 @@ type DescribeUser struct {
 	UserId *string `json:"user_id,omitempty"`
 }
 
+// String returns "describe_user".
 func (*DescribeUser) String() string {
 	return "describe_user"
 }
@@ -962,6 +984,7 @@ type DiscardHistory struct {
 	UserId    *string `json:"user_id,omitempty"`
 }
 
+// String returns "discard_history".
 func (*DiscardHistory) String() string {
 	return "discard_history"
 }
@@ -1010,6 +1033,7 @@ type FollowChannel struct {
 	ChannelId *string `json:"channel_id,omitempty"`
 }
 
+// String returns "follow_channel".
 func (*FollowChannel) String() string {
 	return "follow_channel"
 }
@@ -1056,6 +1080,7 @@ type JoinChannel struct {
 	MemberAttrs interface{} `json:"member_attrs"`
 }
 
+// String returns "join_channel".
 func (*JoinChannel) String() string {
 	return "join_channel"
 }
@@ -1114,6 +1139,7 @@ type LoadHistory struct {
 	UserId          *string  `json:"user_id,omitempty"`
 }
 
+// String returns "load_history".
 func (*LoadHistory) String() string {
 	return "load_history"
 }
@@ -1165,6 +1191,7 @@ type PartChannel struct {
 	ChannelId *string `json:"channel_id,omitempty"`
 }
 
+// String returns "part_channel".
 func (*PartChannel) String() string {
 	return "part_channel"
 }
@@ -1206,6 +1233,7 @@ type Ping struct {
 	ActionIdDisabled bool
 }
 
+// String returns "ping".
 func (*Ping) String() string {
 	return "ping"
 }
@@ -1248,6 +1276,7 @@ type RemoveMember struct {
 	UserId    *string `json:"user_id,omitempty"`
 }
 
+// String returns "remove_member".
 func (*RemoveMember) String() string {
 	return "remove_member"
 }
@@ -1302,6 +1331,7 @@ type RequestAudience struct {
 	QueueId          *string                `json:"queue_id,omitempty"`
 }
 
+// String returns "request_audience".
 func (*RequestAudience) String() string {
 	return "request_audience"
 }
@@ -1349,6 +1379,7 @@ type RequestIdentityAuthResetAccess struct {
 	IdentityType     *string `json:"identity_type,omitempty"`
 }
 
+// String returns "request_identity_auth_reset_access".
 func (*RequestIdentityAuthResetAccess) String() string {
 	return "request_identity_auth_reset_access"
 }
@@ -1402,6 +1433,7 @@ type RequestIdentityVerifyAccess struct {
 	IdentityType     *string `json:"identity_type,omitempty"`
 }
 
+// String returns "request_identity_verify_access".
 func (*RequestIdentityVerifyAccess) String() string {
 	return "request_identity_verify_access"
 }
@@ -1454,6 +1486,7 @@ type ResetIdentityAuth struct {
 	IdentityAuthNew *string `json:"identity_auth_new,omitempty"`
 }
 
+// String returns "reset_identity_auth".
 func (*ResetIdentityAuth) String() string {
 	return "reset_identity_auth"
 }
@@ -1501,6 +1534,7 @@ func (action *ResetIdentityAuth) Invoke(session *ninchat.Session) (reply *Identi
 type ResumeSession struct {
 }
 
+// String returns "resume_session".
 func (*ResumeSession) String() string {
 	return "resume_session"
 }
@@ -1521,6 +1555,7 @@ type Search struct {
 	SearchTerm *string `json:"search_term,omitempty"`
 }
 
+// String returns "search".
 func (*Search) String() string {
 	return "search"
 }
@@ -1549,6 +1584,7 @@ type SendAccess struct {
 	UserId       *string `json:"user_id,omitempty"`
 }
 
+// String returns "send_access".
 func (*SendAccess) String() string {
 	return "send_access"
 }
@@ -1609,6 +1645,7 @@ type SendMessage struct {
 	Payload             [][]byte
 }
 
+// String returns "send_message".
 func (*SendMessage) String() string {
 	return "send_message"
 }
@@ -1684,6 +1721,7 @@ type UpdateChannel struct {
 	ChannelId    *string       `json:"channel_id,omitempty"`
 }
 
+// String returns "update_channel".
 func (*UpdateChannel) String() string {
 	return "update_channel"
 }
@@ -1733,6 +1771,7 @@ type UpdateDialogue struct {
 	UserId         *string     `json:"user_id,omitempty"`
 }
 
+// String returns "update_dialogue".
 func (*UpdateDialogue) String() string {
 	return "update_dialogue"
 }
@@ -1784,6 +1823,7 @@ type UpdateIdentity struct {
 	IdentityType  *string        `json:"identity_type,omitempty"`
 }
 
+// String returns "update_identity".
 func (*UpdateIdentity) String() string {
 	return "update_identity"
 }
@@ -1840,6 +1880,7 @@ type UpdateIdentityAuth struct {
 	IdentityType    *string `json:"identity_type,omitempty"`
 }
 
+// String returns "update_identity_auth".
 func (*UpdateIdentityAuth) String() string {
 	return "update_identity_auth"
 }
@@ -1900,6 +1941,7 @@ type UpdateMember struct {
 	UserId      *string     `json:"user_id,omitempty"`
 }
 
+// String returns "update_member".
 func (*UpdateMember) String() string {
 	return "update_member"
 }
@@ -1957,6 +1999,7 @@ type UpdateMessage struct {
 	MessageId     *string `json:"message_id,omitempty"`
 }
 
+// String returns "update_message".
 func (*UpdateMessage) String() string {
 	return "update_message"
 }
@@ -2011,6 +2054,7 @@ type UpdateQueue struct {
 	QueueId    *string     `json:"queue_id,omitempty"`
 }
 
+// String returns "update_queue".
 func (*UpdateQueue) String() string {
 	return "update_queue"
 }
@@ -2059,6 +2103,7 @@ type UpdateRealm struct {
 	RealmId    *string     `json:"realm_id,omitempty"`
 }
 
+// String returns "update_realm".
 func (*UpdateRealm) String() string {
 	return "update_realm"
 }
@@ -2109,6 +2154,7 @@ type UpdateSession struct {
 	UserId      *string `json:"user_id,omitempty"`
 }
 
+// String returns "update_session".
 func (*UpdateSession) String() string {
 	return "update_session"
 }
@@ -2148,6 +2194,7 @@ type UpdateUser struct {
 	Payload      [][]byte
 }
 
+// String returns "update_user".
 func (*UpdateUser) String() string {
 	return "update_user"
 }
@@ -2198,6 +2245,7 @@ type VerifyIdentity struct {
 	IdentityAccept   bool    `json:"identity_accept,omitempty"`
 }
 
+// String returns "verify_identity".
 func (*VerifyIdentity) String() string {
 	return "verify_identity"
 }

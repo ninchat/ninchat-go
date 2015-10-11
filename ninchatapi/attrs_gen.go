@@ -18,7 +18,8 @@ type ChannelAttrs struct {
 	VerifiedJoin            bool     `json:"verified_join,omitempty"`
 }
 
-func (target *ChannelAttrs) init(source map[string]interface{}) {
+// MergeFrom fills in the parameters specified by the source.
+func (target *ChannelAttrs) MergeFrom(source map[string]interface{}) {
 
 	if x := source["autosilence"]; x != nil {
 		target.Autosilence = true
@@ -88,7 +89,8 @@ type ChannelMemberAttrs struct {
 	Since    *int `json:"since,omitempty"`
 }
 
-func (target *ChannelMemberAttrs) init(source map[string]interface{}) {
+// MergeFrom fills in the parameters specified by the source.
+func (target *ChannelMemberAttrs) MergeFrom(source map[string]interface{}) {
 
 	if x := source["operator"]; x != nil {
 		target.Operator = true
@@ -112,7 +114,8 @@ type DialogueMemberAttrs struct {
 	Writing bool    `json:"writing,omitempty"`
 }
 
-func (target *DialogueMemberAttrs) init(source map[string]interface{}) {
+// MergeFrom fills in the parameters specified by the source.
+func (target *DialogueMemberAttrs) MergeFrom(source map[string]interface{}) {
 
 	if x := source["queue_id"]; x != nil {
 		if y, ok := x.(string); ok {
@@ -140,7 +143,8 @@ type IdentityAttrs struct {
 	Rejected bool `json:"rejected,omitempty"`
 }
 
-func (target *IdentityAttrs) init(source map[string]interface{}) {
+// MergeFrom fills in the parameters specified by the source.
+func (target *IdentityAttrs) MergeFrom(source map[string]interface{}) {
 
 	if x := source["auth"]; x != nil {
 		target.Auth = true
@@ -168,7 +172,8 @@ type PuppetAttrs struct {
 	Name *string `json:"name,omitempty"`
 }
 
-func (target *PuppetAttrs) init(source map[string]interface{}) {
+// MergeFrom fills in the parameters specified by the source.
+func (target *PuppetAttrs) MergeFrom(source map[string]interface{}) {
 
 	if x := source["name"]; x != nil {
 		if y, ok := x.(string); ok {
@@ -186,7 +191,8 @@ type QueueAttrs struct {
 	Suspended bool    `json:"suspended,omitempty"`
 }
 
-func (target *QueueAttrs) init(source map[string]interface{}) {
+// MergeFrom fills in the parameters specified by the source.
+func (target *QueueAttrs) MergeFrom(source map[string]interface{}) {
 
 	if x := source["capacity"]; x != nil {
 		if y, ok := x.(int); ok {
@@ -224,7 +230,8 @@ type RealmAttrs struct {
 	Theme        *RealmThemeAttr        `json:"theme,omitempty"`
 }
 
-func (target *RealmAttrs) init(source map[string]interface{}) {
+// MergeFrom fills in the parameters specified by the source.
+func (target *RealmAttrs) MergeFrom(source map[string]interface{}) {
 
 	if x := source["name"]; x != nil {
 		if y, ok := x.(string); ok {
@@ -235,7 +242,7 @@ func (target *RealmAttrs) init(source map[string]interface{}) {
 	if x := source["owner_account"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.OwnerAccount = new(RealmOwnerAccountAttr)
-			target.OwnerAccount.init(y)
+			target.OwnerAccount.MergeFrom(y)
 		}
 	}
 
@@ -252,7 +259,7 @@ func (target *RealmAttrs) init(source map[string]interface{}) {
 	if x := source["theme"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.Theme = new(RealmThemeAttr)
-			target.Theme.init(y)
+			target.Theme.MergeFrom(y)
 		}
 	}
 }
@@ -262,7 +269,8 @@ type RealmMemberAttrs struct {
 	Operator bool `json:"operator,omitempty"`
 }
 
-func (target *RealmMemberAttrs) init(source map[string]interface{}) {
+// MergeFrom fills in the parameters specified by the source.
+func (target *RealmMemberAttrs) MergeFrom(source map[string]interface{}) {
 
 	if x := source["operator"]; x != nil {
 		target.Operator = true
@@ -282,7 +290,8 @@ type UserAttrs struct {
 	Realname  *string       `json:"realname,omitempty"`
 }
 
-func (target *UserAttrs) init(source map[string]interface{}) {
+// MergeFrom fills in the parameters specified by the source.
+func (target *UserAttrs) MergeFrom(source map[string]interface{}) {
 
 	if x := source["admin"]; x != nil {
 		target.Admin = true
@@ -315,7 +324,7 @@ func (target *UserAttrs) init(source map[string]interface{}) {
 	if x := source["info"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.Info = new(UserInfoAttr)
-			target.Info.init(y)
+			target.Info.MergeFrom(y)
 		}
 	}
 

@@ -12,11 +12,14 @@ type AccessCreated struct {
 	AccessType string  `json:"access_type"`
 }
 
+// String returns "access_created".
 func (*AccessCreated) String() string {
 	return "access_created"
 }
 
-func (target *AccessCreated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "access_created".
+func (target *AccessCreated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "access_created" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -52,11 +55,14 @@ type AccessFound struct {
 	UserId       *string       `json:"user_id,omitempty"`
 }
 
+// String returns "access_found".
 func (*AccessFound) String() string {
 	return "access_found"
 }
 
-func (target *AccessFound) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "access_found".
+func (target *AccessFound) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "access_found" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -72,7 +78,7 @@ func (target *AccessFound) init(clientEvent *ninchat.Event) error {
 	if x := source["channel_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.ChannelAttrs = new(ChannelAttrs)
-			target.ChannelAttrs.init(y)
+			target.ChannelAttrs.MergeFrom(y)
 		}
 	}
 
@@ -97,7 +103,7 @@ func (target *AccessFound) init(clientEvent *ninchat.Event) error {
 	if x := source["realm_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.RealmAttrs = new(RealmAttrs)
-			target.RealmAttrs.init(y)
+			target.RealmAttrs.MergeFrom(y)
 		}
 	}
 
@@ -114,7 +120,7 @@ func (target *AccessFound) init(clientEvent *ninchat.Event) error {
 	if x := source["user_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserAttrs = new(UserAttrs)
-			target.UserAttrs.init(y)
+			target.UserAttrs.MergeFrom(y)
 		}
 	}
 
@@ -134,11 +140,14 @@ type AudienceEnqueued struct {
 	QueuePosition int         `json:"queue_position"`
 }
 
+// String returns "audience_enqueued".
 func (*AudienceEnqueued) String() string {
 	return "audience_enqueued"
 }
 
-func (target *AudienceEnqueued) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "audience_enqueued".
+func (target *AudienceEnqueued) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "audience_enqueued" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -148,7 +157,7 @@ func (target *AudienceEnqueued) init(clientEvent *ninchat.Event) error {
 	if x := source["queue_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.QueueAttrs = new(QueueAttrs)
-			target.QueueAttrs.init(y)
+			target.QueueAttrs.MergeFrom(y)
 		}
 	}
 
@@ -172,11 +181,14 @@ type ChannelDeleted struct {
 	ChannelId string `json:"channel_id"`
 }
 
+// String returns "channel_deleted".
 func (*ChannelDeleted) String() string {
 	return "channel_deleted"
 }
 
-func (target *ChannelDeleted) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "channel_deleted".
+func (target *ChannelDeleted) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_deleted" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -201,11 +213,14 @@ type ChannelFound struct {
 	RealmId        *string         `json:"realm_id,omitempty"`
 }
 
+// String returns "channel_found".
 func (*ChannelFound) String() string {
 	return "channel_found"
 }
 
-func (target *ChannelFound) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "channel_found".
+func (target *ChannelFound) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_found" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -215,7 +230,7 @@ func (target *ChannelFound) init(clientEvent *ninchat.Event) error {
 	if x := source["channel_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.ChannelAttrs = new(ChannelAttrs)
-			target.ChannelAttrs.init(y)
+			target.ChannelAttrs.MergeFrom(y)
 		}
 	}
 
@@ -228,7 +243,7 @@ func (target *ChannelFound) init(clientEvent *ninchat.Event) error {
 	if x := source["channel_members"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.ChannelMembers = new(ChannelMembers)
-			target.ChannelMembers.init(y)
+			target.ChannelMembers.MergeFrom(y)
 		}
 	}
 
@@ -255,11 +270,14 @@ type ChannelJoined struct {
 	RealmId        *string         `json:"realm_id,omitempty"`
 }
 
+// String returns "channel_joined".
 func (*ChannelJoined) String() string {
 	return "channel_joined"
 }
 
-func (target *ChannelJoined) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "channel_joined".
+func (target *ChannelJoined) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_joined" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -269,7 +287,7 @@ func (target *ChannelJoined) init(clientEvent *ninchat.Event) error {
 	if x := source["channel_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.ChannelAttrs = new(ChannelAttrs)
-			target.ChannelAttrs.init(y)
+			target.ChannelAttrs.MergeFrom(y)
 		}
 	}
 
@@ -282,7 +300,7 @@ func (target *ChannelJoined) init(clientEvent *ninchat.Event) error {
 	if x := source["channel_members"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.ChannelMembers = new(ChannelMembers)
-			target.ChannelMembers.init(y)
+			target.ChannelMembers.MergeFrom(y)
 		}
 	}
 
@@ -303,11 +321,14 @@ type ChannelMemberJoined struct {
 	UserId      string      `json:"user_id"`
 }
 
+// String returns "channel_member_joined".
 func (*ChannelMemberJoined) String() string {
 	return "channel_member_joined"
 }
 
-func (target *ChannelMemberJoined) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "channel_member_joined".
+func (target *ChannelMemberJoined) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_member_joined" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -329,7 +350,7 @@ func (target *ChannelMemberJoined) init(clientEvent *ninchat.Event) error {
 	if x := source["user_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserAttrs = new(UserAttrs)
-			target.UserAttrs.init(y)
+			target.UserAttrs.MergeFrom(y)
 		}
 	}
 
@@ -349,11 +370,14 @@ type ChannelMemberParted struct {
 	UserId    string  `json:"user_id"`
 }
 
+// String returns "channel_member_parted".
 func (*ChannelMemberParted) String() string {
 	return "channel_member_parted"
 }
 
-func (target *ChannelMemberParted) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "channel_member_parted".
+func (target *ChannelMemberParted) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_member_parted" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -389,11 +413,14 @@ type ChannelMemberUpdated struct {
 	UserId      string      `json:"user_id"`
 }
 
+// String returns "channel_member_updated".
 func (*ChannelMemberUpdated) String() string {
 	return "channel_member_updated"
 }
 
-func (target *ChannelMemberUpdated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "channel_member_updated".
+func (target *ChannelMemberUpdated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_member_updated" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -432,11 +459,14 @@ type ChannelParted struct {
 	ChannelId string `json:"channel_id"`
 }
 
+// String returns "channel_parted".
 func (*ChannelParted) String() string {
 	return "channel_parted"
 }
 
-func (target *ChannelParted) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "channel_parted".
+func (target *ChannelParted) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_parted" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -459,11 +489,14 @@ type ChannelUpdated struct {
 	RealmId      *string       `json:"realm_id,omitempty"`
 }
 
+// String returns "channel_updated".
 func (*ChannelUpdated) String() string {
 	return "channel_updated"
 }
 
-func (target *ChannelUpdated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "channel_updated".
+func (target *ChannelUpdated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_updated" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -473,7 +506,7 @@ func (target *ChannelUpdated) init(clientEvent *ninchat.Event) error {
 	if x := source["channel_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.ChannelAttrs = new(ChannelAttrs)
-			target.ChannelAttrs.init(y)
+			target.ChannelAttrs.MergeFrom(y)
 		}
 	}
 
@@ -500,11 +533,14 @@ type DialogueUpdated struct {
 	UserId           string                 `json:"user_id"`
 }
 
+// String returns "dialogue_updated".
 func (*DialogueUpdated) String() string {
 	return "dialogue_updated"
 }
 
-func (target *DialogueUpdated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "dialogue_updated".
+func (target *DialogueUpdated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "dialogue_updated" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -520,7 +556,7 @@ func (target *DialogueUpdated) init(clientEvent *ninchat.Event) error {
 	if x := source["dialogue_members"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.DialogueMembers = new(DialogueMembers)
-			target.DialogueMembers.init(y)
+			target.DialogueMembers.MergeFrom(y)
 		}
 	}
 
@@ -552,11 +588,14 @@ type Error struct {
 	UserId       *string `json:"user_id,omitempty"`
 }
 
+// String returns "error".
 func (*Error) String() string {
 	return "error"
 }
 
-func (target *Error) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "error".
+func (target *Error) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "error" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -627,11 +666,14 @@ type HistoryDiscarded struct {
 	UserId    *string `json:"user_id,omitempty"`
 }
 
+// String returns "history_discarded".
 func (*HistoryDiscarded) String() string {
 	return "history_discarded"
 }
 
-func (target *HistoryDiscarded) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "history_discarded".
+func (target *HistoryDiscarded) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "history_discarded" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -666,11 +708,14 @@ type HistoryResults struct {
 	UserId        *string `json:"user_id,omitempty"`
 }
 
+// String returns "history_results".
 func (*HistoryResults) String() string {
 	return "history_results"
 }
 
-func (target *HistoryResults) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "history_results".
+func (target *HistoryResults) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "history_results" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -705,11 +750,14 @@ type IdentityCreated struct {
 	IdentityType  string         `json:"identity_type"`
 }
 
+// String returns "identity_created".
 func (*IdentityCreated) String() string {
 	return "identity_created"
 }
 
-func (target *IdentityCreated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "identity_created".
+func (target *IdentityCreated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "identity_created" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -719,7 +767,7 @@ func (target *IdentityCreated) init(clientEvent *ninchat.Event) error {
 	if x := source["identity_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.IdentityAttrs = new(IdentityAttrs)
-			target.IdentityAttrs.init(y)
+			target.IdentityAttrs.MergeFrom(y)
 		}
 	}
 
@@ -744,11 +792,14 @@ type IdentityDeleted struct {
 	IdentityType string `json:"identity_type"`
 }
 
+// String returns "identity_deleted".
 func (*IdentityDeleted) String() string {
 	return "identity_deleted"
 }
 
-func (target *IdentityDeleted) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "identity_deleted".
+func (target *IdentityDeleted) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "identity_deleted" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -778,11 +829,14 @@ type IdentityFound struct {
 	UserId        string         `json:"user_id"`
 }
 
+// String returns "identity_found".
 func (*IdentityFound) String() string {
 	return "identity_found"
 }
 
-func (target *IdentityFound) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "identity_found".
+func (target *IdentityFound) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "identity_found" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -792,7 +846,7 @@ func (target *IdentityFound) init(clientEvent *ninchat.Event) error {
 	if x := source["identity_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.IdentityAttrs = new(IdentityAttrs)
-			target.IdentityAttrs.init(y)
+			target.IdentityAttrs.MergeFrom(y)
 		}
 	}
 
@@ -824,11 +878,14 @@ type IdentityUpdated struct {
 	IdentityType  string         `json:"identity_type"`
 }
 
+// String returns "identity_updated".
 func (*IdentityUpdated) String() string {
 	return "identity_updated"
 }
 
-func (target *IdentityUpdated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "identity_updated".
+func (target *IdentityUpdated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "identity_updated" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -838,7 +895,7 @@ func (target *IdentityUpdated) init(clientEvent *ninchat.Event) error {
 	if x := source["identity_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.IdentityAttrs = new(IdentityAttrs)
-			target.IdentityAttrs.init(y)
+			target.IdentityAttrs.MergeFrom(y)
 		}
 	}
 
@@ -862,11 +919,14 @@ type MasterFound struct {
 	MasterKeys *MasterKeys `json:"master_keys"`
 }
 
+// String returns "master_found".
 func (*MasterFound) String() string {
 	return "master_found"
 }
 
-func (target *MasterFound) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "master_found".
+func (target *MasterFound) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "master_found" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -876,7 +936,7 @@ func (target *MasterFound) init(clientEvent *ninchat.Event) error {
 	if x := source["master_keys"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.MasterKeys = new(MasterKeys)
-			target.MasterKeys.init(y)
+			target.MasterKeys.MergeFrom(y)
 		}
 	}
 
@@ -889,11 +949,14 @@ type MasterKeyCreated struct {
 	MasterKeySecret *string `json:"master_key_secret,omitempty"`
 }
 
+// String returns "master_key_created".
 func (*MasterKeyCreated) String() string {
 	return "master_key_created"
 }
 
-func (target *MasterKeyCreated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "master_key_created".
+func (target *MasterKeyCreated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "master_key_created" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -920,11 +983,14 @@ type MasterKeyDeleted struct {
 	MasterKeyId string `json:"master_key_id"`
 }
 
+// String returns "master_key_deleted".
 func (*MasterKeyDeleted) String() string {
 	return "master_key_deleted"
 }
 
-func (target *MasterKeyDeleted) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "master_key_deleted".
+func (target *MasterKeyDeleted) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "master_key_deleted" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -957,11 +1023,14 @@ type MessageReceived struct {
 	Payload             [][]byte
 }
 
+// String returns "message_received".
 func (*MessageReceived) String() string {
 	return "message_received"
 }
 
-func (target *MessageReceived) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "message_received".
+func (target *MessageReceived) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "message_received" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1048,11 +1117,14 @@ type MessageUpdated struct {
 	MessageId     string  `json:"message_id"`
 }
 
+// String returns "message_updated".
 func (*MessageUpdated) String() string {
 	return "message_updated"
 }
 
-func (target *MessageUpdated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "message_updated".
+func (target *MessageUpdated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "message_updated" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1082,11 +1154,14 @@ func (target *MessageUpdated) init(clientEvent *ninchat.Event) error {
 type Pong struct {
 }
 
+// String returns "pong".
 func (*Pong) String() string {
 	return "pong"
 }
 
-func (target *Pong) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "pong".
+func (target *Pong) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "pong" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1101,11 +1176,14 @@ type QueueCreated struct {
 	RealmId    *string     `json:"realm_id,omitempty"`
 }
 
+// String returns "queue_created".
 func (*QueueCreated) String() string {
 	return "queue_created"
 }
 
-func (target *QueueCreated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "queue_created".
+func (target *QueueCreated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_created" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1115,7 +1193,7 @@ func (target *QueueCreated) init(clientEvent *ninchat.Event) error {
 	if x := source["queue_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.QueueAttrs = new(QueueAttrs)
-			target.QueueAttrs.init(y)
+			target.QueueAttrs.MergeFrom(y)
 		}
 	}
 
@@ -1140,11 +1218,14 @@ type QueueDeleted struct {
 	RealmId *string `json:"realm_id,omitempty"`
 }
 
+// String returns "queue_deleted".
 func (*QueueDeleted) String() string {
 	return "queue_deleted"
 }
 
-func (target *QueueDeleted) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "queue_deleted".
+func (target *QueueDeleted) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_deleted" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1175,11 +1256,14 @@ type QueueFound struct {
 	RealmId       *string       `json:"realm_id,omitempty"`
 }
 
+// String returns "queue_found".
 func (*QueueFound) String() string {
 	return "queue_found"
 }
 
-func (target *QueueFound) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "queue_found".
+func (target *QueueFound) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_found" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1189,7 +1273,7 @@ func (target *QueueFound) init(clientEvent *ninchat.Event) error {
 	if x := source["queue_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.QueueAttrs = new(QueueAttrs)
-			target.QueueAttrs.init(y)
+			target.QueueAttrs.MergeFrom(y)
 		}
 	}
 
@@ -1202,7 +1286,7 @@ func (target *QueueFound) init(clientEvent *ninchat.Event) error {
 	if x := source["queue_members"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.QueueMembers = new(QueueMembers)
-			target.QueueMembers.init(y)
+			target.QueueMembers.MergeFrom(y)
 		}
 	}
 
@@ -1228,11 +1312,14 @@ type QueueJoined struct {
 	RealmId    *string     `json:"realm_id,omitempty"`
 }
 
+// String returns "queue_joined".
 func (*QueueJoined) String() string {
 	return "queue_joined"
 }
 
-func (target *QueueJoined) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "queue_joined".
+func (target *QueueJoined) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_joined" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1242,7 +1329,7 @@ func (target *QueueJoined) init(clientEvent *ninchat.Event) error {
 	if x := source["queue_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.QueueAttrs = new(QueueAttrs)
-			target.QueueAttrs.init(y)
+			target.QueueAttrs.MergeFrom(y)
 		}
 	}
 
@@ -1269,11 +1356,14 @@ type QueueMemberJoined struct {
 	UserId      string      `json:"user_id"`
 }
 
+// String returns "queue_member_joined".
 func (*QueueMemberJoined) String() string {
 	return "queue_member_joined"
 }
 
-func (target *QueueMemberJoined) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "queue_member_joined".
+func (target *QueueMemberJoined) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_member_joined" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1295,7 +1385,7 @@ func (target *QueueMemberJoined) init(clientEvent *ninchat.Event) error {
 	if x := source["user_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserAttrs = new(UserAttrs)
-			target.UserAttrs.init(y)
+			target.UserAttrs.MergeFrom(y)
 		}
 	}
 
@@ -1314,11 +1404,14 @@ type QueueMemberParted struct {
 	UserId  string `json:"user_id"`
 }
 
+// String returns "queue_member_parted".
 func (*QueueMemberParted) String() string {
 	return "queue_member_parted"
 }
 
-func (target *QueueMemberParted) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "queue_member_parted".
+func (target *QueueMemberParted) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_member_parted" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1346,11 +1439,14 @@ type QueueParted struct {
 	RealmId *string `json:"realm_id,omitempty"`
 }
 
+// String returns "queue_parted".
 func (*QueueParted) String() string {
 	return "queue_parted"
 }
 
-func (target *QueueParted) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "queue_parted".
+func (target *QueueParted) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_parted" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1380,11 +1476,14 @@ type QueueUpdated struct {
 	RealmId       *string     `json:"realm_id,omitempty"`
 }
 
+// String returns "queue_updated".
 func (*QueueUpdated) String() string {
 	return "queue_updated"
 }
 
-func (target *QueueUpdated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "queue_updated".
+func (target *QueueUpdated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_updated" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1394,7 +1493,7 @@ func (target *QueueUpdated) init(clientEvent *ninchat.Event) error {
 	if x := source["queue_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.QueueAttrs = new(QueueAttrs)
-			target.QueueAttrs.init(y)
+			target.QueueAttrs.MergeFrom(y)
 		}
 	}
 
@@ -1424,11 +1523,14 @@ type RealmDeleted struct {
 	RealmId string `json:"realm_id"`
 }
 
+// String returns "realm_deleted".
 func (*RealmDeleted) String() string {
 	return "realm_deleted"
 }
 
-func (target *RealmDeleted) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "realm_deleted".
+func (target *RealmDeleted) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_deleted" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1451,11 +1553,14 @@ type RealmFound struct {
 	RealmMembers *RealmMembers `json:"realm_members,omitempty"`
 }
 
+// String returns "realm_found".
 func (*RealmFound) String() string {
 	return "realm_found"
 }
 
-func (target *RealmFound) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "realm_found".
+func (target *RealmFound) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_found" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1465,7 +1570,7 @@ func (target *RealmFound) init(clientEvent *ninchat.Event) error {
 	if x := source["realm_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.RealmAttrs = new(RealmAttrs)
-			target.RealmAttrs.init(y)
+			target.RealmAttrs.MergeFrom(y)
 		}
 	}
 
@@ -1478,7 +1583,7 @@ func (target *RealmFound) init(clientEvent *ninchat.Event) error {
 	if x := source["realm_members"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.RealmMembers = new(RealmMembers)
-			target.RealmMembers.init(y)
+			target.RealmMembers.MergeFrom(y)
 		}
 	}
 
@@ -1492,11 +1597,14 @@ type RealmJoined struct {
 	RealmMembers *RealmMembers `json:"realm_members"`
 }
 
+// String returns "realm_joined".
 func (*RealmJoined) String() string {
 	return "realm_joined"
 }
 
-func (target *RealmJoined) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "realm_joined".
+func (target *RealmJoined) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_joined" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1506,7 +1614,7 @@ func (target *RealmJoined) init(clientEvent *ninchat.Event) error {
 	if x := source["realm_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.RealmAttrs = new(RealmAttrs)
-			target.RealmAttrs.init(y)
+			target.RealmAttrs.MergeFrom(y)
 		}
 	}
 
@@ -1519,7 +1627,7 @@ func (target *RealmJoined) init(clientEvent *ninchat.Event) error {
 	if x := source["realm_members"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.RealmMembers = new(RealmMembers)
-			target.RealmMembers.init(y)
+			target.RealmMembers.MergeFrom(y)
 		}
 	}
 
@@ -1534,11 +1642,14 @@ type RealmMemberJoined struct {
 	UserId      string      `json:"user_id"`
 }
 
+// String returns "realm_member_joined".
 func (*RealmMemberJoined) String() string {
 	return "realm_member_joined"
 }
 
-func (target *RealmMemberJoined) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "realm_member_joined".
+func (target *RealmMemberJoined) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_member_joined" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1560,7 +1671,7 @@ func (target *RealmMemberJoined) init(clientEvent *ninchat.Event) error {
 	if x := source["user_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserAttrs = new(UserAttrs)
-			target.UserAttrs.init(y)
+			target.UserAttrs.MergeFrom(y)
 		}
 	}
 
@@ -1580,11 +1691,14 @@ type RealmMemberParted struct {
 	UserId    string  `json:"user_id"`
 }
 
+// String returns "realm_member_parted".
 func (*RealmMemberParted) String() string {
 	return "realm_member_parted"
 }
 
-func (target *RealmMemberParted) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "realm_member_parted".
+func (target *RealmMemberParted) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_member_parted" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1619,11 +1733,14 @@ type RealmMemberUpdated struct {
 	UserId      string      `json:"user_id"`
 }
 
+// String returns "realm_member_updated".
 func (*RealmMemberUpdated) String() string {
 	return "realm_member_updated"
 }
 
-func (target *RealmMemberUpdated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "realm_member_updated".
+func (target *RealmMemberUpdated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_member_updated" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1656,11 +1773,14 @@ type RealmParted struct {
 	RealmId string `json:"realm_id"`
 }
 
+// String returns "realm_parted".
 func (*RealmParted) String() string {
 	return "realm_parted"
 }
 
-func (target *RealmParted) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "realm_parted".
+func (target *RealmParted) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_parted" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1682,11 +1802,14 @@ type RealmQueuesFound struct {
 	RealmQueues *RealmQueues `json:"realm_queues"`
 }
 
+// String returns "realm_queues_found".
 func (*RealmQueuesFound) String() string {
 	return "realm_queues_found"
 }
 
-func (target *RealmQueuesFound) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "realm_queues_found".
+func (target *RealmQueuesFound) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_queues_found" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1702,7 +1825,7 @@ func (target *RealmQueuesFound) init(clientEvent *ninchat.Event) error {
 	if x := source["realm_queues"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.RealmQueues = new(RealmQueues)
-			target.RealmQueues.init(y)
+			target.RealmQueues.MergeFrom(y)
 		}
 	}
 
@@ -1715,11 +1838,14 @@ type RealmUpdated struct {
 	RealmId    string      `json:"realm_id"`
 }
 
+// String returns "realm_updated".
 func (*RealmUpdated) String() string {
 	return "realm_updated"
 }
 
-func (target *RealmUpdated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "realm_updated".
+func (target *RealmUpdated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_updated" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1729,7 +1855,7 @@ func (target *RealmUpdated) init(clientEvent *ninchat.Event) error {
 	if x := source["realm_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.RealmAttrs = new(RealmAttrs)
-			target.RealmAttrs.init(y)
+			target.RealmAttrs.MergeFrom(y)
 		}
 	}
 
@@ -1748,11 +1874,14 @@ type SearchResults struct {
 	Users    *Users    `json:"users,omitempty"`
 }
 
+// String returns "search_results".
 func (*SearchResults) String() string {
 	return "search_results"
 }
 
-func (target *SearchResults) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "search_results".
+func (target *SearchResults) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "search_results" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1762,14 +1891,14 @@ func (target *SearchResults) init(clientEvent *ninchat.Event) error {
 	if x := source["channels"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.Channels = new(Channels)
-			target.Channels.init(y)
+			target.Channels.MergeFrom(y)
 		}
 	}
 
 	if x := source["users"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.Users = new(Users)
-			target.Users.init(y)
+			target.Users.MergeFrom(y)
 		}
 	}
 
@@ -1793,11 +1922,14 @@ type SessionCreated struct {
 	UserSettings     map[string]interface{} `json:"user_settings"`
 }
 
+// String returns "session_created".
 func (*SessionCreated) String() string {
 	return "session_created"
 }
 
-func (target *SessionCreated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "session_created".
+func (target *SessionCreated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "session_created" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1819,14 +1951,14 @@ func (target *SessionCreated) init(clientEvent *ninchat.Event) error {
 	if x := source["user_account"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserAccount = new(UserAccount)
-			target.UserAccount.init(y)
+			target.UserAccount.MergeFrom(y)
 		}
 	}
 
 	if x := source["user_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserAttrs = new(UserAttrs)
-			target.UserAttrs.init(y)
+			target.UserAttrs.MergeFrom(y)
 		}
 	}
 
@@ -1839,14 +1971,14 @@ func (target *SessionCreated) init(clientEvent *ninchat.Event) error {
 	if x := source["user_channels"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserChannels = new(UserChannels)
-			target.UserChannels.init(y)
+			target.UserChannels.MergeFrom(y)
 		}
 	}
 
 	if x := source["user_dialogues"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserDialogues = new(UserDialogues)
-			target.UserDialogues.init(y)
+			target.UserDialogues.MergeFrom(y)
 		}
 	}
 
@@ -1859,28 +1991,28 @@ func (target *SessionCreated) init(clientEvent *ninchat.Event) error {
 	if x := source["user_identities"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserIdentities = new(UserIdentities)
-			target.UserIdentities.init(y)
+			target.UserIdentities.MergeFrom(y)
 		}
 	}
 
 	if x := source["user_queues"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserQueues = new(UserQueues)
-			target.UserQueues.init(y)
+			target.UserQueues.MergeFrom(y)
 		}
 	}
 
 	if x := source["user_realms"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserRealms = new(UserRealms)
-			target.UserRealms.init(y)
+			target.UserRealms.MergeFrom(y)
 		}
 	}
 
 	if x := source["user_realms_member"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserRealmsMember = new(UserRealmsMember)
-			target.UserRealmsMember.init(y)
+			target.UserRealmsMember.MergeFrom(y)
 		}
 	}
 
@@ -1900,11 +2032,14 @@ type SessionStatusUpdated struct {
 	UserId    *string `json:"user_id,omitempty"`
 }
 
+// String returns "session_status_updated".
 func (*SessionStatusUpdated) String() string {
 	return "session_status_updated"
 }
 
-func (target *SessionStatusUpdated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "session_status_updated".
+func (target *SessionStatusUpdated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "session_status_updated" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1937,11 +2072,14 @@ type UserDeleted struct {
 	UserId string `json:"user_id"`
 }
 
+// String returns "user_deleted".
 func (*UserDeleted) String() string {
 	return "user_deleted"
 }
 
-func (target *UserDeleted) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "user_deleted".
+func (target *UserDeleted) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "user_deleted" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1974,11 +2112,14 @@ type UserFound struct {
 	UserSettings     map[string]interface{} `json:"user_settings,omitempty"`
 }
 
+// String returns "user_found".
 func (*UserFound) String() string {
 	return "user_found"
 }
 
-func (target *UserFound) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "user_found".
+func (target *UserFound) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "user_found" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -1994,7 +2135,7 @@ func (target *UserFound) init(clientEvent *ninchat.Event) error {
 	if x := source["dialogue_members"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.DialogueMembers = new(DialogueMembers)
-			target.DialogueMembers.init(y)
+			target.DialogueMembers.MergeFrom(y)
 		}
 	}
 
@@ -2007,28 +2148,28 @@ func (target *UserFound) init(clientEvent *ninchat.Event) error {
 	if x := source["user_account"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserAccount = new(UserAccount)
-			target.UserAccount.init(y)
+			target.UserAccount.MergeFrom(y)
 		}
 	}
 
 	if x := source["user_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserAttrs = new(UserAttrs)
-			target.UserAttrs.init(y)
+			target.UserAttrs.MergeFrom(y)
 		}
 	}
 
 	if x := source["user_channels"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserChannels = new(UserChannels)
-			target.UserChannels.init(y)
+			target.UserChannels.MergeFrom(y)
 		}
 	}
 
 	if x := source["user_dialogues"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserDialogues = new(UserDialogues)
-			target.UserDialogues.init(y)
+			target.UserDialogues.MergeFrom(y)
 		}
 	}
 
@@ -2041,28 +2182,28 @@ func (target *UserFound) init(clientEvent *ninchat.Event) error {
 	if x := source["user_identities"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserIdentities = new(UserIdentities)
-			target.UserIdentities.init(y)
+			target.UserIdentities.MergeFrom(y)
 		}
 	}
 
 	if x := source["user_queues"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserQueues = new(UserQueues)
-			target.UserQueues.init(y)
+			target.UserQueues.MergeFrom(y)
 		}
 	}
 
 	if x := source["user_realms"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserRealms = new(UserRealms)
-			target.UserRealms.init(y)
+			target.UserRealms.MergeFrom(y)
 		}
 	}
 
 	if x := source["user_realms_member"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserRealmsMember = new(UserRealmsMember)
-			target.UserRealmsMember.init(y)
+			target.UserRealmsMember.MergeFrom(y)
 		}
 	}
 
@@ -2083,11 +2224,14 @@ type UserUpdated struct {
 	UserSettings map[string]interface{} `json:"user_settings,omitempty"`
 }
 
+// String returns "user_updated".
 func (*UserUpdated) String() string {
 	return "user_updated"
 }
 
-func (target *UserUpdated) init(clientEvent *ninchat.Event) error {
+// MergeFrom fills in the parameters specified by the clientEvent.  An
+// UnexpectedEventError is returned if its type is not "user_updated".
+func (target *UserUpdated) MergeFrom(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "user_updated" {
 		return &UnexpectedEventError{clientEvent}
 	}
@@ -2097,14 +2241,14 @@ func (target *UserUpdated) init(clientEvent *ninchat.Event) error {
 	if x := source["user_account"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserAccount = new(UserAccount)
-			target.UserAccount.init(y)
+			target.UserAccount.MergeFrom(y)
 		}
 	}
 
 	if x := source["user_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserAttrs = new(UserAttrs)
-			target.UserAttrs.init(y)
+			target.UserAttrs.MergeFrom(y)
 		}
 	}
 
