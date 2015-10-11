@@ -4,12 +4,13 @@ import (
 	"github.com/ninchat/ninchat-go"
 )
 
-type action interface {
+// Action interface is implemented by all action structs.
+type Action interface {
 	newClientAction() (*ninchat.Action, error)
 }
 
 // Call an action with or without a session.
-func Call(session *ninchat.Session, events chan<- *ninchat.Event, action action) (err error) {
+func Call(session *ninchat.Session, events chan<- *ninchat.Event, action Action) (err error) {
 	clientAction, err := action.newClientAction()
 	if err != nil {
 		close(events)
@@ -45,7 +46,7 @@ func Call(session *ninchat.Session, events chan<- *ninchat.Event, action action)
 }
 
 // Send an action.
-func Send(session *ninchat.Session, action action) (err error) {
+func Send(session *ninchat.Session, action Action) (err error) {
 	clientAction, err := action.newClientAction()
 	if err != nil {
 		return
@@ -55,7 +56,7 @@ func Send(session *ninchat.Session, action action) (err error) {
 	return
 }
 
-func unaryCall(session *ninchat.Session, action action, event eventInit) (ok bool, err error) {
+func unaryCall(session *ninchat.Session, action Action, event eventInit) (ok bool, err error) {
 	c := make(chan *ninchat.Event, 1) // XXX: why doesn't this work without buffering?
 
 	if err = Call(session, c, action); err != nil {
