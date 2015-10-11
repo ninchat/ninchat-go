@@ -1,7 +1,7 @@
 package ninchatapi
 
 import (
-	ninchat ".."
+	"github.com/ninchat/ninchat-go"
 )
 
 // EventError wraps an `error` event or an unexpected event.

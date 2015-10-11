@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"."
-	".."
+	"github.com/ninchat/ninchat-go"
 )
 
 var messageData = []byte("{\"text\":\"hello\"}")

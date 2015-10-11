@@ -142,8 +142,11 @@ def main():
 		print_header()
 
 		print
-		print 'import "errors"'
-		print 'import ninchat ".."'
+		print 'import ('
+		print '  "errors"'
+		print
+		print '  "github.com/ninchat/ninchat-go"'
+		print ')'
 
 		for action in sorted(ninchat.api.actions.values(), key=lambda a: a.name):
 			if action.name != "create_session":
@@ -153,7 +156,9 @@ def main():
 		print_header()
 
 		print
-		print 'import ninchat ".."'
+		print 'import ('
+		print '  "github.com/ninchat/ninchat-go"'
+		print ')'
 
 		for event in sorted(ninchat.api.events.values(), key=lambda e: e.name):
 			print_event(event)

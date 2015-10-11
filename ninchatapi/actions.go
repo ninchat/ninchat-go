@@ -1,7 +1,7 @@
 package ninchatapi
 
 import (
-	ninchat ".."
+	"github.com/ninchat/ninchat-go"
 )
 
 type action interface {
