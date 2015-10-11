@@ -6,6 +6,9 @@ import (
 
 // Action interface is implemented by all action structs.
 type Action interface {
+	// String returns the action type.
+	String() string
+
 	newClientAction() (*ninchat.Action, error)
 }
 
