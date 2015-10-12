@@ -20,6 +20,7 @@ check-client-js: bin/gopherjs
 	bin/gopherjs build
 
 check-api:
+	$(GO) get github.com/tsavola/pointer
 	$(GOFMT) -d -s ninchatapi/*.go
 	$(GO) vet ./ninchatapi
 	$(GO) test -v ./ninchatapi

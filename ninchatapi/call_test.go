@@ -3,14 +3,14 @@ package ninchatapi_test
 import (
 	"testing"
 
+	"github.com/tsavola/pointer"
+
 	"."
 )
 
 func TestCall(t *testing.T) {
-	channelId := "1p255nth008"
-
 	action := ninchatapi.DescribeChannel{
-		ChannelId: &channelId,
+		ChannelId: pointer.String("1p255nth008"),
 	}
 
 	reply, err := action.Invoke(nil)

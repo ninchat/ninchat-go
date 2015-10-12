@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/tsavola/pointer"
+
 	"."
 	"github.com/ninchat/ninchat-go"
 )
@@ -68,11 +70,9 @@ func testSession(t *testing.T, transport string) {
 		t.Fatal(err)
 	}
 
-	messageType := "ninchat.com/text"
-
 	messageEvent, err := (&ninchatapi.SendMessage{
 		UserId:      &sessionEvent.UserId,
-		MessageType: &messageType,
+		MessageType: pointer.String("ninchat.com/text"),
 		Payload: [][]byte{
 			messageData,
 		},

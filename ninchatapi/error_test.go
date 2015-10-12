@@ -3,17 +3,15 @@ package ninchatapi_test
 import (
 	"testing"
 
+	"github.com/tsavola/pointer"
+
 	"."
 )
 
 func TestServerError(t *testing.T) {
-	badChannelId := "1"
-
-	action := ninchatapi.DescribeChannel{
-		ChannelId: &badChannelId,
-	}
-
-	reply, err := action.Invoke(nil)
+	reply, err := (&ninchatapi.DescribeChannel{
+		ChannelId: pointer.String("1"),
+	}).Invoke(nil)
 	if reply != nil {
 		t.Error(reply)
 	}
@@ -37,15 +35,13 @@ func TestServerError(t *testing.T) {
 
 	if event.ChannelId == nil {
 		t.Error("no channel_id")
-	} else if *event.ChannelId != badChannelId {
+	} else if *event.ChannelId != "1" {
 		t.Error(*event.ChannelId)
 	}
 }
 
 func TestClientError(t *testing.T) {
-	badAction := ninchatapi.DescribeChannel{}
-
-	reply, err := badAction.Invoke(nil)
+	reply, err := new(ninchatapi.DescribeChannel).Invoke(nil)
 	if reply != nil {
 		t.Fatal(reply)
 	}
