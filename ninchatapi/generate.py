@@ -162,6 +162,10 @@ def main():
 		for event in sorted(ninchat.api.events.values(), key=lambda e: e.name):
 			print_event(event)
 
+	with Output("eventfactory"):
+		print_header()
+		print_eventfactory()
+
 	with Output("attrs"):
 		print_header()
 
@@ -598,6 +602,16 @@ def print_object(obj):
 			print '  }'
 
 		print '}'
+
+def print_eventfactory():
+	print
+	print '// EventFactories contains default constructors for all known event types.'
+	print 'var EventFactories = map[string]func() Event{'
+
+	for event in sorted(ninchat.api.events.values(), key=lambda e: e.name):
+		print '  "{}": func() Event {{ return new({}) }},'.format(event.name, title(event.name))
+
+	print '}'
 
 def title(s):
 	return s.title().replace("_", "")
