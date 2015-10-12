@@ -78,7 +78,7 @@ func unaryCall(session *ninchat.Session, action Action, event Event) (ok bool, e
 	if clientEvent.String() == "error" {
 		err = newError(clientEvent)
 	} else {
-		err = event.MergeFrom(clientEvent)
+		err = event.Init(clientEvent)
 	}
 	return
 }

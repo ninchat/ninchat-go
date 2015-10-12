@@ -8,7 +8,7 @@ import (
 
 // AcceptAudience action.  https://ninchat.com/api/v2#accept_audience
 type AcceptAudience struct {
-	QueueId *string `json:"queue_id,omitempty"`
+	QueueId *string `json:"queue_id"`
 }
 
 // String returns "accept_audience".
@@ -26,7 +26,8 @@ func (action *AcceptAudience) newClientAction() (clientAction *ninchat.Action, e
 	if x := action.QueueId; x != nil {
 		clientAction.Params["queue_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("accept_audience action requires queue_id parameter")
+		err = newRequestMalformedError("accept_audience action requires queue_id parameter")
+		return
 	}
 
 	return
@@ -50,8 +51,8 @@ func (action *AcceptAudience) Invoke(session *ninchat.Session) (reply *DialogueU
 
 // AddMember action.  https://ninchat.com/api/v2#add_member
 type AddMember struct {
-	QueueId *string `json:"queue_id,omitempty"`
-	UserId  *string `json:"user_id,omitempty"`
+	QueueId *string `json:"queue_id"`
+	UserId  *string `json:"user_id"`
 }
 
 // String returns "add_member".
@@ -69,13 +70,15 @@ func (action *AddMember) newClientAction() (clientAction *ninchat.Action, err er
 	if x := action.QueueId; x != nil {
 		clientAction.Params["queue_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("add_member action requires queue_id parameter")
+		err = newRequestMalformedError("add_member action requires queue_id parameter")
+		return
 	}
 
 	if x := action.UserId; x != nil {
 		clientAction.Params["user_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("add_member action requires user_id parameter")
+		err = newRequestMalformedError("add_member action requires user_id parameter")
+		return
 	}
 
 	return
@@ -119,7 +122,7 @@ func (action *CloseSession) newClientAction() (clientAction *ninchat.Action, err
 
 // CreateAccess action.  https://ninchat.com/api/v2#create_access
 type CreateAccess struct {
-	AccessType  *string `json:"access_type,omitempty"`
+	AccessType  *string `json:"access_type"`
 	ChannelId   *string `json:"channel_id,omitempty"`
 	RealmMember bool    `json:"realm_member,omitempty"`
 	UserId      *string `json:"user_id,omitempty"`
@@ -140,7 +143,8 @@ func (action *CreateAccess) newClientAction() (clientAction *ninchat.Action, err
 	if x := action.AccessType; x != nil {
 		clientAction.Params["access_type"] = *x
 	} else {
-		return nil, newRequestMalformedError("create_access action requires access_type parameter")
+		err = newRequestMalformedError("create_access action requires access_type parameter")
+		return
 	}
 
 	if x := action.ChannelId; x != nil {
@@ -223,8 +227,8 @@ func (action *CreateChannel) Invoke(session *ninchat.Session) (reply *ChannelJoi
 type CreateIdentity struct {
 	IdentityAttrs   *IdentityAttrs `json:"identity_attrs,omitempty"`
 	IdentityAuthNew *string        `json:"identity_auth_new,omitempty"`
-	IdentityName    *string        `json:"identity_name,omitempty"`
-	IdentityType    *string        `json:"identity_type,omitempty"`
+	IdentityName    *string        `json:"identity_name"`
+	IdentityType    *string        `json:"identity_type"`
 }
 
 // String returns "create_identity".
@@ -250,13 +254,15 @@ func (action *CreateIdentity) newClientAction() (clientAction *ninchat.Action, e
 	if x := action.IdentityName; x != nil {
 		clientAction.Params["identity_name"] = *x
 	} else {
-		return nil, newRequestMalformedError("create_identity action requires identity_name parameter")
+		err = newRequestMalformedError("create_identity action requires identity_name parameter")
+		return
 	}
 
 	if x := action.IdentityType; x != nil {
 		clientAction.Params["identity_type"] = *x
 	} else {
-		return nil, newRequestMalformedError("create_identity action requires identity_type parameter")
+		err = newRequestMalformedError("create_identity action requires identity_type parameter")
+		return
 	}
 
 	return
@@ -315,8 +321,8 @@ func (action *CreateMasterKey) Invoke(session *ninchat.Session) (reply *MasterKe
 
 // CreateQueue action.  https://ninchat.com/api/v2#create_queue
 type CreateQueue struct {
-	QueueAttrs *QueueAttrs `json:"queue_attrs,omitempty"`
-	RealmId    *string     `json:"realm_id,omitempty"`
+	QueueAttrs *QueueAttrs `json:"queue_attrs"`
+	RealmId    *string     `json:"realm_id"`
 }
 
 // String returns "create_queue".
@@ -334,13 +340,15 @@ func (action *CreateQueue) newClientAction() (clientAction *ninchat.Action, err 
 	if x := action.QueueAttrs; x != nil {
 		clientAction.Params["queue_attrs"] = x
 	} else {
-		return nil, newRequestMalformedError("create_queue action requires queue_attrs parameter")
+		err = newRequestMalformedError("create_queue action requires queue_attrs parameter")
+		return
 	}
 
 	if x := action.RealmId; x != nil {
 		clientAction.Params["realm_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("create_queue action requires realm_id parameter")
+		err = newRequestMalformedError("create_queue action requires realm_id parameter")
+		return
 	}
 
 	return
@@ -410,8 +418,8 @@ func (action *CreateRealm) Invoke(session *ninchat.Session) (reply *RealmJoined,
 // DeleteIdentity action.  https://ninchat.com/api/v2#delete_identity
 type DeleteIdentity struct {
 	IdentityAuth *string `json:"identity_auth,omitempty"`
-	IdentityName *string `json:"identity_name,omitempty"`
-	IdentityType *string `json:"identity_type,omitempty"`
+	IdentityName *string `json:"identity_name"`
+	IdentityType *string `json:"identity_type"`
 }
 
 // String returns "delete_identity".
@@ -433,13 +441,15 @@ func (action *DeleteIdentity) newClientAction() (clientAction *ninchat.Action, e
 	if x := action.IdentityName; x != nil {
 		clientAction.Params["identity_name"] = *x
 	} else {
-		return nil, newRequestMalformedError("delete_identity action requires identity_name parameter")
+		err = newRequestMalformedError("delete_identity action requires identity_name parameter")
+		return
 	}
 
 	if x := action.IdentityType; x != nil {
 		clientAction.Params["identity_type"] = *x
 	} else {
-		return nil, newRequestMalformedError("delete_identity action requires identity_type parameter")
+		err = newRequestMalformedError("delete_identity action requires identity_type parameter")
+		return
 	}
 
 	return
@@ -463,7 +473,7 @@ func (action *DeleteIdentity) Invoke(session *ninchat.Session) (reply *IdentityD
 
 // DeleteMasterKey action.  https://ninchat.com/api/v2#delete_master_key
 type DeleteMasterKey struct {
-	MasterKeyId     *string `json:"master_key_id,omitempty"`
+	MasterKeyId     *string `json:"master_key_id"`
 	MasterKeySecret *string `json:"master_key_secret,omitempty"`
 	UserAuth        *string `json:"user_auth,omitempty"`
 }
@@ -483,7 +493,8 @@ func (action *DeleteMasterKey) newClientAction() (clientAction *ninchat.Action, 
 	if x := action.MasterKeyId; x != nil {
 		clientAction.Params["master_key_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("delete_master_key action requires master_key_id parameter")
+		err = newRequestMalformedError("delete_master_key action requires master_key_id parameter")
+		return
 	}
 
 	if x := action.MasterKeySecret; x != nil {
@@ -515,7 +526,7 @@ func (action *DeleteMasterKey) Invoke(session *ninchat.Session) (reply *MasterKe
 
 // DeleteQueue action.  https://ninchat.com/api/v2#delete_queue
 type DeleteQueue struct {
-	QueueId *string `json:"queue_id,omitempty"`
+	QueueId *string `json:"queue_id"`
 }
 
 // String returns "delete_queue".
@@ -533,7 +544,8 @@ func (action *DeleteQueue) newClientAction() (clientAction *ninchat.Action, err 
 	if x := action.QueueId; x != nil {
 		clientAction.Params["queue_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("delete_queue action requires queue_id parameter")
+		err = newRequestMalformedError("delete_queue action requires queue_id parameter")
+		return
 	}
 
 	return
@@ -557,7 +569,7 @@ func (action *DeleteQueue) Invoke(session *ninchat.Session) (reply *QueueDeleted
 
 // DeleteRealm action.  https://ninchat.com/api/v2#delete_realm
 type DeleteRealm struct {
-	RealmId *string `json:"realm_id,omitempty"`
+	RealmId *string `json:"realm_id"`
 }
 
 // String returns "delete_realm".
@@ -575,7 +587,8 @@ func (action *DeleteRealm) newClientAction() (clientAction *ninchat.Action, err 
 	if x := action.RealmId; x != nil {
 		clientAction.Params["realm_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("delete_realm action requires realm_id parameter")
+		err = newRequestMalformedError("delete_realm action requires realm_id parameter")
+		return
 	}
 
 	return
@@ -599,7 +612,7 @@ func (action *DeleteRealm) Invoke(session *ninchat.Session) (reply *RealmDeleted
 
 // DeleteUser action.  https://ninchat.com/api/v2#delete_user
 type DeleteUser struct {
-	UserAuth *string `json:"user_auth,omitempty"`
+	UserAuth *string `json:"user_auth"`
 }
 
 // String returns "delete_user".
@@ -617,7 +630,8 @@ func (action *DeleteUser) newClientAction() (clientAction *ninchat.Action, err e
 	if x := action.UserAuth; x != nil {
 		clientAction.Params["user_auth"] = *x
 	} else {
-		return nil, newRequestMalformedError("delete_user action requires user_auth parameter")
+		err = newRequestMalformedError("delete_user action requires user_auth parameter")
+		return
 	}
 
 	return
@@ -642,7 +656,7 @@ func (action *DeleteUser) Invoke(session *ninchat.Session) (reply *UserDeleted, 
 // DescribeAccess action.  https://ninchat.com/api/v2#describe_access
 type DescribeAccess struct {
 	ActionIdDisabled bool
-	AccessKey        *string `json:"access_key,omitempty"`
+	AccessKey        *string `json:"access_key"`
 }
 
 // String returns "describe_access".
@@ -664,7 +678,8 @@ func (action *DescribeAccess) newClientAction() (clientAction *ninchat.Action, e
 	if x := action.AccessKey; x != nil {
 		clientAction.Params["access_key"] = *x
 	} else {
-		return nil, newRequestMalformedError("describe_access action requires access_key parameter")
+		err = newRequestMalformedError("describe_access action requires access_key parameter")
+		return
 	}
 
 	return
@@ -688,7 +703,7 @@ func (action *DescribeAccess) Invoke(session *ninchat.Session) (reply *AccessFou
 
 // DescribeChannel action.  https://ninchat.com/api/v2#describe_channel
 type DescribeChannel struct {
-	ChannelId *string `json:"channel_id,omitempty"`
+	ChannelId *string `json:"channel_id"`
 }
 
 // String returns "describe_channel".
@@ -706,7 +721,8 @@ func (action *DescribeChannel) newClientAction() (clientAction *ninchat.Action, 
 	if x := action.ChannelId; x != nil {
 		clientAction.Params["channel_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("describe_channel action requires channel_id parameter")
+		err = newRequestMalformedError("describe_channel action requires channel_id parameter")
+		return
 	}
 
 	return
@@ -730,8 +746,8 @@ func (action *DescribeChannel) Invoke(session *ninchat.Session) (reply *ChannelF
 
 // DescribeIdentity action.  https://ninchat.com/api/v2#describe_identity
 type DescribeIdentity struct {
-	IdentityName *string `json:"identity_name,omitempty"`
-	IdentityType *string `json:"identity_type,omitempty"`
+	IdentityName *string `json:"identity_name"`
+	IdentityType *string `json:"identity_type"`
 }
 
 // String returns "describe_identity".
@@ -749,13 +765,15 @@ func (action *DescribeIdentity) newClientAction() (clientAction *ninchat.Action,
 	if x := action.IdentityName; x != nil {
 		clientAction.Params["identity_name"] = *x
 	} else {
-		return nil, newRequestMalformedError("describe_identity action requires identity_name parameter")
+		err = newRequestMalformedError("describe_identity action requires identity_name parameter")
+		return
 	}
 
 	if x := action.IdentityType; x != nil {
 		clientAction.Params["identity_type"] = *x
 	} else {
-		return nil, newRequestMalformedError("describe_identity action requires identity_type parameter")
+		err = newRequestMalformedError("describe_identity action requires identity_type parameter")
+		return
 	}
 
 	return
@@ -814,7 +832,7 @@ func (action *DescribeMaster) Invoke(session *ninchat.Session) (reply *MasterFou
 
 // DescribeQueue action.  https://ninchat.com/api/v2#describe_queue
 type DescribeQueue struct {
-	QueueId *string `json:"queue_id,omitempty"`
+	QueueId *string `json:"queue_id"`
 }
 
 // String returns "describe_queue".
@@ -832,7 +850,8 @@ func (action *DescribeQueue) newClientAction() (clientAction *ninchat.Action, er
 	if x := action.QueueId; x != nil {
 		clientAction.Params["queue_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("describe_queue action requires queue_id parameter")
+		err = newRequestMalformedError("describe_queue action requires queue_id parameter")
+		return
 	}
 
 	return
@@ -856,7 +875,7 @@ func (action *DescribeQueue) Invoke(session *ninchat.Session) (reply *QueueFound
 
 // DescribeRealm action.  https://ninchat.com/api/v2#describe_realm
 type DescribeRealm struct {
-	RealmId *string `json:"realm_id,omitempty"`
+	RealmId *string `json:"realm_id"`
 }
 
 // String returns "describe_realm".
@@ -874,7 +893,8 @@ func (action *DescribeRealm) newClientAction() (clientAction *ninchat.Action, er
 	if x := action.RealmId; x != nil {
 		clientAction.Params["realm_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("describe_realm action requires realm_id parameter")
+		err = newRequestMalformedError("describe_realm action requires realm_id parameter")
+		return
 	}
 
 	return
@@ -898,7 +918,7 @@ func (action *DescribeRealm) Invoke(session *ninchat.Session) (reply *RealmFound
 
 // DescribeRealmQueues action.  https://ninchat.com/api/v2#describe_realm_queues
 type DescribeRealmQueues struct {
-	RealmId *string `json:"realm_id,omitempty"`
+	RealmId *string `json:"realm_id"`
 }
 
 // String returns "describe_realm_queues".
@@ -916,7 +936,8 @@ func (action *DescribeRealmQueues) newClientAction() (clientAction *ninchat.Acti
 	if x := action.RealmId; x != nil {
 		clientAction.Params["realm_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("describe_realm_queues action requires realm_id parameter")
+		err = newRequestMalformedError("describe_realm_queues action requires realm_id parameter")
+		return
 	}
 
 	return
@@ -980,8 +1001,8 @@ func (action *DescribeUser) Invoke(session *ninchat.Session) (reply *UserFound, 
 
 // DiscardHistory action.  https://ninchat.com/api/v2#discard_history
 type DiscardHistory struct {
-	MessageId *string `json:"message_id,omitempty"`
-	UserId    *string `json:"user_id,omitempty"`
+	MessageId *string `json:"message_id"`
+	UserId    *string `json:"user_id"`
 }
 
 // String returns "discard_history".
@@ -999,13 +1020,15 @@ func (action *DiscardHistory) newClientAction() (clientAction *ninchat.Action, e
 	if x := action.MessageId; x != nil {
 		clientAction.Params["message_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("discard_history action requires message_id parameter")
+		err = newRequestMalformedError("discard_history action requires message_id parameter")
+		return
 	}
 
 	if x := action.UserId; x != nil {
 		clientAction.Params["user_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("discard_history action requires user_id parameter")
+		err = newRequestMalformedError("discard_history action requires user_id parameter")
+		return
 	}
 
 	return
@@ -1074,10 +1097,10 @@ func (action *FollowChannel) Invoke(session *ninchat.Session) (reply *ChannelFou
 
 // JoinChannel action.  https://ninchat.com/api/v2#join_channel
 type JoinChannel struct {
-	AccessKey   *string     `json:"access_key,omitempty"`
-	ChannelId   *string     `json:"channel_id,omitempty"`
-	MasterSign  *string     `json:"master_sign,omitempty"`
-	MemberAttrs interface{} `json:"member_attrs"`
+	AccessKey   *string             `json:"access_key,omitempty"`
+	ChannelId   *string             `json:"channel_id,omitempty"`
+	MasterSign  *string             `json:"master_sign,omitempty"`
+	MemberAttrs *ChannelMemberAttrs `json:"member_attrs,omitempty"`
 }
 
 // String returns "join_channel".
@@ -1175,7 +1198,7 @@ func (action *LoadHistory) newClientAction() (clientAction *ninchat.Action, err 
 		clientAction.Params["message_id"] = *x
 	}
 
-	if x := action.MessageTypes; len(x) > 0 {
+	if x := action.MessageTypes; x != nil {
 		clientAction.Params["message_types"] = x
 	}
 
@@ -1188,7 +1211,7 @@ func (action *LoadHistory) newClientAction() (clientAction *ninchat.Action, err 
 
 // PartChannel action.  https://ninchat.com/api/v2#part_channel
 type PartChannel struct {
-	ChannelId *string `json:"channel_id,omitempty"`
+	ChannelId *string `json:"channel_id"`
 }
 
 // String returns "part_channel".
@@ -1206,7 +1229,8 @@ func (action *PartChannel) newClientAction() (clientAction *ninchat.Action, err 
 	if x := action.ChannelId; x != nil {
 		clientAction.Params["channel_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("part_channel action requires channel_id parameter")
+		err = newRequestMalformedError("part_channel action requires channel_id parameter")
+		return
 	}
 
 	return
@@ -1273,7 +1297,7 @@ type RemoveMember struct {
 	ChannelId *string `json:"channel_id,omitempty"`
 	QueueId   *string `json:"queue_id,omitempty"`
 	RealmId   *string `json:"realm_id,omitempty"`
-	UserId    *string `json:"user_id,omitempty"`
+	UserId    *string `json:"user_id"`
 }
 
 // String returns "remove_member".
@@ -1303,7 +1327,8 @@ func (action *RemoveMember) newClientAction() (clientAction *ninchat.Action, err
 	if x := action.UserId; x != nil {
 		clientAction.Params["user_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("remove_member action requires user_id parameter")
+		err = newRequestMalformedError("remove_member action requires user_id parameter")
+		return
 	}
 
 	return
@@ -1328,7 +1353,7 @@ func (action *RemoveMember) Invoke(session *ninchat.Session) (reply *MemberParte
 // RequestAudience action.  https://ninchat.com/api/v2#request_audience
 type RequestAudience struct {
 	AudienceMetadata map[string]interface{} `json:"audience_metadata,omitempty"`
-	QueueId          *string                `json:"queue_id,omitempty"`
+	QueueId          *string                `json:"queue_id"`
 }
 
 // String returns "request_audience".
@@ -1350,7 +1375,8 @@ func (action *RequestAudience) newClientAction() (clientAction *ninchat.Action, 
 	if x := action.QueueId; x != nil {
 		clientAction.Params["queue_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("request_audience action requires queue_id parameter")
+		err = newRequestMalformedError("request_audience action requires queue_id parameter")
+		return
 	}
 
 	return
@@ -1375,8 +1401,8 @@ func (action *RequestAudience) Invoke(session *ninchat.Session) (reply *Audience
 // RequestIdentityAuthResetAccess action.  https://ninchat.com/api/v2#request_identity_auth_reset_access
 type RequestIdentityAuthResetAccess struct {
 	ActionIdDisabled bool
-	IdentityName     *string `json:"identity_name,omitempty"`
-	IdentityType     *string `json:"identity_type,omitempty"`
+	IdentityName     *string `json:"identity_name"`
+	IdentityType     *string `json:"identity_type"`
 }
 
 // String returns "request_identity_auth_reset_access".
@@ -1398,13 +1424,15 @@ func (action *RequestIdentityAuthResetAccess) newClientAction() (clientAction *n
 	if x := action.IdentityName; x != nil {
 		clientAction.Params["identity_name"] = *x
 	} else {
-		return nil, newRequestMalformedError("request_identity_auth_reset_access action requires identity_name parameter")
+		err = newRequestMalformedError("request_identity_auth_reset_access action requires identity_name parameter")
+		return
 	}
 
 	if x := action.IdentityType; x != nil {
 		clientAction.Params["identity_type"] = *x
 	} else {
-		return nil, newRequestMalformedError("request_identity_auth_reset_access action requires identity_type parameter")
+		err = newRequestMalformedError("request_identity_auth_reset_access action requires identity_type parameter")
+		return
 	}
 
 	return
@@ -1429,8 +1457,8 @@ func (action *RequestIdentityAuthResetAccess) Invoke(session *ninchat.Session) (
 // RequestIdentityVerifyAccess action.  https://ninchat.com/api/v2#request_identity_verify_access
 type RequestIdentityVerifyAccess struct {
 	ActionIdDisabled bool
-	IdentityName     *string `json:"identity_name,omitempty"`
-	IdentityType     *string `json:"identity_type,omitempty"`
+	IdentityName     *string `json:"identity_name"`
+	IdentityType     *string `json:"identity_type"`
 }
 
 // String returns "request_identity_verify_access".
@@ -1452,13 +1480,15 @@ func (action *RequestIdentityVerifyAccess) newClientAction() (clientAction *ninc
 	if x := action.IdentityName; x != nil {
 		clientAction.Params["identity_name"] = *x
 	} else {
-		return nil, newRequestMalformedError("request_identity_verify_access action requires identity_name parameter")
+		err = newRequestMalformedError("request_identity_verify_access action requires identity_name parameter")
+		return
 	}
 
 	if x := action.IdentityType; x != nil {
 		clientAction.Params["identity_type"] = *x
 	} else {
-		return nil, newRequestMalformedError("request_identity_verify_access action requires identity_type parameter")
+		err = newRequestMalformedError("request_identity_verify_access action requires identity_type parameter")
+		return
 	}
 
 	return
@@ -1482,8 +1512,8 @@ func (action *RequestIdentityVerifyAccess) Invoke(session *ninchat.Session) (rep
 
 // ResetIdentityAuth action.  https://ninchat.com/api/v2#reset_identity_auth
 type ResetIdentityAuth struct {
-	AccessKey       *string `json:"access_key,omitempty"`
-	IdentityAuthNew *string `json:"identity_auth_new,omitempty"`
+	AccessKey       *string `json:"access_key"`
+	IdentityAuthNew *string `json:"identity_auth_new"`
 }
 
 // String returns "reset_identity_auth".
@@ -1502,13 +1532,15 @@ func (action *ResetIdentityAuth) newClientAction() (clientAction *ninchat.Action
 	if x := action.AccessKey; x != nil {
 		clientAction.Params["access_key"] = *x
 	} else {
-		return nil, newRequestMalformedError("reset_identity_auth action requires access_key parameter")
+		err = newRequestMalformedError("reset_identity_auth action requires access_key parameter")
+		return
 	}
 
 	if x := action.IdentityAuthNew; x != nil {
 		clientAction.Params["identity_auth_new"] = *x
 	} else {
-		return nil, newRequestMalformedError("reset_identity_auth action requires identity_auth_new parameter")
+		err = newRequestMalformedError("reset_identity_auth action requires identity_auth_new parameter")
+		return
 	}
 
 	return
@@ -1552,7 +1584,7 @@ func (action *ResumeSession) newClientAction() (clientAction *ninchat.Action, er
 
 // Search action.  https://ninchat.com/api/v2#search
 type Search struct {
-	SearchTerm *string `json:"search_term,omitempty"`
+	SearchTerm *string `json:"search_term"`
 }
 
 // String returns "search".
@@ -1570,7 +1602,8 @@ func (action *Search) newClientAction() (clientAction *ninchat.Action, err error
 	if x := action.SearchTerm; x != nil {
 		clientAction.Params["search_term"] = *x
 	} else {
-		return nil, newRequestMalformedError("search action requires search_term parameter")
+		err = newRequestMalformedError("search action requires search_term parameter")
+		return
 	}
 
 	return
@@ -1640,7 +1673,7 @@ type SendMessage struct {
 	MessageFold         bool     `json:"message_fold,omitempty"`
 	MessageRecipientIds []string `json:"message_recipient_ids,omitempty"`
 	MessageTtl          *float64 `json:"message_ttl,omitempty"`
-	MessageType         *string  `json:"message_type,omitempty"`
+	MessageType         *string  `json:"message_type"`
 	UserId              *string  `json:"user_id,omitempty"`
 	Payload             [][]byte
 }
@@ -1678,7 +1711,7 @@ func (action *SendMessage) newClientAction() (clientAction *ninchat.Action, err 
 		clientAction.Params["message_fold"] = x
 	}
 
-	if x := action.MessageRecipientIds; len(x) > 0 {
+	if x := action.MessageRecipientIds; x != nil {
 		clientAction.Params["message_recipient_ids"] = x
 	}
 
@@ -1689,7 +1722,8 @@ func (action *SendMessage) newClientAction() (clientAction *ninchat.Action, err 
 	if x := action.MessageType; x != nil {
 		clientAction.Params["message_type"] = *x
 	} else {
-		return nil, newRequestMalformedError("send_message action requires message_type parameter")
+		err = newRequestMalformedError("send_message action requires message_type parameter")
+		return
 	}
 
 	if x := action.UserId; x != nil {
@@ -1717,8 +1751,8 @@ func (action *SendMessage) Invoke(session *ninchat.Session) (reply *MessageRecei
 
 // UpdateChannel action.  https://ninchat.com/api/v2#update_channel
 type UpdateChannel struct {
-	ChannelAttrs *ChannelAttrs `json:"channel_attrs,omitempty"`
-	ChannelId    *string       `json:"channel_id,omitempty"`
+	ChannelAttrs *ChannelAttrs `json:"channel_attrs"`
+	ChannelId    *string       `json:"channel_id"`
 }
 
 // String returns "update_channel".
@@ -1736,13 +1770,15 @@ func (action *UpdateChannel) newClientAction() (clientAction *ninchat.Action, er
 	if x := action.ChannelAttrs; x != nil {
 		clientAction.Params["channel_attrs"] = x
 	} else {
-		return nil, newRequestMalformedError("update_channel action requires channel_attrs parameter")
+		err = newRequestMalformedError("update_channel action requires channel_attrs parameter")
+		return
 	}
 
 	if x := action.ChannelId; x != nil {
 		clientAction.Params["channel_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("update_channel action requires channel_id parameter")
+		err = newRequestMalformedError("update_channel action requires channel_id parameter")
+		return
 	}
 
 	return
@@ -1766,9 +1802,9 @@ func (action *UpdateChannel) Invoke(session *ninchat.Session) (reply *ChannelUpd
 
 // UpdateDialogue action.  https://ninchat.com/api/v2#update_dialogue
 type UpdateDialogue struct {
-	DialogueStatus *string     `json:"dialogue_status,omitempty"`
-	MemberAttrs    interface{} `json:"member_attrs"`
-	UserId         *string     `json:"user_id,omitempty"`
+	DialogueStatus *string              `json:"dialogue_status,omitempty"`
+	MemberAttrs    *DialogueMemberAttrs `json:"member_attrs,omitempty"`
+	UserId         *string              `json:"user_id"`
 }
 
 // String returns "update_dialogue".
@@ -1794,7 +1830,8 @@ func (action *UpdateDialogue) newClientAction() (clientAction *ninchat.Action, e
 	if x := action.UserId; x != nil {
 		clientAction.Params["user_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("update_dialogue action requires user_id parameter")
+		err = newRequestMalformedError("update_dialogue action requires user_id parameter")
+		return
 	}
 
 	return
@@ -1818,9 +1855,9 @@ func (action *UpdateDialogue) Invoke(session *ninchat.Session) (reply *DialogueU
 
 // UpdateIdentity action.  https://ninchat.com/api/v2#update_identity
 type UpdateIdentity struct {
-	IdentityAttrs *IdentityAttrs `json:"identity_attrs,omitempty"`
-	IdentityName  *string        `json:"identity_name,omitempty"`
-	IdentityType  *string        `json:"identity_type,omitempty"`
+	IdentityAttrs *IdentityAttrs `json:"identity_attrs"`
+	IdentityName  *string        `json:"identity_name"`
+	IdentityType  *string        `json:"identity_type"`
 }
 
 // String returns "update_identity".
@@ -1838,19 +1875,22 @@ func (action *UpdateIdentity) newClientAction() (clientAction *ninchat.Action, e
 	if x := action.IdentityAttrs; x != nil {
 		clientAction.Params["identity_attrs"] = x
 	} else {
-		return nil, newRequestMalformedError("update_identity action requires identity_attrs parameter")
+		err = newRequestMalformedError("update_identity action requires identity_attrs parameter")
+		return
 	}
 
 	if x := action.IdentityName; x != nil {
 		clientAction.Params["identity_name"] = *x
 	} else {
-		return nil, newRequestMalformedError("update_identity action requires identity_name parameter")
+		err = newRequestMalformedError("update_identity action requires identity_name parameter")
+		return
 	}
 
 	if x := action.IdentityType; x != nil {
 		clientAction.Params["identity_type"] = *x
 	} else {
-		return nil, newRequestMalformedError("update_identity action requires identity_type parameter")
+		err = newRequestMalformedError("update_identity action requires identity_type parameter")
+		return
 	}
 
 	return
@@ -1875,9 +1915,9 @@ func (action *UpdateIdentity) Invoke(session *ninchat.Session) (reply *IdentityU
 // UpdateIdentityAuth action.  https://ninchat.com/api/v2#update_identity_auth
 type UpdateIdentityAuth struct {
 	IdentityAuth    *string `json:"identity_auth,omitempty"`
-	IdentityAuthNew *string `json:"identity_auth_new,omitempty"`
-	IdentityName    *string `json:"identity_name,omitempty"`
-	IdentityType    *string `json:"identity_type,omitempty"`
+	IdentityAuthNew *string `json:"identity_auth_new"`
+	IdentityName    *string `json:"identity_name"`
+	IdentityType    *string `json:"identity_type"`
 }
 
 // String returns "update_identity_auth".
@@ -1899,19 +1939,22 @@ func (action *UpdateIdentityAuth) newClientAction() (clientAction *ninchat.Actio
 	if x := action.IdentityAuthNew; x != nil {
 		clientAction.Params["identity_auth_new"] = *x
 	} else {
-		return nil, newRequestMalformedError("update_identity_auth action requires identity_auth_new parameter")
+		err = newRequestMalformedError("update_identity_auth action requires identity_auth_new parameter")
+		return
 	}
 
 	if x := action.IdentityName; x != nil {
 		clientAction.Params["identity_name"] = *x
 	} else {
-		return nil, newRequestMalformedError("update_identity_auth action requires identity_name parameter")
+		err = newRequestMalformedError("update_identity_auth action requires identity_name parameter")
+		return
 	}
 
 	if x := action.IdentityType; x != nil {
 		clientAction.Params["identity_type"] = *x
 	} else {
-		return nil, newRequestMalformedError("update_identity_auth action requires identity_type parameter")
+		err = newRequestMalformedError("update_identity_auth action requires identity_type parameter")
+		return
 	}
 
 	return
@@ -1936,9 +1979,9 @@ func (action *UpdateIdentityAuth) Invoke(session *ninchat.Session) (reply *Ident
 // UpdateMember action.  https://ninchat.com/api/v2#update_member
 type UpdateMember struct {
 	ChannelId   *string     `json:"channel_id,omitempty"`
-	MemberAttrs interface{} `json:"member_attrs"`
+	MemberAttrs MemberAttrs `json:"member_attrs"`
 	RealmId     *string     `json:"realm_id,omitempty"`
-	UserId      *string     `json:"user_id,omitempty"`
+	UserId      *string     `json:"user_id"`
 }
 
 // String returns "update_member".
@@ -1960,7 +2003,8 @@ func (action *UpdateMember) newClientAction() (clientAction *ninchat.Action, err
 	if x := action.MemberAttrs; x != nil {
 		clientAction.Params["member_attrs"] = x
 	} else {
-		return nil, newRequestMalformedError("update_member action requires member_attrs parameter")
+		err = newRequestMalformedError("update_member action requires member_attrs parameter")
+		return
 	}
 
 	if x := action.RealmId; x != nil {
@@ -1970,7 +2014,8 @@ func (action *UpdateMember) newClientAction() (clientAction *ninchat.Action, err
 	if x := action.UserId; x != nil {
 		clientAction.Params["user_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("update_member action requires user_id parameter")
+		err = newRequestMalformedError("update_member action requires user_id parameter")
+		return
 	}
 
 	return
@@ -1994,9 +2039,9 @@ func (action *UpdateMember) Invoke(session *ninchat.Session) (reply *MemberUpdat
 
 // UpdateMessage action.  https://ninchat.com/api/v2#update_message
 type UpdateMessage struct {
-	ChannelId     *string `json:"channel_id,omitempty"`
-	MessageHidden bool    `json:"message_hidden,omitempty"`
-	MessageId     *string `json:"message_id,omitempty"`
+	ChannelId     *string `json:"channel_id"`
+	MessageHidden bool    `json:"message_hidden"`
+	MessageId     *string `json:"message_id"`
 }
 
 // String returns "update_message".
@@ -2014,19 +2059,22 @@ func (action *UpdateMessage) newClientAction() (clientAction *ninchat.Action, er
 	if x := action.ChannelId; x != nil {
 		clientAction.Params["channel_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("update_message action requires channel_id parameter")
+		err = newRequestMalformedError("update_message action requires channel_id parameter")
+		return
 	}
 
 	if x := action.MessageHidden; x {
 		clientAction.Params["message_hidden"] = x
 	} else {
-		return nil, newRequestMalformedError("update_message action requires message_hidden parameter")
+		err = newRequestMalformedError("update_message action requires message_hidden parameter")
+		return
 	}
 
 	if x := action.MessageId; x != nil {
 		clientAction.Params["message_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("update_message action requires message_id parameter")
+		err = newRequestMalformedError("update_message action requires message_id parameter")
+		return
 	}
 
 	return
@@ -2050,8 +2098,8 @@ func (action *UpdateMessage) Invoke(session *ninchat.Session) (reply *MessageUpd
 
 // UpdateQueue action.  https://ninchat.com/api/v2#update_queue
 type UpdateQueue struct {
-	QueueAttrs *QueueAttrs `json:"queue_attrs,omitempty"`
-	QueueId    *string     `json:"queue_id,omitempty"`
+	QueueAttrs *QueueAttrs `json:"queue_attrs"`
+	QueueId    *string     `json:"queue_id"`
 }
 
 // String returns "update_queue".
@@ -2069,13 +2117,15 @@ func (action *UpdateQueue) newClientAction() (clientAction *ninchat.Action, err 
 	if x := action.QueueAttrs; x != nil {
 		clientAction.Params["queue_attrs"] = x
 	} else {
-		return nil, newRequestMalformedError("update_queue action requires queue_attrs parameter")
+		err = newRequestMalformedError("update_queue action requires queue_attrs parameter")
+		return
 	}
 
 	if x := action.QueueId; x != nil {
 		clientAction.Params["queue_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("update_queue action requires queue_id parameter")
+		err = newRequestMalformedError("update_queue action requires queue_id parameter")
+		return
 	}
 
 	return
@@ -2099,8 +2149,8 @@ func (action *UpdateQueue) Invoke(session *ninchat.Session) (reply *QueueUpdated
 
 // UpdateRealm action.  https://ninchat.com/api/v2#update_realm
 type UpdateRealm struct {
-	RealmAttrs *RealmAttrs `json:"realm_attrs,omitempty"`
-	RealmId    *string     `json:"realm_id,omitempty"`
+	RealmAttrs *RealmAttrs `json:"realm_attrs"`
+	RealmId    *string     `json:"realm_id"`
 }
 
 // String returns "update_realm".
@@ -2118,13 +2168,15 @@ func (action *UpdateRealm) newClientAction() (clientAction *ninchat.Action, err 
 	if x := action.RealmAttrs; x != nil {
 		clientAction.Params["realm_attrs"] = x
 	} else {
-		return nil, newRequestMalformedError("update_realm action requires realm_attrs parameter")
+		err = newRequestMalformedError("update_realm action requires realm_attrs parameter")
+		return
 	}
 
 	if x := action.RealmId; x != nil {
 		clientAction.Params["realm_id"] = *x
 	} else {
-		return nil, newRequestMalformedError("update_realm action requires realm_id parameter")
+		err = newRequestMalformedError("update_realm action requires realm_id parameter")
+		return
 	}
 
 	return
@@ -2207,7 +2259,7 @@ func (action *UpdateUser) newClientAction() (clientAction *ninchat.Action, err e
 		Payload: action.Payload,
 	}
 
-	if x := action.PayloadAttrs; len(x) > 0 {
+	if x := action.PayloadAttrs; x != nil {
 		clientAction.Params["payload_attrs"] = x
 	}
 
@@ -2241,8 +2293,8 @@ func (action *UpdateUser) Invoke(session *ninchat.Session) (reply *UserUpdated, 
 // VerifyIdentity action.  https://ninchat.com/api/v2#verify_identity
 type VerifyIdentity struct {
 	ActionIdDisabled bool
-	AccessKey        *string `json:"access_key,omitempty"`
-	IdentityAccept   bool    `json:"identity_accept,omitempty"`
+	AccessKey        *string `json:"access_key"`
+	IdentityAccept   bool    `json:"identity_accept"`
 }
 
 // String returns "verify_identity".
@@ -2264,13 +2316,15 @@ func (action *VerifyIdentity) newClientAction() (clientAction *ninchat.Action, e
 	if x := action.AccessKey; x != nil {
 		clientAction.Params["access_key"] = *x
 	} else {
-		return nil, newRequestMalformedError("verify_identity action requires access_key parameter")
+		err = newRequestMalformedError("verify_identity action requires access_key parameter")
+		return
 	}
 
 	if x := action.IdentityAccept; x {
 		clientAction.Params["identity_accept"] = x
 	} else {
-		return nil, newRequestMalformedError("verify_identity action requires identity_accept parameter")
+		err = newRequestMalformedError("verify_identity action requires identity_accept parameter")
+		return
 	}
 
 	return

@@ -8,16 +8,7 @@ import (
 type Event interface {
 	// MergeFrom fills in the parameters specified by the clientEvent.  An
 	// UnexpectedEventError may be returned.
-	MergeFrom(clientEvent *ninchat.Event) error
-}
-
-// NewSessionCreated.
-func NewSessionCreated(clientEvent *ninchat.Event) (event *SessionCreated, err error) {
-	if clientEvent != nil {
-		event = new(SessionCreated)
-		err = event.MergeFrom(clientEvent)
-	}
-	return
+	Init(clientEvent *ninchat.Event) error
 }
 
 // MemberJoined is a union of target-specific events.
@@ -27,19 +18,19 @@ type MemberJoined struct {
 	Realm   *RealmMemberJoined
 }
 
-// MergeFrom fills in the parameters specified by the clientEvent.  An
+// Init fills in the parameters specified by the clientEvent.  An
 // UnexpectedEventError is returned if its type is not "channel_member_joined",
 // "queue_member_joined" or "realm_member_joined".
-func (union *MemberJoined) MergeFrom(clientEvent *ninchat.Event) (err error) {
+func (union *MemberJoined) Init(clientEvent *ninchat.Event) (err error) {
 	switch clientEvent.String() {
 	case "channel_member_joined":
-		return union.Channel.MergeFrom(clientEvent)
+		return union.Channel.Init(clientEvent)
 
 	case "queue_member_joined":
-		return union.Queue.MergeFrom(clientEvent)
+		return union.Queue.Init(clientEvent)
 
 	case "realm_member_joined":
-		return union.Realm.MergeFrom(clientEvent)
+		return union.Realm.Init(clientEvent)
 
 	default:
 		return newError(clientEvent)
@@ -53,19 +44,19 @@ type MemberParted struct {
 	Realm   *RealmMemberParted
 }
 
-// MergeFrom fills in the parameters specified by the clientEvent.  An
+// Init fills in the parameters specified by the clientEvent.  An
 // UnexpectedEventError is returned if its type is not "channel_member_parted",
 // "queue_member_parted" or "realm_member_parted".
-func (union *MemberParted) MergeFrom(clientEvent *ninchat.Event) (err error) {
+func (union *MemberParted) Init(clientEvent *ninchat.Event) (err error) {
 	switch clientEvent.String() {
 	case "channel_member_parted":
-		return union.Channel.MergeFrom(clientEvent)
+		return union.Channel.Init(clientEvent)
 
 	case "queue_member_parted":
-		return union.Queue.MergeFrom(clientEvent)
+		return union.Queue.Init(clientEvent)
 
 	case "realm_member_parted":
-		return union.Realm.MergeFrom(clientEvent)
+		return union.Realm.Init(clientEvent)
 
 	default:
 		return newError(clientEvent)
@@ -78,26 +69,46 @@ type MemberUpdated struct {
 	Realm   *RealmMemberUpdated
 }
 
-// MergeFrom fills in the parameters specified by the clientEvent.  An
+// Init fills in the parameters specified by the clientEvent.  An
 // UnexpectedEventError is returned if its type is not "channel_member_updated"
 // or "realm_member_updated".
-func (union *MemberUpdated) MergeFrom(clientEvent *ninchat.Event) (err error) {
+func (union *MemberUpdated) Init(clientEvent *ninchat.Event) (err error) {
 	switch clientEvent.String() {
 	case "channel_member_updated":
-		return union.Channel.MergeFrom(clientEvent)
+		return union.Channel.Init(clientEvent)
 
 	case "realm_member_updated":
-		return union.Realm.MergeFrom(clientEvent)
+		return union.Realm.Init(clientEvent)
 
 	default:
 		return newError(clientEvent)
 	}
 }
 
+// AppendStrings unwraps string array elements from source to target.
+func AppendStrings(target []string, source []interface{}) []string {
+	if source != nil {
+		if target == nil || cap(target) < len(target)+len(source) {
+			t := make([]string, len(target), len(target)+len(source))
+			copy(t, target)
+			target = t
+		}
+
+		for _, x := range source {
+			y, _ := x.(string)
+			target = append(target, y)
+		}
+	}
+
+	return target
+}
+
+/*
+
 // ChannelMembers parameter type.
 type ChannelMembers map[string]*ChannelMemberEntry
 
-func (target *ChannelMembers) MergeFrom(source map[string]interface{}) {
+func (target *ChannelMembers) Init(source map[string]interface{}) {
 	// TODO
 }
 
@@ -109,7 +120,7 @@ type ChannelMemberEntry struct {
 // Channels parameter type.
 type Channels map[string]*ChannelResult
 
-func (target *Channels) MergeFrom(source map[string]interface{}) {
+func (target *Channels) Init(source map[string]interface{}) {
 	// TODO
 }
 
@@ -122,21 +133,21 @@ type ChannelResult struct {
 // DialogueMembers parameter type.
 type DialogueMembers map[string]*DialogueMemberAttrs
 
-func (target *DialogueMembers) MergeFrom(source map[string]interface{}) {
+func (target *DialogueMembers) Init(source map[string]interface{}) {
 	// TODO
 }
 
 // MasterKeys parameter type.
 type MasterKeys map[string]struct{}
 
-func (target *MasterKeys) MergeFrom(source map[string]interface{}) {
+func (target *MasterKeys) Init(source map[string]interface{}) {
 	// TODO
 }
 
 // QueueMembers parameter type.
 type QueueMembers map[string]*QueueMemberEntry
 
-func (target *QueueMembers) MergeFrom(source map[string]interface{}) {
+func (target *QueueMembers) Init(source map[string]interface{}) {
 	// TODO
 }
 
@@ -148,7 +159,7 @@ type QueueMemberEntry struct {
 // RealmMembers parameter type.
 type RealmMembers map[string]*RealmMemberEntry
 
-func (target *RealmMembers) MergeFrom(source map[string]interface{}) {
+func (target *RealmMembers) Init(source map[string]interface{}) {
 	// TODO
 }
 
@@ -160,7 +171,7 @@ type RealmMemberEntry struct {
 // RealmQueues parameter type.
 type RealmQueues map[string]*RealmQueueEntry
 
-func (target *RealmQueues) MergeFrom(source map[string]interface{}) {
+func (target *RealmQueues) Init(source map[string]interface{}) {
 	// TODO
 }
 
@@ -178,7 +189,7 @@ type UserAccount struct {
 	Subscriptions []UserAccountSubscription `json:"subscriptions,omitempty"`
 }
 
-func (target *UserAccount) MergeFrom(source map[string]interface{}) {
+func (target *UserAccount) Init(source map[string]interface{}) {
 	// TODO
 }
 
@@ -186,7 +197,7 @@ type UserAccountMembers struct {
 	Quota int `json:"quota"`
 }
 
-func (target *UserAccountMembers) MergeFrom(source map[string]interface{}) {
+func (target *UserAccountMembers) Init(source map[string]interface{}) {
 	// TODO
 }
 
@@ -195,7 +206,7 @@ type UserAccountObjects struct {
 	Quota     int `json:"quota"`
 }
 
-func (target *UserAccountObjects) MergeFrom(source map[string]interface{}) {
+func (target *UserAccountObjects) Init(source map[string]interface{}) {
 	// TODO
 }
 
@@ -213,7 +224,7 @@ type UserAccountSubscription struct {
 // UserChannels parameter type.
 type UserChannels map[string]*UserChannelEntry
 
-func (target *UserChannels) MergeFrom(source map[string]interface{}) {
+func (target *UserChannels) Init(source map[string]interface{}) {
 	// TODO
 }
 
@@ -226,7 +237,7 @@ type UserChannelEntry struct {
 // UserDialogues parameter type.
 type UserDialogues map[string]*UserDialogueEntry
 
-func (target *UserDialogues) MergeFrom(source map[string]interface{}) {
+func (target *UserDialogues) Init(source map[string]interface{}) {
 	// TODO
 }
 
@@ -239,14 +250,14 @@ type UserDialogueEntry struct {
 // UserIdentities parameter type.
 type UserIdentities map[string]map[string]*IdentityAttrs
 
-func (target *UserIdentities) MergeFrom(source map[string]interface{}) {
+func (target *UserIdentities) Init(source map[string]interface{}) {
 	// TODO
 }
 
 // UserQueues parameter type.
 type UserQueues map[string]*UserQueueEntry
 
-func (target *UserQueues) MergeFrom(source map[string]interface{}) {
+func (target *UserQueues) Init(source map[string]interface{}) {
 	// TODO
 }
 
@@ -258,21 +269,21 @@ type UserQueueEntry struct {
 // UserRealms parameter type.
 type UserRealms map[string]*RealmAttrs
 
-func (target *UserRealms) MergeFrom(source map[string]interface{}) {
+func (target *UserRealms) Init(source map[string]interface{}) {
 	// TODO
 }
 
 // UserRealmsMember parameter type.
 type UserRealmsMember map[string]*RealmMemberAttrs
 
-func (target *UserRealmsMember) MergeFrom(source map[string]interface{}) {
+func (target *UserRealmsMember) Init(source map[string]interface{}) {
 	// TODO
 }
 
 // Users parameter type.
 type Users map[string]*UserResult
 
-func (target *Users) MergeFrom(source map[string]interface{}) {
+func (target *Users) Init(source map[string]interface{}) {
 	// TODO
 }
 
@@ -280,3 +291,5 @@ type UserResult struct {
 	UserAttrs *UserAttrs `json:"user_attrs"`
 	Weight    float64    `json:"weight"`
 }
+
+*/
