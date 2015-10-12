@@ -13,11 +13,10 @@ func (event *Error) Error() (s string) {
 	return
 }
 
-// newError parses an "error" event.
-func newError(clientEvent *ninchat.Event) (e *Error) {
-	e = new(Error)
-	e.Init(clientEvent)
-	return
+// newError converts an "error" event into a Go error.
+func newError(clientEvent *ninchat.Event) error {
+	event, _ := NewError(clientEvent)
+	return event
 }
 
 // newRequestMalformedError synthesizes an "error" event.
