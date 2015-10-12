@@ -288,6 +288,7 @@ def print_event(event):
 	payload = event.name in payloadevents
 
 	params = event.params.copy()
+	params["event_id"] = ninchat.api.Parameter("event_id", False)
 	try:
 		del params["action_id"]
 	except KeyError:
@@ -315,7 +316,7 @@ def print_event(event):
 				typ = "[]*{}".format(title(obj.item))
 			else:
 				typ = "*" + title(p.name)
-		elif p.required:
+		elif p.required or p.name == "event_id":
 			typ = requiredtypes[p.type]
 		else:
 			typ = optionaltypes[p.type]
@@ -371,12 +372,20 @@ def print_event(event):
 				print '    target.{} = MakeStrings(y)'.format(title(p.name))
 				print '  }'
 			elif p.type != "object":
-				if p.required:
-					expr = "y"
+				if p.type == "int":
+					typ = "float64"
+					if p.required or p.name == "event_id":
+						expr = "int(y)"
+					else:
+						expr = "intPointer(y)"
 				else:
-					expr = "&y"
+					typ = requiredtypes[p.type]
+					if p.required:
+						expr = "y"
+					else:
+						expr = "&y"
 
-				print '  if y, ok := x.({}); ok {{'.format(requiredtypes[p.type])
+				print '  if y, ok := x.({}); ok {{'.format(typ)
 				print '    target.{} = {}'.format(title(p.name), expr)
 				print '  }'
 			else:
@@ -408,6 +417,11 @@ def print_event(event):
 
 	print
 	print '  return nil'
+	print '}'
+	print
+	print '// Id returns the EventId parameter.'
+	print 'func (event *{}) Id() int {{'.format(title(event.name))
+	print '  return event.EventId'
 	print '}'
 	print
 	print '// String returns "{}".'.format(event.name)

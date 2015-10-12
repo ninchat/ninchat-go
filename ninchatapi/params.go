@@ -17,3 +17,8 @@ func AppendStrings(target []string, source []interface{}) []string {
 
 	return target
 }
+
+func intPointer(x float64) *int {
+	y := int(x)
+	return &y
+}

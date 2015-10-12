@@ -70,6 +70,10 @@ func testSession(t *testing.T, transport string) {
 		t.Fatal(err)
 	}
 
+	if sessionEvent.Id() <= 0 {
+		t.Error(sessionEvent.Id())
+	}
+
 	messageEvent, err := (&ninchatapi.SendMessage{
 		UserId:      &sessionEvent.UserId,
 		MessageType: pointer.String("ninchat.com/text"),
@@ -79,6 +83,10 @@ func testSession(t *testing.T, transport string) {
 	}).Invoke(session)
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	if messageEvent.Id() <= sessionEvent.Id() {
+		t.Error(messageEvent.Id())
 	}
 
 	if len(messageEvent.Payload) != 1 {
@@ -99,15 +107,24 @@ func testSession(t *testing.T, transport string) {
 		t.Fatal(err)
 	}
 
+	if userEvent.Id() <= messageEvent.Id() {
+		t.Error(userEvent.Id())
+	}
+
 	if userEvent.UserAttrs == nil {
 		t.Error("UserAttrs")
 	} else if url := userEvent.UserAttrs.Iconurl; url == nil || *url == "" {
 		t.Error("Iconurl")
 	}
 
-	if _, err = (&ninchatapi.DeleteUser{
+	deleteEvent, err := (&ninchatapi.DeleteUser{
 		UserAuth: sessionEvent.UserAuth,
-	}).Invoke(session); err != nil {
+	}).Invoke(session)
+	if err != nil {
 		t.Fatal(err)
+	}
+
+	if deleteEvent.Id() <= userEvent.Id() {
+		t.Error(deleteEvent.Id())
 	}
 }

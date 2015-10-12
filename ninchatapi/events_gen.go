@@ -10,6 +10,7 @@ import (
 type AccessCreated struct {
 	AccessKey  *string `json:"access_key,omitempty"`
 	AccessType string  `json:"access_type"`
+	EventId    int     `json:"event_id,omitempty"`
 }
 
 // NewAccessCreated creates an event object with the parameters specified by the clientEvent.
@@ -46,7 +47,18 @@ func (target *AccessCreated) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *AccessCreated) Id() int {
+	return event.EventId
 }
 
 // String returns "access_created".
@@ -59,6 +71,7 @@ type AccessFound struct {
 	AccessType   string        `json:"access_type"`
 	ChannelAttrs *ChannelAttrs `json:"channel_attrs,omitempty"`
 	ChannelId    *string       `json:"channel_id,omitempty"`
+	EventId      int           `json:"event_id,omitempty"`
 	IdentityName *string       `json:"identity_name,omitempty"`
 	IdentityType *string       `json:"identity_type,omitempty"`
 	RealmAttrs   *RealmAttrs   `json:"realm_attrs,omitempty"`
@@ -108,6 +121,12 @@ func (target *AccessFound) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["identity_name"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.IdentityName = &y
@@ -151,6 +170,11 @@ func (target *AccessFound) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *AccessFound) Id() int {
+	return event.EventId
+}
+
 // String returns "access_found".
 func (*AccessFound) String() string {
 	return "access_found"
@@ -158,6 +182,7 @@ func (*AccessFound) String() string {
 
 // AudienceEnqueued event.  https://ninchat.com/api/v2#audience_enqueued
 type AudienceEnqueued struct {
+	EventId       int         `json:"event_id,omitempty"`
 	QueueAttrs    *QueueAttrs `json:"queue_attrs"`
 	QueueId       string      `json:"queue_id"`
 	QueuePosition int         `json:"queue_position"`
@@ -185,6 +210,12 @@ func (target *AudienceEnqueued) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["queue_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.QueueAttrs = NewQueueAttrs(y)
@@ -198,12 +229,17 @@ func (target *AudienceEnqueued) Init(clientEvent *ninchat.Event) error {
 	}
 
 	if x := source["queue_position"]; x != nil {
-		if y, ok := x.(int); ok {
-			target.QueuePosition = y
+		if y, ok := x.(float64); ok {
+			target.QueuePosition = int(y)
 		}
 	}
 
 	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *AudienceEnqueued) Id() int {
+	return event.EventId
 }
 
 // String returns "audience_enqueued".
@@ -214,6 +250,7 @@ func (*AudienceEnqueued) String() string {
 // ChannelDeleted event.  https://ninchat.com/api/v2#channel_deleted
 type ChannelDeleted struct {
 	ChannelId string `json:"channel_id"`
+	EventId   int    `json:"event_id,omitempty"`
 }
 
 // NewChannelDeleted creates an event object with the parameters specified by the clientEvent.
@@ -244,7 +281,18 @@ func (target *ChannelDeleted) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *ChannelDeleted) Id() int {
+	return event.EventId
 }
 
 // String returns "channel_deleted".
@@ -258,6 +306,7 @@ type ChannelFound struct {
 	ChannelId      string                    `json:"channel_id"`
 	ChannelMembers map[string]*ChannelMember `json:"channel_members,omitempty"`
 	ChannelStatus  *string                   `json:"channel_status,omitempty"`
+	EventId        int                       `json:"event_id,omitempty"`
 	RealmId        *string                   `json:"realm_id,omitempty"`
 }
 
@@ -307,6 +356,12 @@ func (target *ChannelFound) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["realm_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.RealmId = &y
@@ -314,6 +369,11 @@ func (target *ChannelFound) Init(clientEvent *ninchat.Event) error {
 	}
 
 	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *ChannelFound) Id() int {
+	return event.EventId
 }
 
 // String returns "channel_found".
@@ -326,6 +386,7 @@ type ChannelJoined struct {
 	ChannelAttrs   *ChannelAttrs             `json:"channel_attrs"`
 	ChannelId      string                    `json:"channel_id"`
 	ChannelMembers map[string]*ChannelMember `json:"channel_members"`
+	EventId        int                       `json:"event_id,omitempty"`
 	RealmId        *string                   `json:"realm_id,omitempty"`
 }
 
@@ -369,6 +430,12 @@ func (target *ChannelJoined) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["realm_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.RealmId = &y
@@ -376,6 +443,11 @@ func (target *ChannelJoined) Init(clientEvent *ninchat.Event) error {
 	}
 
 	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *ChannelJoined) Id() int {
+	return event.EventId
 }
 
 // String returns "channel_joined".
@@ -386,6 +458,7 @@ func (*ChannelJoined) String() string {
 // ChannelMemberJoined event.  https://ninchat.com/api/v2#channel_member_joined
 type ChannelMemberJoined struct {
 	ChannelId   string              `json:"channel_id"`
+	EventId     int                 `json:"event_id,omitempty"`
 	MemberAttrs *ChannelMemberAttrs `json:"member_attrs"`
 	UserAttrs   *UserAttrs          `json:"user_attrs"`
 	UserId      string              `json:"user_id"`
@@ -419,6 +492,12 @@ func (target *ChannelMemberJoined) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["member_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.MemberAttrs = NewChannelMemberAttrs(y)
@@ -440,6 +519,11 @@ func (target *ChannelMemberJoined) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *ChannelMemberJoined) Id() int {
+	return event.EventId
+}
+
 // String returns "channel_member_joined".
 func (*ChannelMemberJoined) String() string {
 	return "channel_member_joined"
@@ -448,6 +532,7 @@ func (*ChannelMemberJoined) String() string {
 // ChannelMemberParted event.  https://ninchat.com/api/v2#channel_member_parted
 type ChannelMemberParted struct {
 	ChannelId *string `json:"channel_id,omitempty"`
+	EventId   int     `json:"event_id,omitempty"`
 	RealmId   *string `json:"realm_id,omitempty"`
 	UserId    string  `json:"user_id"`
 }
@@ -480,6 +565,12 @@ func (target *ChannelMemberParted) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["realm_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.RealmId = &y
@@ -495,6 +586,11 @@ func (target *ChannelMemberParted) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *ChannelMemberParted) Id() int {
+	return event.EventId
+}
+
 // String returns "channel_member_parted".
 func (*ChannelMemberParted) String() string {
 	return "channel_member_parted"
@@ -503,6 +599,7 @@ func (*ChannelMemberParted) String() string {
 // ChannelMemberUpdated event.  https://ninchat.com/api/v2#channel_member_updated
 type ChannelMemberUpdated struct {
 	ChannelId   *string             `json:"channel_id,omitempty"`
+	EventId     int                 `json:"event_id,omitempty"`
 	MemberAttrs *ChannelMemberAttrs `json:"member_attrs"`
 	RealmId     *string             `json:"realm_id,omitempty"`
 	UserId      string              `json:"user_id"`
@@ -536,6 +633,12 @@ func (target *ChannelMemberUpdated) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["member_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.MemberAttrs = NewChannelMemberAttrs(y)
@@ -557,6 +660,11 @@ func (target *ChannelMemberUpdated) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *ChannelMemberUpdated) Id() int {
+	return event.EventId
+}
+
 // String returns "channel_member_updated".
 func (*ChannelMemberUpdated) String() string {
 	return "channel_member_updated"
@@ -565,6 +673,7 @@ func (*ChannelMemberUpdated) String() string {
 // ChannelParted event.  https://ninchat.com/api/v2#channel_parted
 type ChannelParted struct {
 	ChannelId string `json:"channel_id"`
+	EventId   int    `json:"event_id,omitempty"`
 }
 
 // NewChannelParted creates an event object with the parameters specified by the clientEvent.
@@ -595,7 +704,18 @@ func (target *ChannelParted) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *ChannelParted) Id() int {
+	return event.EventId
 }
 
 // String returns "channel_parted".
@@ -607,6 +727,7 @@ func (*ChannelParted) String() string {
 type ChannelUpdated struct {
 	ChannelAttrs *ChannelAttrs `json:"channel_attrs"`
 	ChannelId    string        `json:"channel_id"`
+	EventId      int           `json:"event_id,omitempty"`
 	RealmId      *string       `json:"realm_id,omitempty"`
 }
 
@@ -644,6 +765,12 @@ func (target *ChannelUpdated) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["realm_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.RealmId = &y
@@ -651,6 +778,11 @@ func (target *ChannelUpdated) Init(clientEvent *ninchat.Event) error {
 	}
 
 	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *ChannelUpdated) Id() int {
+	return event.EventId
 }
 
 // String returns "channel_updated".
@@ -663,6 +795,7 @@ type DialogueUpdated struct {
 	AudienceMetadata map[string]string               `json:"audience_metadata,omitempty"`
 	DialogueMembers  map[string]*DialogueMemberAttrs `json:"dialogue_members"`
 	DialogueStatus   *string                         `json:"dialogue_status,omitempty"`
+	EventId          int                             `json:"event_id,omitempty"`
 	UserId           string                          `json:"user_id"`
 }
 
@@ -706,6 +839,12 @@ func (target *DialogueUpdated) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["user_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.UserId = y
@@ -713,6 +852,11 @@ func (target *DialogueUpdated) Init(clientEvent *ninchat.Event) error {
 	}
 
 	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *DialogueUpdated) Id() int {
+	return event.EventId
 }
 
 // String returns "dialogue_updated".
@@ -725,6 +869,7 @@ type Error struct {
 	ChannelId    *string `json:"channel_id,omitempty"`
 	ErrorReason  *string `json:"error_reason,omitempty"`
 	ErrorType    string  `json:"error_type"`
+	EventId      int     `json:"event_id,omitempty"`
 	IdentityName *string `json:"identity_name,omitempty"`
 	IdentityType *string `json:"identity_type,omitempty"`
 	MessageType  *string `json:"message_type,omitempty"`
@@ -773,6 +918,12 @@ func (target *Error) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["identity_name"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.IdentityName = &y
@@ -812,6 +963,11 @@ func (target *Error) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *Error) Id() int {
+	return event.EventId
+}
+
 // String returns "error".
 func (*Error) String() string {
 	return "error"
@@ -820,6 +976,7 @@ func (*Error) String() string {
 // HistoryDiscarded event.  https://ninchat.com/api/v2#history_discarded
 type HistoryDiscarded struct {
 	ChannelId *string `json:"channel_id,omitempty"`
+	EventId   int     `json:"event_id,omitempty"`
 	MessageId string  `json:"message_id"`
 	UserId    *string `json:"user_id,omitempty"`
 }
@@ -852,6 +1009,12 @@ func (target *HistoryDiscarded) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["message_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.MessageId = y
@@ -867,6 +1030,11 @@ func (target *HistoryDiscarded) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *HistoryDiscarded) Id() int {
+	return event.EventId
+}
+
 // String returns "history_discarded".
 func (*HistoryDiscarded) String() string {
 	return "history_discarded"
@@ -875,6 +1043,7 @@ func (*HistoryDiscarded) String() string {
 // HistoryResults event.  https://ninchat.com/api/v2#history_results
 type HistoryResults struct {
 	ChannelId     *string `json:"channel_id,omitempty"`
+	EventId       int     `json:"event_id,omitempty"`
 	HistoryLength int     `json:"history_length"`
 	UserId        *string `json:"user_id,omitempty"`
 }
@@ -907,9 +1076,15 @@ func (target *HistoryResults) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["history_length"]; x != nil {
-		if y, ok := x.(int); ok {
-			target.HistoryLength = y
+		if y, ok := x.(float64); ok {
+			target.HistoryLength = int(y)
 		}
 	}
 
@@ -922,6 +1097,11 @@ func (target *HistoryResults) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *HistoryResults) Id() int {
+	return event.EventId
+}
+
 // String returns "history_results".
 func (*HistoryResults) String() string {
 	return "history_results"
@@ -929,6 +1109,7 @@ func (*HistoryResults) String() string {
 
 // IdentityCreated event.  https://ninchat.com/api/v2#identity_created
 type IdentityCreated struct {
+	EventId       int            `json:"event_id,omitempty"`
 	IdentityAttrs *IdentityAttrs `json:"identity_attrs"`
 	IdentityName  string         `json:"identity_name"`
 	IdentityType  string         `json:"identity_type"`
@@ -956,6 +1137,12 @@ func (target *IdentityCreated) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["identity_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.IdentityAttrs = NewIdentityAttrs(y)
@@ -977,6 +1164,11 @@ func (target *IdentityCreated) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *IdentityCreated) Id() int {
+	return event.EventId
+}
+
 // String returns "identity_created".
 func (*IdentityCreated) String() string {
 	return "identity_created"
@@ -984,6 +1176,7 @@ func (*IdentityCreated) String() string {
 
 // IdentityDeleted event.  https://ninchat.com/api/v2#identity_deleted
 type IdentityDeleted struct {
+	EventId      int    `json:"event_id,omitempty"`
 	IdentityName string `json:"identity_name"`
 	IdentityType string `json:"identity_type"`
 }
@@ -1010,6 +1203,12 @@ func (target *IdentityDeleted) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["identity_name"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.IdentityName = y
@@ -1025,6 +1224,11 @@ func (target *IdentityDeleted) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *IdentityDeleted) Id() int {
+	return event.EventId
+}
+
 // String returns "identity_deleted".
 func (*IdentityDeleted) String() string {
 	return "identity_deleted"
@@ -1032,6 +1236,7 @@ func (*IdentityDeleted) String() string {
 
 // IdentityFound event.  https://ninchat.com/api/v2#identity_found
 type IdentityFound struct {
+	EventId       int            `json:"event_id,omitempty"`
 	IdentityAttrs *IdentityAttrs `json:"identity_attrs,omitempty"`
 	IdentityName  string         `json:"identity_name"`
 	IdentityType  string         `json:"identity_type"`
@@ -1060,6 +1265,12 @@ func (target *IdentityFound) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["identity_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.IdentityAttrs = NewIdentityAttrs(y)
@@ -1087,6 +1298,11 @@ func (target *IdentityFound) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *IdentityFound) Id() int {
+	return event.EventId
+}
+
 // String returns "identity_found".
 func (*IdentityFound) String() string {
 	return "identity_found"
@@ -1094,6 +1310,7 @@ func (*IdentityFound) String() string {
 
 // IdentityUpdated event.  https://ninchat.com/api/v2#identity_updated
 type IdentityUpdated struct {
+	EventId       int            `json:"event_id,omitempty"`
 	IdentityAttrs *IdentityAttrs `json:"identity_attrs"`
 	IdentityName  string         `json:"identity_name"`
 	IdentityType  string         `json:"identity_type"`
@@ -1121,6 +1338,12 @@ func (target *IdentityUpdated) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["identity_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.IdentityAttrs = NewIdentityAttrs(y)
@@ -1142,6 +1365,11 @@ func (target *IdentityUpdated) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *IdentityUpdated) Id() int {
+	return event.EventId
+}
+
 // String returns "identity_updated".
 func (*IdentityUpdated) String() string {
 	return "identity_updated"
@@ -1149,6 +1377,7 @@ func (*IdentityUpdated) String() string {
 
 // MasterFound event.  https://ninchat.com/api/v2#master_found
 type MasterFound struct {
+	EventId    int                   `json:"event_id,omitempty"`
 	MasterKeys map[string]*MasterKey `json:"master_keys"`
 }
 
@@ -1174,6 +1403,12 @@ func (target *MasterFound) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["master_keys"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.MasterKeys = MakeMasterKeys(y)
@@ -1183,6 +1418,11 @@ func (target *MasterFound) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *MasterFound) Id() int {
+	return event.EventId
+}
+
 // String returns "master_found".
 func (*MasterFound) String() string {
 	return "master_found"
@@ -1190,6 +1430,7 @@ func (*MasterFound) String() string {
 
 // MasterKeyCreated event.  https://ninchat.com/api/v2#master_key_created
 type MasterKeyCreated struct {
+	EventId         int     `json:"event_id,omitempty"`
 	MasterKeyId     string  `json:"master_key_id"`
 	MasterKeySecret *string `json:"master_key_secret,omitempty"`
 }
@@ -1216,6 +1457,12 @@ func (target *MasterKeyCreated) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["master_key_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.MasterKeyId = y
@@ -1231,6 +1478,11 @@ func (target *MasterKeyCreated) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *MasterKeyCreated) Id() int {
+	return event.EventId
+}
+
 // String returns "master_key_created".
 func (*MasterKeyCreated) String() string {
 	return "master_key_created"
@@ -1238,6 +1490,7 @@ func (*MasterKeyCreated) String() string {
 
 // MasterKeyDeleted event.  https://ninchat.com/api/v2#master_key_deleted
 type MasterKeyDeleted struct {
+	EventId     int    `json:"event_id,omitempty"`
 	MasterKeyId string `json:"master_key_id"`
 }
 
@@ -1263,6 +1516,12 @@ func (target *MasterKeyDeleted) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["master_key_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.MasterKeyId = y
@@ -1270,6 +1529,11 @@ func (target *MasterKeyDeleted) Init(clientEvent *ninchat.Event) error {
 	}
 
 	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *MasterKeyDeleted) Id() int {
+	return event.EventId
 }
 
 // String returns "master_key_deleted".
@@ -1280,6 +1544,7 @@ func (*MasterKeyDeleted) String() string {
 // MessageReceived event.  https://ninchat.com/api/v2#message_received
 type MessageReceived struct {
 	ChannelId           *string  `json:"channel_id,omitempty"`
+	EventId             int      `json:"event_id,omitempty"`
 	HistoryLength       *int     `json:"history_length,omitempty"`
 	MessageFold         bool     `json:"message_fold,omitempty"`
 	MessageHidden       bool     `json:"message_hidden,omitempty"`
@@ -1322,9 +1587,15 @@ func (target *MessageReceived) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["history_length"]; x != nil {
-		if y, ok := x.(int); ok {
-			target.HistoryLength = &y
+		if y, ok := x.(float64); ok {
+			target.HistoryLength = intPointer(y)
 		}
 	}
 
@@ -1389,6 +1660,11 @@ func (target *MessageReceived) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *MessageReceived) Id() int {
+	return event.EventId
+}
+
 // String returns "message_received".
 func (*MessageReceived) String() string {
 	return "message_received"
@@ -1397,6 +1673,7 @@ func (*MessageReceived) String() string {
 // MessageUpdated event.  https://ninchat.com/api/v2#message_updated
 type MessageUpdated struct {
 	ChannelId     *string `json:"channel_id,omitempty"`
+	EventId       int     `json:"event_id,omitempty"`
 	MessageHidden bool    `json:"message_hidden,omitempty"`
 	MessageId     string  `json:"message_id"`
 }
@@ -1429,6 +1706,12 @@ func (target *MessageUpdated) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["message_hidden"]; x != nil {
 		target.MessageHidden = true
 	}
@@ -1442,6 +1725,11 @@ func (target *MessageUpdated) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *MessageUpdated) Id() int {
+	return event.EventId
+}
+
 // String returns "message_updated".
 func (*MessageUpdated) String() string {
 	return "message_updated"
@@ -1449,6 +1737,7 @@ func (*MessageUpdated) String() string {
 
 // Pong event.  https://ninchat.com/api/v2#pong
 type Pong struct {
+	EventId int `json:"event_id,omitempty"`
 }
 
 // NewPong creates an event object with the parameters specified by the clientEvent.
@@ -1471,7 +1760,20 @@ func (target *Pong) Init(clientEvent *ninchat.Event) error {
 		return &UnexpectedEventError{clientEvent}
 	}
 
+	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *Pong) Id() int {
+	return event.EventId
 }
 
 // String returns "pong".
@@ -1481,6 +1783,7 @@ func (*Pong) String() string {
 
 // QueueCreated event.  https://ninchat.com/api/v2#queue_created
 type QueueCreated struct {
+	EventId    int         `json:"event_id,omitempty"`
 	QueueAttrs *QueueAttrs `json:"queue_attrs"`
 	QueueId    string      `json:"queue_id"`
 	RealmId    *string     `json:"realm_id,omitempty"`
@@ -1508,6 +1811,12 @@ func (target *QueueCreated) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["queue_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.QueueAttrs = NewQueueAttrs(y)
@@ -1529,6 +1838,11 @@ func (target *QueueCreated) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *QueueCreated) Id() int {
+	return event.EventId
+}
+
 // String returns "queue_created".
 func (*QueueCreated) String() string {
 	return "queue_created"
@@ -1536,6 +1850,7 @@ func (*QueueCreated) String() string {
 
 // QueueDeleted event.  https://ninchat.com/api/v2#queue_deleted
 type QueueDeleted struct {
+	EventId int     `json:"event_id,omitempty"`
 	QueueId string  `json:"queue_id"`
 	RealmId *string `json:"realm_id,omitempty"`
 }
@@ -1562,6 +1877,12 @@ func (target *QueueDeleted) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["queue_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.QueueId = y
@@ -1577,6 +1898,11 @@ func (target *QueueDeleted) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *QueueDeleted) Id() int {
+	return event.EventId
+}
+
 // String returns "queue_deleted".
 func (*QueueDeleted) String() string {
 	return "queue_deleted"
@@ -1584,6 +1910,7 @@ func (*QueueDeleted) String() string {
 
 // QueueFound event.  https://ninchat.com/api/v2#queue_found
 type QueueFound struct {
+	EventId       int                     `json:"event_id,omitempty"`
 	QueueAttrs    *QueueAttrs             `json:"queue_attrs"`
 	QueueId       string                  `json:"queue_id"`
 	QueueMembers  map[string]*QueueMember `json:"queue_members,omitempty"`
@@ -1613,6 +1940,12 @@ func (target *QueueFound) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["queue_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.QueueAttrs = NewQueueAttrs(y)
@@ -1632,8 +1965,8 @@ func (target *QueueFound) Init(clientEvent *ninchat.Event) error {
 	}
 
 	if x := source["queue_position"]; x != nil {
-		if y, ok := x.(int); ok {
-			target.QueuePosition = &y
+		if y, ok := x.(float64); ok {
+			target.QueuePosition = intPointer(y)
 		}
 	}
 
@@ -1646,6 +1979,11 @@ func (target *QueueFound) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *QueueFound) Id() int {
+	return event.EventId
+}
+
 // String returns "queue_found".
 func (*QueueFound) String() string {
 	return "queue_found"
@@ -1653,6 +1991,7 @@ func (*QueueFound) String() string {
 
 // QueueJoined event.  https://ninchat.com/api/v2#queue_joined
 type QueueJoined struct {
+	EventId    int         `json:"event_id,omitempty"`
 	QueueAttrs *QueueAttrs `json:"queue_attrs"`
 	QueueId    string      `json:"queue_id"`
 	RealmId    *string     `json:"realm_id,omitempty"`
@@ -1680,6 +2019,12 @@ func (target *QueueJoined) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["queue_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.QueueAttrs = NewQueueAttrs(y)
@@ -1701,6 +2046,11 @@ func (target *QueueJoined) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *QueueJoined) Id() int {
+	return event.EventId
+}
+
 // String returns "queue_joined".
 func (*QueueJoined) String() string {
 	return "queue_joined"
@@ -1708,6 +2058,7 @@ func (*QueueJoined) String() string {
 
 // QueueMemberJoined event.  https://ninchat.com/api/v2#queue_member_joined
 type QueueMemberJoined struct {
+	EventId     int               `json:"event_id,omitempty"`
 	MemberAttrs *QueueMemberAttrs `json:"member_attrs"`
 	QueueId     string            `json:"queue_id"`
 	UserAttrs   *UserAttrs        `json:"user_attrs"`
@@ -1736,6 +2087,12 @@ func (target *QueueMemberJoined) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["member_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.MemberAttrs = NewQueueMemberAttrs(y)
@@ -1763,6 +2120,11 @@ func (target *QueueMemberJoined) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *QueueMemberJoined) Id() int {
+	return event.EventId
+}
+
 // String returns "queue_member_joined".
 func (*QueueMemberJoined) String() string {
 	return "queue_member_joined"
@@ -1770,6 +2132,7 @@ func (*QueueMemberJoined) String() string {
 
 // QueueMemberParted event.  https://ninchat.com/api/v2#queue_member_parted
 type QueueMemberParted struct {
+	EventId int    `json:"event_id,omitempty"`
 	QueueId string `json:"queue_id"`
 	UserId  string `json:"user_id"`
 }
@@ -1796,6 +2159,12 @@ func (target *QueueMemberParted) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["queue_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.QueueId = y
@@ -1811,6 +2180,11 @@ func (target *QueueMemberParted) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *QueueMemberParted) Id() int {
+	return event.EventId
+}
+
 // String returns "queue_member_parted".
 func (*QueueMemberParted) String() string {
 	return "queue_member_parted"
@@ -1818,6 +2192,7 @@ func (*QueueMemberParted) String() string {
 
 // QueueParted event.  https://ninchat.com/api/v2#queue_parted
 type QueueParted struct {
+	EventId int     `json:"event_id,omitempty"`
 	QueueId string  `json:"queue_id"`
 	RealmId *string `json:"realm_id,omitempty"`
 }
@@ -1844,6 +2219,12 @@ func (target *QueueParted) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["queue_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.QueueId = y
@@ -1859,6 +2240,11 @@ func (target *QueueParted) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *QueueParted) Id() int {
+	return event.EventId
+}
+
 // String returns "queue_parted".
 func (*QueueParted) String() string {
 	return "queue_parted"
@@ -1866,6 +2252,7 @@ func (*QueueParted) String() string {
 
 // QueueUpdated event.  https://ninchat.com/api/v2#queue_updated
 type QueueUpdated struct {
+	EventId       int         `json:"event_id,omitempty"`
 	QueueAttrs    *QueueAttrs `json:"queue_attrs"`
 	QueueId       string      `json:"queue_id"`
 	QueuePosition *int        `json:"queue_position,omitempty"`
@@ -1894,6 +2281,12 @@ func (target *QueueUpdated) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["queue_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.QueueAttrs = NewQueueAttrs(y)
@@ -1907,8 +2300,8 @@ func (target *QueueUpdated) Init(clientEvent *ninchat.Event) error {
 	}
 
 	if x := source["queue_position"]; x != nil {
-		if y, ok := x.(int); ok {
-			target.QueuePosition = &y
+		if y, ok := x.(float64); ok {
+			target.QueuePosition = intPointer(y)
 		}
 	}
 
@@ -1921,6 +2314,11 @@ func (target *QueueUpdated) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *QueueUpdated) Id() int {
+	return event.EventId
+}
+
 // String returns "queue_updated".
 func (*QueueUpdated) String() string {
 	return "queue_updated"
@@ -1928,6 +2326,7 @@ func (*QueueUpdated) String() string {
 
 // RealmDeleted event.  https://ninchat.com/api/v2#realm_deleted
 type RealmDeleted struct {
+	EventId int    `json:"event_id,omitempty"`
 	RealmId string `json:"realm_id"`
 }
 
@@ -1953,6 +2352,12 @@ func (target *RealmDeleted) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["realm_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.RealmId = y
@@ -1962,6 +2367,11 @@ func (target *RealmDeleted) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *RealmDeleted) Id() int {
+	return event.EventId
+}
+
 // String returns "realm_deleted".
 func (*RealmDeleted) String() string {
 	return "realm_deleted"
@@ -1969,6 +2379,7 @@ func (*RealmDeleted) String() string {
 
 // RealmFound event.  https://ninchat.com/api/v2#realm_found
 type RealmFound struct {
+	EventId      int                     `json:"event_id,omitempty"`
 	RealmAttrs   *RealmAttrs             `json:"realm_attrs"`
 	RealmId      string                  `json:"realm_id"`
 	RealmMembers map[string]*RealmMember `json:"realm_members,omitempty"`
@@ -1996,6 +2407,12 @@ func (target *RealmFound) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["realm_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.RealmAttrs = NewRealmAttrs(y)
@@ -2017,6 +2434,11 @@ func (target *RealmFound) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *RealmFound) Id() int {
+	return event.EventId
+}
+
 // String returns "realm_found".
 func (*RealmFound) String() string {
 	return "realm_found"
@@ -2024,6 +2446,7 @@ func (*RealmFound) String() string {
 
 // RealmJoined event.  https://ninchat.com/api/v2#realm_joined
 type RealmJoined struct {
+	EventId      int                     `json:"event_id,omitempty"`
 	RealmAttrs   *RealmAttrs             `json:"realm_attrs"`
 	RealmId      string                  `json:"realm_id"`
 	RealmMembers map[string]*RealmMember `json:"realm_members"`
@@ -2051,6 +2474,12 @@ func (target *RealmJoined) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["realm_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.RealmAttrs = NewRealmAttrs(y)
@@ -2072,6 +2501,11 @@ func (target *RealmJoined) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *RealmJoined) Id() int {
+	return event.EventId
+}
+
 // String returns "realm_joined".
 func (*RealmJoined) String() string {
 	return "realm_joined"
@@ -2079,6 +2513,7 @@ func (*RealmJoined) String() string {
 
 // RealmMemberJoined event.  https://ninchat.com/api/v2#realm_member_joined
 type RealmMemberJoined struct {
+	EventId     int               `json:"event_id,omitempty"`
 	MemberAttrs *RealmMemberAttrs `json:"member_attrs"`
 	RealmId     string            `json:"realm_id"`
 	UserAttrs   *UserAttrs        `json:"user_attrs"`
@@ -2107,6 +2542,12 @@ func (target *RealmMemberJoined) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["member_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.MemberAttrs = NewRealmMemberAttrs(y)
@@ -2134,6 +2575,11 @@ func (target *RealmMemberJoined) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *RealmMemberJoined) Id() int {
+	return event.EventId
+}
+
 // String returns "realm_member_joined".
 func (*RealmMemberJoined) String() string {
 	return "realm_member_joined"
@@ -2142,6 +2588,7 @@ func (*RealmMemberJoined) String() string {
 // RealmMemberParted event.  https://ninchat.com/api/v2#realm_member_parted
 type RealmMemberParted struct {
 	ChannelId *string `json:"channel_id,omitempty"`
+	EventId   int     `json:"event_id,omitempty"`
 	RealmId   *string `json:"realm_id,omitempty"`
 	UserId    string  `json:"user_id"`
 }
@@ -2174,6 +2621,12 @@ func (target *RealmMemberParted) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["realm_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.RealmId = &y
@@ -2189,6 +2642,11 @@ func (target *RealmMemberParted) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *RealmMemberParted) Id() int {
+	return event.EventId
+}
+
 // String returns "realm_member_parted".
 func (*RealmMemberParted) String() string {
 	return "realm_member_parted"
@@ -2196,6 +2654,7 @@ func (*RealmMemberParted) String() string {
 
 // RealmMemberUpdated event.  https://ninchat.com/api/v2#realm_member_updated
 type RealmMemberUpdated struct {
+	EventId     int               `json:"event_id,omitempty"`
 	MemberAttrs *RealmMemberAttrs `json:"member_attrs"`
 	RealmId     string            `json:"realm_id"`
 	UserId      string            `json:"user_id"`
@@ -2223,6 +2682,12 @@ func (target *RealmMemberUpdated) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["member_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.MemberAttrs = NewRealmMemberAttrs(y)
@@ -2244,6 +2709,11 @@ func (target *RealmMemberUpdated) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *RealmMemberUpdated) Id() int {
+	return event.EventId
+}
+
 // String returns "realm_member_updated".
 func (*RealmMemberUpdated) String() string {
 	return "realm_member_updated"
@@ -2251,6 +2721,7 @@ func (*RealmMemberUpdated) String() string {
 
 // RealmParted event.  https://ninchat.com/api/v2#realm_parted
 type RealmParted struct {
+	EventId int    `json:"event_id,omitempty"`
 	RealmId string `json:"realm_id"`
 }
 
@@ -2276,6 +2747,12 @@ func (target *RealmParted) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["realm_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.RealmId = y
@@ -2285,6 +2762,11 @@ func (target *RealmParted) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *RealmParted) Id() int {
+	return event.EventId
+}
+
 // String returns "realm_parted".
 func (*RealmParted) String() string {
 	return "realm_parted"
@@ -2292,6 +2774,7 @@ func (*RealmParted) String() string {
 
 // RealmQueuesFound event.  https://ninchat.com/api/v2#realm_queues_found
 type RealmQueuesFound struct {
+	EventId     int                    `json:"event_id,omitempty"`
 	RealmId     string                 `json:"realm_id"`
 	RealmQueues map[string]*RealmQueue `json:"realm_queues"`
 }
@@ -2318,6 +2801,12 @@ func (target *RealmQueuesFound) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["realm_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.RealmId = y
@@ -2333,6 +2822,11 @@ func (target *RealmQueuesFound) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *RealmQueuesFound) Id() int {
+	return event.EventId
+}
+
 // String returns "realm_queues_found".
 func (*RealmQueuesFound) String() string {
 	return "realm_queues_found"
@@ -2340,6 +2834,7 @@ func (*RealmQueuesFound) String() string {
 
 // RealmUpdated event.  https://ninchat.com/api/v2#realm_updated
 type RealmUpdated struct {
+	EventId    int         `json:"event_id,omitempty"`
 	RealmAttrs *RealmAttrs `json:"realm_attrs"`
 	RealmId    string      `json:"realm_id"`
 }
@@ -2366,6 +2861,12 @@ func (target *RealmUpdated) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["realm_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.RealmAttrs = NewRealmAttrs(y)
@@ -2381,6 +2882,11 @@ func (target *RealmUpdated) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *RealmUpdated) Id() int {
+	return event.EventId
+}
+
 // String returns "realm_updated".
 func (*RealmUpdated) String() string {
 	return "realm_updated"
@@ -2389,6 +2895,7 @@ func (*RealmUpdated) String() string {
 // SearchResults event.  https://ninchat.com/api/v2#search_results
 type SearchResults struct {
 	Channels map[string]*ChannelResult `json:"channels,omitempty"`
+	EventId  int                       `json:"event_id,omitempty"`
 	Users    map[string]*UserResult    `json:"users,omitempty"`
 }
 
@@ -2420,6 +2927,12 @@ func (target *SearchResults) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["users"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.Users = MakeUsers(y)
@@ -2429,6 +2942,11 @@ func (target *SearchResults) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *SearchResults) Id() int {
+	return event.EventId
+}
+
 // String returns "search_results".
 func (*SearchResults) String() string {
 	return "search_results"
@@ -2436,6 +2954,7 @@ func (*SearchResults) String() string {
 
 // SessionCreated event.  https://ninchat.com/api/v2#session_created
 type SessionCreated struct {
+	EventId          int                          `json:"event_id,omitempty"`
 	SessionHost      *string                      `json:"session_host,omitempty"`
 	SessionId        string                       `json:"session_id"`
 	UserAccount      *UserAccount                 `json:"user_account"`
@@ -2472,6 +2991,12 @@ func (target *SessionCreated) Init(clientEvent *ninchat.Event) error {
 	}
 
 	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
 
 	if x := source["session_host"]; x != nil {
 		if y, ok := x.(string); ok {
@@ -2554,6 +3079,11 @@ func (target *SessionCreated) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *SessionCreated) Id() int {
+	return event.EventId
+}
+
 // String returns "session_created".
 func (*SessionCreated) String() string {
 	return "session_created"
@@ -2562,6 +3092,7 @@ func (*SessionCreated) String() string {
 // SessionStatusUpdated event.  https://ninchat.com/api/v2#session_status_updated
 type SessionStatusUpdated struct {
 	ChannelId *string `json:"channel_id,omitempty"`
+	EventId   int     `json:"event_id,omitempty"`
 	MessageId string  `json:"message_id"`
 	UserId    *string `json:"user_id,omitempty"`
 }
@@ -2594,6 +3125,12 @@ func (target *SessionStatusUpdated) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["message_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.MessageId = y
@@ -2609,6 +3146,11 @@ func (target *SessionStatusUpdated) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *SessionStatusUpdated) Id() int {
+	return event.EventId
+}
+
 // String returns "session_status_updated".
 func (*SessionStatusUpdated) String() string {
 	return "session_status_updated"
@@ -2616,7 +3158,8 @@ func (*SessionStatusUpdated) String() string {
 
 // UserDeleted event.  https://ninchat.com/api/v2#user_deleted
 type UserDeleted struct {
-	UserId string `json:"user_id"`
+	EventId int    `json:"event_id,omitempty"`
+	UserId  string `json:"user_id"`
 }
 
 // NewUserDeleted creates an event object with the parameters specified by the clientEvent.
@@ -2641,6 +3184,12 @@ func (target *UserDeleted) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["user_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.UserId = y
@@ -2648,6 +3197,11 @@ func (target *UserDeleted) Init(clientEvent *ninchat.Event) error {
 	}
 
 	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *UserDeleted) Id() int {
+	return event.EventId
 }
 
 // String returns "user_deleted".
@@ -2660,6 +3214,7 @@ type UserFound struct {
 	AudienceMetadata map[string]string               `json:"audience_metadata,omitempty"`
 	DialogueMembers  map[string]*DialogueMemberAttrs `json:"dialogue_members,omitempty"`
 	DialogueStatus   *string                         `json:"dialogue_status,omitempty"`
+	EventId          int                             `json:"event_id,omitempty"`
 	UserAccount      *UserAccount                    `json:"user_account,omitempty"`
 	UserAttrs        *UserAttrs                      `json:"user_attrs"`
 	UserChannels     map[string]*UserChannel         `json:"user_channels,omitempty"`
@@ -2709,6 +3264,12 @@ func (target *UserFound) Init(clientEvent *ninchat.Event) error {
 	if x := source["dialogue_status"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.DialogueStatus = &y
+		}
+	}
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
 		}
 	}
 
@@ -2775,6 +3336,11 @@ func (target *UserFound) Init(clientEvent *ninchat.Event) error {
 	return nil
 }
 
+// Id returns the EventId parameter.
+func (event *UserFound) Id() int {
+	return event.EventId
+}
+
 // String returns "user_found".
 func (*UserFound) String() string {
 	return "user_found"
@@ -2782,6 +3348,7 @@ func (*UserFound) String() string {
 
 // UserUpdated event.  https://ninchat.com/api/v2#user_updated
 type UserUpdated struct {
+	EventId      int                    `json:"event_id,omitempty"`
 	UserAccount  *UserAccount           `json:"user_account,omitempty"`
 	UserAttrs    *UserAttrs             `json:"user_attrs"`
 	UserId       string                 `json:"user_id"`
@@ -2810,6 +3377,12 @@ func (target *UserUpdated) Init(clientEvent *ninchat.Event) error {
 
 	source := clientEvent.Params
 
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
 	if x := source["user_account"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.UserAccount = NewUserAccount(y)
@@ -2835,6 +3408,11 @@ func (target *UserUpdated) Init(clientEvent *ninchat.Event) error {
 	}
 
 	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *UserUpdated) Id() int {
+	return event.EventId
 }
 
 // String returns "user_updated".

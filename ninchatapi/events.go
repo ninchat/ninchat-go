@@ -6,9 +6,12 @@ import (
 
 // Event interface is implemented by all event structs.
 type Event interface {
-	// MergeFrom fills in the parameters specified by the clientEvent.  An
+	// Init fills in the parameters specified by the clientEvent.  An
 	// UnexpectedEventError may be returned.
 	Init(clientEvent *ninchat.Event) error
+
+	// Id returns the EventId parameter.
+	Id() int
 }
 
 // MemberJoined is a union of target-specific events.
@@ -34,6 +37,18 @@ func (union *MemberJoined) Init(clientEvent *ninchat.Event) (err error) {
 
 	default:
 		return newError(clientEvent)
+	}
+}
+
+// Id returns the EventId parameter of the ChannelMemberJoined,
+// QueueMemberJoined or RealmMemberJoined event.
+func (union *MemberJoined) Id() int {
+	if union.Channel != nil {
+		return union.Channel.EventId
+	} else if union.Queue != nil {
+		return union.Queue.EventId
+	} else {
+		return union.Realm.EventId
 	}
 }
 
@@ -63,6 +78,18 @@ func (union *MemberParted) Init(clientEvent *ninchat.Event) (err error) {
 	}
 }
 
+// Id returns the EventId parameter of the ChannelMemberParted,
+// QueueMemberParted or RealmMemberParted event.
+func (union *MemberParted) Id() int {
+	if union.Channel != nil {
+		return union.Channel.EventId
+	} else if union.Queue != nil {
+		return union.Queue.EventId
+	} else {
+		return union.Realm.EventId
+	}
+}
+
 // MemberUpdated is a union of target-specific events.
 type MemberUpdated struct {
 	Channel *ChannelMemberUpdated
@@ -82,5 +109,15 @@ func (union *MemberUpdated) Init(clientEvent *ninchat.Event) (err error) {
 
 	default:
 		return newError(clientEvent)
+	}
+}
+
+// Id returns the EventId parameter of the ChannelMemberUpdated or
+// RealmMemberUpdated event.
+func (union *MemberUpdated) Id() int {
+	if union.Channel != nil {
+		return union.Channel.EventId
+	} else {
+		return union.Realm.EventId
 	}
 }
