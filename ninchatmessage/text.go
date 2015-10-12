@@ -26,6 +26,10 @@ func (m *Text) Unmarshal(payload [][]byte) error {
 	return json.Unmarshal(payload[0], m)
 }
 
+func (m *Text) String() string {
+	return m.Text
+}
+
 // Notice represents https://ninchat.com/notice messages.  They are similar to
 // https://ninchat.com/text messages.
 type Notice Text
@@ -40,4 +44,8 @@ func (m *Notice) Marshal() (payload [][]byte, err error) {
 
 func (m *Notice) Unmarshal(payload [][]byte) error {
 	return json.Unmarshal(payload[0], m)
+}
+
+func (m *Notice) String() string {
+	return m.Text
 }
