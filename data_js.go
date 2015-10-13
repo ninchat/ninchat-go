@@ -10,10 +10,6 @@ func emptyData() *js.Object {
 	return js.Global.Get("String").New()
 }
 
-func singleData(x *js.Object) []*js.Object {
-	return []*js.Object{x}
-}
-
 func dataLength(x *js.Object) int {
 	return x.Length()
 }

@@ -8,7 +8,7 @@ import (
 
 type Action struct {
 	Params  map[string]interface{}
-	Payload []*js.Object
+	Payload []Frame
 	OnReply func(*Event)
 
 	id int64
@@ -16,6 +16,12 @@ type Action struct {
 
 type Event struct {
 	Params    map[string]interface{}
-	Payload   []*js.Object
+	Payload   []Frame
 	LastReply bool
+}
+
+type Frame *js.Object
+
+func singleFrame(x *js.Object) []Frame {
+	return []Frame{x}
 }

@@ -1,5 +1,9 @@
 package ninchatmessage
 
+import (
+	"github.com/ninchat/ninchat-go"
+)
+
 // Factories contains default constructors for all known message types.
 var Factories = map[string]func() Content{
 	AccessInfoType:  func() Content { return new(AccessInfo) },
@@ -15,7 +19,7 @@ var Factories = map[string]func() Content{
 
 // NewContent creates a message object from a payload.  nil is returned if the
 // type is unknown.
-func NewContent(messageType string, payload [][]byte) (c Content, err error) {
+func NewContent(messageType string, payload []ninchat.Frame) (c Content, err error) {
 	if f := Factories[messageType]; f != nil {
 		c = f()
 		err = c.Unmarshal(payload)

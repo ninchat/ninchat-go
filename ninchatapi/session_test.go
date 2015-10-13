@@ -77,7 +77,7 @@ func testSession(t *testing.T, transport string) {
 	messageEvent, err := (&ninchatapi.SendMessage{
 		UserId:      &sessionEvent.UserId,
 		MessageType: pointer.String("ninchat.com/text"),
-		Payload: [][]byte{
+		Payload: []ninchat.Frame{
 			messageData,
 		},
 	}).Invoke(session)
@@ -99,7 +99,7 @@ func testSession(t *testing.T, transport string) {
 
 	userEvent, err := (&ninchatapi.UpdateUser{
 		PayloadAttrs: []string{"icon"},
-		Payload: [][]byte{
+		Payload: []ninchat.Frame{
 			imageData,
 		},
 	}).Invoke(session)

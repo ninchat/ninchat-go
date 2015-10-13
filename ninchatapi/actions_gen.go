@@ -1675,7 +1675,7 @@ type SendMessage struct {
 	MessageTtl          *float64 `json:"message_ttl,omitempty"`
 	MessageType         *string  `json:"message_type"`
 	UserId              *string  `json:"user_id,omitempty"`
-	Payload             [][]byte
+	Payload             []ninchat.Frame
 }
 
 // String returns "send_message".
@@ -2243,7 +2243,7 @@ type UpdateUser struct {
 	PayloadAttrs []string               `json:"payload_attrs,omitempty"`
 	UserAttrs    *UserAttrs             `json:"user_attrs,omitempty"`
 	UserSettings map[string]interface{} `json:"user_settings,omitempty"`
-	Payload      [][]byte
+	Payload      []ninchat.Frame
 }
 
 // String returns "update_user".

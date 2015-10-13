@@ -1,7 +1,7 @@
 package ninchatmessage
 
 import (
-	"encoding/json"
+	"github.com/ninchat/ninchat-go"
 )
 
 const (
@@ -21,10 +21,10 @@ func (*Link) MessageType() string {
 	return LinkType
 }
 
-func (m *Link) Marshal() (payload [][]byte, err error) {
+func (m *Link) Marshal() (payload []ninchat.Frame, err error) {
 	return marshalJSON(m)
 }
 
-func (m *Link) Unmarshal(payload [][]byte) error {
-	return json.Unmarshal(payload[0], m)
+func (m *Link) Unmarshal(payload []ninchat.Frame) error {
+	return unmarshalJSON(payload, m)
 }

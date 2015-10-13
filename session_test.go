@@ -79,7 +79,7 @@ func testSession(t *testing.T, transport string) {
 					"user_id":      userId,
 					"message_type": "ninchat.com/text",
 				},
-				Payload: [][]byte{
+				Payload: []ninchat.Frame{
 					messageData,
 				},
 			})
@@ -98,7 +98,7 @@ func testSession(t *testing.T, transport string) {
 					"action":        "update_user",
 					"payload_attrs": []interface{}{"icon"},
 				},
-				Payload: [][]byte{
+				Payload: []ninchat.Frame{
 					imageData,
 				},
 			})

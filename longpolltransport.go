@@ -193,7 +193,7 @@ func longPollTransfer(s *Session, url string, connWorked, gotOnline *bool) {
 					return
 				}
 
-				event.Payload = singleData(json)
+				event.Payload = singleFrame(json)
 			}
 
 			ackedActionId, sessionLost, _, ok := s.handleEvent(event)

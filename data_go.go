@@ -7,11 +7,6 @@ func emptyData() []byte {
 	return []byte{}
 }
 
-// singleData constructs a payload with one part.
-func singleData(x []byte) [][]byte {
-	return [][]byte{x}
-}
-
 // dataLength returns the length of the payload.
 func dataLength(x []byte) int {
 	return len(x)

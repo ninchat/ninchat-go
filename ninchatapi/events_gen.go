@@ -1556,7 +1556,7 @@ type MessageReceived struct {
 	MessageUserId       *string  `json:"message_user_id,omitempty"`
 	MessageUserName     *string  `json:"message_user_name,omitempty"`
 	UserId              *string  `json:"user_id,omitempty"`
-	Payload             [][]byte
+	Payload             []ninchat.Frame
 }
 
 // NewMessageReceived creates an event object with the parameters specified by the clientEvent.

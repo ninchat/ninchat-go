@@ -6,19 +6,27 @@ package ninchatmessage
 
 import (
 	"encoding/json"
+
+	"github.com/ninchat/ninchat-go"
 )
 
 // Content is implemented by all message types in this package.
 type Content interface {
 	MessageType() string
-	Marshal() (payload [][]byte, err error)
-	Unmarshal(payload [][]byte) error
+	Marshal() (payload []ninchat.Frame, err error)
+	Unmarshal(payload []ninchat.Frame) error
 }
 
-func marshalJSON(c Content) (payload [][]byte, err error) {
+func marshalJSON(c Content) (payload []ninchat.Frame, err error) {
 	data, err := json.Marshal(c)
-	if err == nil {
-		payload = [][]byte{data}
+	if err != nil {
+		return
 	}
+
+	payload = []ninchat.Frame{data}
 	return
+}
+
+func unmarshalJSON(payload []ninchat.Frame, c Content) error {
+	return json.Unmarshal(payload[0], c)
 }

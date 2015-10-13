@@ -1,7 +1,7 @@
 package ninchatmessage
 
 import (
-	"encoding/json"
+	"github.com/ninchat/ninchat-go"
 )
 
 const (
@@ -30,12 +30,12 @@ func (*UserInfo) MessageType() string {
 	return UserInfoType
 }
 
-func (m *UserInfo) Marshal() (payload [][]byte, err error) {
+func (m *UserInfo) Marshal() (payload []ninchat.Frame, err error) {
 	return marshalJSON(m)
 }
 
-func (m *UserInfo) Unmarshal(payload [][]byte) error {
-	return json.Unmarshal(payload[0], m)
+func (m *UserInfo) Unmarshal(payload []ninchat.Frame) error {
+	return unmarshalJSON(payload, m)
 }
 
 // ChannelInfo represents https://ninchat.com/info/channel messages.
@@ -48,12 +48,12 @@ func (*ChannelInfo) MessageType() string {
 	return ChannelInfoType
 }
 
-func (m *ChannelInfo) Marshal() (payload [][]byte, err error) {
+func (m *ChannelInfo) Marshal() (payload []ninchat.Frame, err error) {
 	return marshalJSON(m)
 }
 
-func (m *ChannelInfo) Unmarshal(payload [][]byte) error {
-	return json.Unmarshal(payload[0], m)
+func (m *ChannelInfo) Unmarshal(payload []ninchat.Frame) error {
+	return unmarshalJSON(payload, m)
 }
 
 // JoinInfo represents https://ninchat.com/info/join messages.
@@ -67,12 +67,12 @@ func (*JoinInfo) MessageType() string {
 	return JoinInfoType
 }
 
-func (m *JoinInfo) Marshal() (payload [][]byte, err error) {
+func (m *JoinInfo) Marshal() (payload []ninchat.Frame, err error) {
 	return marshalJSON(m)
 }
 
-func (m *JoinInfo) Unmarshal(payload [][]byte) error {
-	return json.Unmarshal(payload[0], m)
+func (m *JoinInfo) Unmarshal(payload []ninchat.Frame) error {
+	return unmarshalJSON(payload, m)
 }
 
 // PartInfo represents https://ninchat.com/info/part messages.
@@ -85,12 +85,12 @@ func (*PartInfo) MessageType() string {
 	return PartInfoType
 }
 
-func (m *PartInfo) Marshal() (payload [][]byte, err error) {
+func (m *PartInfo) Marshal() (payload []ninchat.Frame, err error) {
 	return marshalJSON(m)
 }
 
-func (m *PartInfo) Unmarshal(payload [][]byte) error {
-	return json.Unmarshal(payload[0], m)
+func (m *PartInfo) Unmarshal(payload []ninchat.Frame) error {
+	return unmarshalJSON(payload, m)
 }
 
 // MemberInfo represents https://ninchat.com/info/member messages.
@@ -104,12 +104,12 @@ func (*MemberInfo) MessageType() string {
 	return MemberInfoType
 }
 
-func (m *MemberInfo) Marshal() (payload [][]byte, err error) {
+func (m *MemberInfo) Marshal() (payload []ninchat.Frame, err error) {
 	return marshalJSON(m)
 }
 
-func (m *MemberInfo) Unmarshal(payload [][]byte) error {
-	return json.Unmarshal(payload[0], m)
+func (m *MemberInfo) Unmarshal(payload []ninchat.Frame) error {
+	return unmarshalJSON(payload, m)
 }
 
 // AccessInfo represents https://ninchat.com/info/access messages.
@@ -127,10 +127,10 @@ func (*AccessInfo) MessageType() string {
 	return AccessInfoType
 }
 
-func (m *AccessInfo) Marshal() (payload [][]byte, err error) {
+func (m *AccessInfo) Marshal() (payload []ninchat.Frame, err error) {
 	return marshalJSON(m)
 }
 
-func (m *AccessInfo) Unmarshal(payload [][]byte) error {
-	return json.Unmarshal(payload[0], m)
+func (m *AccessInfo) Unmarshal(payload []ninchat.Frame) error {
+	return unmarshalJSON(payload, m)
 }

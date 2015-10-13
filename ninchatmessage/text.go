@@ -1,7 +1,7 @@
 package ninchatmessage
 
 import (
-	"encoding/json"
+	"github.com/ninchat/ninchat-go"
 )
 
 const (
@@ -18,12 +18,12 @@ func (*Text) MessageType() string {
 	return TextType
 }
 
-func (m *Text) Marshal() (payload [][]byte, err error) {
+func (m *Text) Marshal() (payload []ninchat.Frame, err error) {
 	return marshalJSON(m)
 }
 
-func (m *Text) Unmarshal(payload [][]byte) error {
-	return json.Unmarshal(payload[0], m)
+func (m *Text) Unmarshal(payload []ninchat.Frame) error {
+	return unmarshalJSON(payload, m)
 }
 
 func (m *Text) String() string {
@@ -38,12 +38,12 @@ func (*Notice) MessageType() string {
 	return NoticeType
 }
 
-func (m *Notice) Marshal() (payload [][]byte, err error) {
+func (m *Notice) Marshal() (payload []ninchat.Frame, err error) {
 	return marshalJSON(m)
 }
 
-func (m *Notice) Unmarshal(payload [][]byte) error {
-	return json.Unmarshal(payload[0], m)
+func (m *Notice) Unmarshal(payload []ninchat.Frame) error {
+	return unmarshalJSON(payload, m)
 }
 
 func (m *Notice) String() string {

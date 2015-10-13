@@ -127,7 +127,9 @@ func (ws *webSocket) sendPayload(action *Action) (err error) {
 
 	decodeDataURI := (action.String() == "update_user")
 
-	for _, data := range action.Payload {
+	for _, frame := range action.Payload {
+		var data *js.Object = frame
+
 		if decodeDataURI {
 			base64 := data.Call("split", ",").Index(1)
 			binaryString := js.Global.Call("atob", base64)
