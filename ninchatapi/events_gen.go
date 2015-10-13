@@ -792,7 +792,7 @@ func (*ChannelUpdated) String() string {
 
 // DialogueUpdated event.  https://ninchat.com/api/v2#dialogue_updated
 type DialogueUpdated struct {
-	AudienceMetadata map[string]string               `json:"audience_metadata,omitempty"`
+	AudienceMetadata map[string]interface{}          `json:"audience_metadata,omitempty"`
 	DialogueMembers  map[string]*DialogueMemberAttrs `json:"dialogue_members"`
 	DialogueStatus   *string                         `json:"dialogue_status,omitempty"`
 	EventId          int                             `json:"event_id,omitempty"`
@@ -823,7 +823,7 @@ func (target *DialogueUpdated) Init(clientEvent *ninchat.Event) error {
 
 	if x := source["audience_metadata"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
-			target.AudienceMetadata = MakeStrings(y)
+			target.AudienceMetadata = y
 		}
 	}
 
@@ -3211,7 +3211,7 @@ func (*UserDeleted) String() string {
 
 // UserFound event.  https://ninchat.com/api/v2#user_found
 type UserFound struct {
-	AudienceMetadata map[string]string               `json:"audience_metadata,omitempty"`
+	AudienceMetadata map[string]interface{}          `json:"audience_metadata,omitempty"`
 	DialogueMembers  map[string]*DialogueMemberAttrs `json:"dialogue_members,omitempty"`
 	DialogueStatus   *string                         `json:"dialogue_status,omitempty"`
 	EventId          int                             `json:"event_id,omitempty"`
@@ -3251,7 +3251,7 @@ func (target *UserFound) Init(clientEvent *ninchat.Event) error {
 
 	if x := source["audience_metadata"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
-			target.AudienceMetadata = MakeStrings(y)
+			target.AudienceMetadata = y
 		}
 	}
 

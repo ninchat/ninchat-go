@@ -301,8 +301,6 @@ def print_event(event):
 	for _, p in sorted(params.items()):
 		if p.name == "member_attrs":
 			typ = "*" + title(event.name.split("_", 1)[0]) + title(p.name)
-		elif p.name.endswith("_metadata"):
-			typ = "map[string]string"
 		elif p.type == "object" and p.name.endswith("_attrs"):
 			typ = "*" + title(p.name)
 		elif p.type == "object" and p.name in ninchat.api.objecttypes:
@@ -366,10 +364,6 @@ def print_event(event):
 			elif p.type == "string array":
 				print '  if y, ok := x.([]interface{}); ok {'
 				print '    target.{} = AppendStrings(nil, y)'.format(title(p.name))
-				print '  }'
-			elif p.name.endswith("_metadata"):
-				print '  if y, ok := x.(map[string]interface{}); ok {'
-				print '    target.{} = MakeStrings(y)'.format(title(p.name))
 				print '  }'
 			elif p.type != "object":
 				if p.type == "int":
@@ -498,7 +492,7 @@ def print_object(obj):
 		print
 		print '  for key, x := range source {'
 
-		if obj.value in requiredtypes or obj.name == "member_attrs" or obj.name.endswith("_metadata") or obj.name.endswith("_settings"):
+		if obj.value in requiredtypes or obj.name == "member_attrs" or obj.name.endswith("_settings"):
 			print '    if y, ok := x.({}); ok {{'.format(requiredtypes[obj.value])
 			print '      target[key] = y'
 			print '    }'
@@ -588,7 +582,7 @@ def print_object(obj):
 				print '      target.{} = AppendStrings(nil, y)'.format(title(p.name))
 				print '    }'
 			elif p.type in requiredtypes:
-				if p.required:
+				if p.required or p.name.endswith("_metadata"):
 					expr = "y"
 				else:
 					expr = "&y"

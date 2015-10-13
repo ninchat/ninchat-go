@@ -261,19 +261,6 @@ func MakeRealmQueues(source map[string]interface{}) (target map[string]*RealmQue
 	return
 }
 
-// MakeStrings duplicates the map while unwrapping the values.
-func MakeStrings(source map[string]interface{}) (target map[string]string) {
-	target = make(map[string]string)
-
-	for key, x := range source {
-		if y, ok := x.(string); ok {
-			target[key] = y
-		}
-	}
-
-	return
-}
-
 // UserAccount event parameter type.
 type UserAccount struct {
 	Channels      *UserAccountObjects        `json:"channels,omitempty"`
@@ -516,7 +503,7 @@ func MakeUserChannels(source map[string]interface{}) (target map[string]*UserCha
 
 // UserDialogue event parameter type.
 type UserDialogue struct {
-	AudienceMetadata map[string]string               `json:"audience_metadata,omitempty"`
+	AudienceMetadata map[string]interface{}          `json:"audience_metadata,omitempty"`
 	DialogueMembers  map[string]*DialogueMemberAttrs `json:"dialogue_members,omitempty"`
 	DialogueStatus   *string                         `json:"dialogue_status,omitempty"`
 }
@@ -533,7 +520,7 @@ func NewUserDialogue(source map[string]interface{}) (target *UserDialogue) {
 func (target *UserDialogue) Init(source map[string]interface{}) {
 	if x := source["audience_metadata"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
-			target.AudienceMetadata = MakeStrings(y)
+			target.AudienceMetadata = y
 		}
 	}
 
