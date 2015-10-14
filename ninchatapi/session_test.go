@@ -89,11 +89,11 @@ func testSession(t *testing.T, transport string) {
 		t.Error(messageEvent.Id())
 	}
 
-	if len(messageEvent.Payload) != 1 {
+	if len(messageEvent.Payload()) != 1 {
 		t.Fatal("payload length")
 	}
 
-	if bytes.Compare(messageEvent.Payload[0], messageData) != 0 {
+	if bytes.Compare(messageEvent.Payload()[0], messageData) != 0 {
 		t.Error("payload content")
 	}
 

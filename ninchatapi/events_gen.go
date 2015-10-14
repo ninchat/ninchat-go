@@ -13,8 +13,10 @@ type AccessCreated struct {
 	EventId    int     `json:"event_id,omitempty"`
 }
 
-// NewAccessCreated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "access_created".
+// NewAccessCreated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "access_created".
 func NewAccessCreated(clientEvent *ninchat.Event) (event *AccessCreated, err error) {
 	if clientEvent != nil {
 		e := new(AccessCreated)
@@ -25,9 +27,10 @@ func NewAccessCreated(clientEvent *ninchat.Event) (event *AccessCreated, err err
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "access_created".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "access_created".
 func (target *AccessCreated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "access_created" {
 		return &UnexpectedEventError{clientEvent}
@@ -81,8 +84,10 @@ type AccessFound struct {
 	UserId       *string       `json:"user_id,omitempty"`
 }
 
-// NewAccessFound creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "access_found".
+// NewAccessFound creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "access_found".
 func NewAccessFound(clientEvent *ninchat.Event) (event *AccessFound, err error) {
 	if clientEvent != nil {
 		e := new(AccessFound)
@@ -93,9 +98,10 @@ func NewAccessFound(clientEvent *ninchat.Event) (event *AccessFound, err error) 
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "access_found".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "access_found".
 func (target *AccessFound) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "access_found" {
 		return &UnexpectedEventError{clientEvent}
@@ -188,8 +194,10 @@ type AudienceEnqueued struct {
 	QueuePosition int         `json:"queue_position"`
 }
 
-// NewAudienceEnqueued creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "audience_enqueued".
+// NewAudienceEnqueued creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "audience_enqueued".
 func NewAudienceEnqueued(clientEvent *ninchat.Event) (event *AudienceEnqueued, err error) {
 	if clientEvent != nil {
 		e := new(AudienceEnqueued)
@@ -200,9 +208,10 @@ func NewAudienceEnqueued(clientEvent *ninchat.Event) (event *AudienceEnqueued, e
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "audience_enqueued".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "audience_enqueued".
 func (target *AudienceEnqueued) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "audience_enqueued" {
 		return &UnexpectedEventError{clientEvent}
@@ -253,8 +262,10 @@ type ChannelDeleted struct {
 	EventId   int    `json:"event_id,omitempty"`
 }
 
-// NewChannelDeleted creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "channel_deleted".
+// NewChannelDeleted creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "channel_deleted".
 func NewChannelDeleted(clientEvent *ninchat.Event) (event *ChannelDeleted, err error) {
 	if clientEvent != nil {
 		e := new(ChannelDeleted)
@@ -265,9 +276,10 @@ func NewChannelDeleted(clientEvent *ninchat.Event) (event *ChannelDeleted, err e
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "channel_deleted".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "channel_deleted".
 func (target *ChannelDeleted) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_deleted" {
 		return &UnexpectedEventError{clientEvent}
@@ -310,8 +322,10 @@ type ChannelFound struct {
 	RealmId        *string                   `json:"realm_id,omitempty"`
 }
 
-// NewChannelFound creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "channel_found".
+// NewChannelFound creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "channel_found".
 func NewChannelFound(clientEvent *ninchat.Event) (event *ChannelFound, err error) {
 	if clientEvent != nil {
 		e := new(ChannelFound)
@@ -322,9 +336,10 @@ func NewChannelFound(clientEvent *ninchat.Event) (event *ChannelFound, err error
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "channel_found".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "channel_found".
 func (target *ChannelFound) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_found" {
 		return &UnexpectedEventError{clientEvent}
@@ -390,8 +405,10 @@ type ChannelJoined struct {
 	RealmId        *string                   `json:"realm_id,omitempty"`
 }
 
-// NewChannelJoined creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "channel_joined".
+// NewChannelJoined creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "channel_joined".
 func NewChannelJoined(clientEvent *ninchat.Event) (event *ChannelJoined, err error) {
 	if clientEvent != nil {
 		e := new(ChannelJoined)
@@ -402,9 +419,10 @@ func NewChannelJoined(clientEvent *ninchat.Event) (event *ChannelJoined, err err
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "channel_joined".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "channel_joined".
 func (target *ChannelJoined) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_joined" {
 		return &UnexpectedEventError{clientEvent}
@@ -464,8 +482,10 @@ type ChannelMemberJoined struct {
 	UserId      string              `json:"user_id"`
 }
 
-// NewChannelMemberJoined creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "channel_member_joined".
+// NewChannelMemberJoined creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "channel_member_joined".
 func NewChannelMemberJoined(clientEvent *ninchat.Event) (event *ChannelMemberJoined, err error) {
 	if clientEvent != nil {
 		e := new(ChannelMemberJoined)
@@ -476,9 +496,10 @@ func NewChannelMemberJoined(clientEvent *ninchat.Event) (event *ChannelMemberJoi
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "channel_member_joined".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "channel_member_joined".
 func (target *ChannelMemberJoined) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_member_joined" {
 		return &UnexpectedEventError{clientEvent}
@@ -537,8 +558,10 @@ type ChannelMemberParted struct {
 	UserId    string  `json:"user_id"`
 }
 
-// NewChannelMemberParted creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "channel_member_parted".
+// NewChannelMemberParted creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "channel_member_parted".
 func NewChannelMemberParted(clientEvent *ninchat.Event) (event *ChannelMemberParted, err error) {
 	if clientEvent != nil {
 		e := new(ChannelMemberParted)
@@ -549,9 +572,10 @@ func NewChannelMemberParted(clientEvent *ninchat.Event) (event *ChannelMemberPar
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "channel_member_parted".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "channel_member_parted".
 func (target *ChannelMemberParted) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_member_parted" {
 		return &UnexpectedEventError{clientEvent}
@@ -605,8 +629,10 @@ type ChannelMemberUpdated struct {
 	UserId      string              `json:"user_id"`
 }
 
-// NewChannelMemberUpdated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "channel_member_updated".
+// NewChannelMemberUpdated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "channel_member_updated".
 func NewChannelMemberUpdated(clientEvent *ninchat.Event) (event *ChannelMemberUpdated, err error) {
 	if clientEvent != nil {
 		e := new(ChannelMemberUpdated)
@@ -617,9 +643,10 @@ func NewChannelMemberUpdated(clientEvent *ninchat.Event) (event *ChannelMemberUp
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "channel_member_updated".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "channel_member_updated".
 func (target *ChannelMemberUpdated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_member_updated" {
 		return &UnexpectedEventError{clientEvent}
@@ -676,8 +703,10 @@ type ChannelParted struct {
 	EventId   int    `json:"event_id,omitempty"`
 }
 
-// NewChannelParted creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "channel_parted".
+// NewChannelParted creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "channel_parted".
 func NewChannelParted(clientEvent *ninchat.Event) (event *ChannelParted, err error) {
 	if clientEvent != nil {
 		e := new(ChannelParted)
@@ -688,9 +717,10 @@ func NewChannelParted(clientEvent *ninchat.Event) (event *ChannelParted, err err
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "channel_parted".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "channel_parted".
 func (target *ChannelParted) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_parted" {
 		return &UnexpectedEventError{clientEvent}
@@ -731,8 +761,10 @@ type ChannelUpdated struct {
 	RealmId      *string       `json:"realm_id,omitempty"`
 }
 
-// NewChannelUpdated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "channel_updated".
+// NewChannelUpdated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "channel_updated".
 func NewChannelUpdated(clientEvent *ninchat.Event) (event *ChannelUpdated, err error) {
 	if clientEvent != nil {
 		e := new(ChannelUpdated)
@@ -743,9 +775,10 @@ func NewChannelUpdated(clientEvent *ninchat.Event) (event *ChannelUpdated, err e
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "channel_updated".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "channel_updated".
 func (target *ChannelUpdated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "channel_updated" {
 		return &UnexpectedEventError{clientEvent}
@@ -799,8 +832,10 @@ type DialogueUpdated struct {
 	UserId           string                          `json:"user_id"`
 }
 
-// NewDialogueUpdated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "dialogue_updated".
+// NewDialogueUpdated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "dialogue_updated".
 func NewDialogueUpdated(clientEvent *ninchat.Event) (event *DialogueUpdated, err error) {
 	if clientEvent != nil {
 		e := new(DialogueUpdated)
@@ -811,9 +846,10 @@ func NewDialogueUpdated(clientEvent *ninchat.Event) (event *DialogueUpdated, err
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "dialogue_updated".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "dialogue_updated".
 func (target *DialogueUpdated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "dialogue_updated" {
 		return &UnexpectedEventError{clientEvent}
@@ -878,8 +914,10 @@ type Error struct {
 	UserId       *string `json:"user_id,omitempty"`
 }
 
-// NewError creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "error".
+// NewError creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "error".
 func NewError(clientEvent *ninchat.Event) (event *Error, err error) {
 	if clientEvent != nil {
 		e := new(Error)
@@ -890,9 +928,10 @@ func NewError(clientEvent *ninchat.Event) (event *Error, err error) {
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "error".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "error".
 func (target *Error) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "error" {
 		return &UnexpectedEventError{clientEvent}
@@ -981,8 +1020,10 @@ type HistoryDiscarded struct {
 	UserId    *string `json:"user_id,omitempty"`
 }
 
-// NewHistoryDiscarded creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "history_discarded".
+// NewHistoryDiscarded creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "history_discarded".
 func NewHistoryDiscarded(clientEvent *ninchat.Event) (event *HistoryDiscarded, err error) {
 	if clientEvent != nil {
 		e := new(HistoryDiscarded)
@@ -993,9 +1034,10 @@ func NewHistoryDiscarded(clientEvent *ninchat.Event) (event *HistoryDiscarded, e
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "history_discarded".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "history_discarded".
 func (target *HistoryDiscarded) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "history_discarded" {
 		return &UnexpectedEventError{clientEvent}
@@ -1048,8 +1090,10 @@ type HistoryResults struct {
 	UserId        *string `json:"user_id,omitempty"`
 }
 
-// NewHistoryResults creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "history_results".
+// NewHistoryResults creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "history_results".
 func NewHistoryResults(clientEvent *ninchat.Event) (event *HistoryResults, err error) {
 	if clientEvent != nil {
 		e := new(HistoryResults)
@@ -1060,9 +1104,10 @@ func NewHistoryResults(clientEvent *ninchat.Event) (event *HistoryResults, err e
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "history_results".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "history_results".
 func (target *HistoryResults) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "history_results" {
 		return &UnexpectedEventError{clientEvent}
@@ -1115,8 +1160,10 @@ type IdentityCreated struct {
 	IdentityType  string         `json:"identity_type"`
 }
 
-// NewIdentityCreated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "identity_created".
+// NewIdentityCreated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "identity_created".
 func NewIdentityCreated(clientEvent *ninchat.Event) (event *IdentityCreated, err error) {
 	if clientEvent != nil {
 		e := new(IdentityCreated)
@@ -1127,9 +1174,10 @@ func NewIdentityCreated(clientEvent *ninchat.Event) (event *IdentityCreated, err
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "identity_created".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "identity_created".
 func (target *IdentityCreated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "identity_created" {
 		return &UnexpectedEventError{clientEvent}
@@ -1181,8 +1229,10 @@ type IdentityDeleted struct {
 	IdentityType string `json:"identity_type"`
 }
 
-// NewIdentityDeleted creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "identity_deleted".
+// NewIdentityDeleted creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "identity_deleted".
 func NewIdentityDeleted(clientEvent *ninchat.Event) (event *IdentityDeleted, err error) {
 	if clientEvent != nil {
 		e := new(IdentityDeleted)
@@ -1193,9 +1243,10 @@ func NewIdentityDeleted(clientEvent *ninchat.Event) (event *IdentityDeleted, err
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "identity_deleted".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "identity_deleted".
 func (target *IdentityDeleted) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "identity_deleted" {
 		return &UnexpectedEventError{clientEvent}
@@ -1243,8 +1294,10 @@ type IdentityFound struct {
 	UserId        string         `json:"user_id"`
 }
 
-// NewIdentityFound creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "identity_found".
+// NewIdentityFound creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "identity_found".
 func NewIdentityFound(clientEvent *ninchat.Event) (event *IdentityFound, err error) {
 	if clientEvent != nil {
 		e := new(IdentityFound)
@@ -1255,9 +1308,10 @@ func NewIdentityFound(clientEvent *ninchat.Event) (event *IdentityFound, err err
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "identity_found".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "identity_found".
 func (target *IdentityFound) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "identity_found" {
 		return &UnexpectedEventError{clientEvent}
@@ -1316,8 +1370,10 @@ type IdentityUpdated struct {
 	IdentityType  string         `json:"identity_type"`
 }
 
-// NewIdentityUpdated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "identity_updated".
+// NewIdentityUpdated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "identity_updated".
 func NewIdentityUpdated(clientEvent *ninchat.Event) (event *IdentityUpdated, err error) {
 	if clientEvent != nil {
 		e := new(IdentityUpdated)
@@ -1328,9 +1384,10 @@ func NewIdentityUpdated(clientEvent *ninchat.Event) (event *IdentityUpdated, err
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "identity_updated".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "identity_updated".
 func (target *IdentityUpdated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "identity_updated" {
 		return &UnexpectedEventError{clientEvent}
@@ -1381,8 +1438,10 @@ type MasterFound struct {
 	MasterKeys map[string]*MasterKey `json:"master_keys"`
 }
 
-// NewMasterFound creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "master_found".
+// NewMasterFound creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "master_found".
 func NewMasterFound(clientEvent *ninchat.Event) (event *MasterFound, err error) {
 	if clientEvent != nil {
 		e := new(MasterFound)
@@ -1393,9 +1452,10 @@ func NewMasterFound(clientEvent *ninchat.Event) (event *MasterFound, err error) 
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "master_found".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "master_found".
 func (target *MasterFound) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "master_found" {
 		return &UnexpectedEventError{clientEvent}
@@ -1435,8 +1495,10 @@ type MasterKeyCreated struct {
 	MasterKeySecret *string `json:"master_key_secret,omitempty"`
 }
 
-// NewMasterKeyCreated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "master_key_created".
+// NewMasterKeyCreated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "master_key_created".
 func NewMasterKeyCreated(clientEvent *ninchat.Event) (event *MasterKeyCreated, err error) {
 	if clientEvent != nil {
 		e := new(MasterKeyCreated)
@@ -1447,9 +1509,10 @@ func NewMasterKeyCreated(clientEvent *ninchat.Event) (event *MasterKeyCreated, e
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "master_key_created".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "master_key_created".
 func (target *MasterKeyCreated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "master_key_created" {
 		return &UnexpectedEventError{clientEvent}
@@ -1494,8 +1557,10 @@ type MasterKeyDeleted struct {
 	MasterKeyId string `json:"master_key_id"`
 }
 
-// NewMasterKeyDeleted creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "master_key_deleted".
+// NewMasterKeyDeleted creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "master_key_deleted".
 func NewMasterKeyDeleted(clientEvent *ninchat.Event) (event *MasterKeyDeleted, err error) {
 	if clientEvent != nil {
 		e := new(MasterKeyDeleted)
@@ -1506,9 +1571,10 @@ func NewMasterKeyDeleted(clientEvent *ninchat.Event) (event *MasterKeyDeleted, e
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "master_key_deleted".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "master_key_deleted".
 func (target *MasterKeyDeleted) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "master_key_deleted" {
 		return &UnexpectedEventError{clientEvent}
@@ -1556,11 +1622,14 @@ type MessageReceived struct {
 	MessageUserId       *string  `json:"message_user_id,omitempty"`
 	MessageUserName     *string  `json:"message_user_name,omitempty"`
 	UserId              *string  `json:"user_id,omitempty"`
-	Payload             []ninchat.Frame
+
+	payload []ninchat.Frame
 }
 
-// NewMessageReceived creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "message_received".
+// NewMessageReceived creates an event object with the parameters and payload
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "message_received".
 func NewMessageReceived(clientEvent *ninchat.Event) (event *MessageReceived, err error) {
 	if clientEvent != nil {
 		e := new(MessageReceived)
@@ -1571,9 +1640,10 @@ func NewMessageReceived(clientEvent *ninchat.Event) (event *MessageReceived, err
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "message_received".
+// Init fills in the parameters and payload
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "message_received".
 func (target *MessageReceived) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "message_received" {
 		return &UnexpectedEventError{clientEvent}
@@ -1655,9 +1725,19 @@ func (target *MessageReceived) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
-	target.Payload = clientEvent.Payload
+	target.InitPayload(clientEvent.Payload)
 
 	return nil
+}
+
+// InitPayload sets the payload (other fields are not touched).
+func (event *MessageReceived) InitPayload(payload []ninchat.Frame) {
+	event.payload = payload
+}
+
+// Payload of the event.
+func (event *MessageReceived) Payload() []ninchat.Frame {
+	return event.payload
 }
 
 // Id returns the EventId parameter.
@@ -1678,8 +1758,10 @@ type MessageUpdated struct {
 	MessageId     string  `json:"message_id"`
 }
 
-// NewMessageUpdated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "message_updated".
+// NewMessageUpdated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "message_updated".
 func NewMessageUpdated(clientEvent *ninchat.Event) (event *MessageUpdated, err error) {
 	if clientEvent != nil {
 		e := new(MessageUpdated)
@@ -1690,9 +1772,10 @@ func NewMessageUpdated(clientEvent *ninchat.Event) (event *MessageUpdated, err e
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "message_updated".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "message_updated".
 func (target *MessageUpdated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "message_updated" {
 		return &UnexpectedEventError{clientEvent}
@@ -1740,8 +1823,10 @@ type Pong struct {
 	EventId int `json:"event_id,omitempty"`
 }
 
-// NewPong creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "pong".
+// NewPong creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "pong".
 func NewPong(clientEvent *ninchat.Event) (event *Pong, err error) {
 	if clientEvent != nil {
 		e := new(Pong)
@@ -1752,9 +1837,10 @@ func NewPong(clientEvent *ninchat.Event) (event *Pong, err error) {
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "pong".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "pong".
 func (target *Pong) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "pong" {
 		return &UnexpectedEventError{clientEvent}
@@ -1789,8 +1875,10 @@ type QueueCreated struct {
 	RealmId    *string     `json:"realm_id,omitempty"`
 }
 
-// NewQueueCreated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "queue_created".
+// NewQueueCreated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "queue_created".
 func NewQueueCreated(clientEvent *ninchat.Event) (event *QueueCreated, err error) {
 	if clientEvent != nil {
 		e := new(QueueCreated)
@@ -1801,9 +1889,10 @@ func NewQueueCreated(clientEvent *ninchat.Event) (event *QueueCreated, err error
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "queue_created".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "queue_created".
 func (target *QueueCreated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_created" {
 		return &UnexpectedEventError{clientEvent}
@@ -1855,8 +1944,10 @@ type QueueDeleted struct {
 	RealmId *string `json:"realm_id,omitempty"`
 }
 
-// NewQueueDeleted creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "queue_deleted".
+// NewQueueDeleted creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "queue_deleted".
 func NewQueueDeleted(clientEvent *ninchat.Event) (event *QueueDeleted, err error) {
 	if clientEvent != nil {
 		e := new(QueueDeleted)
@@ -1867,9 +1958,10 @@ func NewQueueDeleted(clientEvent *ninchat.Event) (event *QueueDeleted, err error
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "queue_deleted".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "queue_deleted".
 func (target *QueueDeleted) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_deleted" {
 		return &UnexpectedEventError{clientEvent}
@@ -1918,8 +2010,10 @@ type QueueFound struct {
 	RealmId       *string                 `json:"realm_id,omitempty"`
 }
 
-// NewQueueFound creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "queue_found".
+// NewQueueFound creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "queue_found".
 func NewQueueFound(clientEvent *ninchat.Event) (event *QueueFound, err error) {
 	if clientEvent != nil {
 		e := new(QueueFound)
@@ -1930,9 +2024,10 @@ func NewQueueFound(clientEvent *ninchat.Event) (event *QueueFound, err error) {
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "queue_found".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "queue_found".
 func (target *QueueFound) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_found" {
 		return &UnexpectedEventError{clientEvent}
@@ -1997,8 +2092,10 @@ type QueueJoined struct {
 	RealmId    *string     `json:"realm_id,omitempty"`
 }
 
-// NewQueueJoined creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "queue_joined".
+// NewQueueJoined creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "queue_joined".
 func NewQueueJoined(clientEvent *ninchat.Event) (event *QueueJoined, err error) {
 	if clientEvent != nil {
 		e := new(QueueJoined)
@@ -2009,9 +2106,10 @@ func NewQueueJoined(clientEvent *ninchat.Event) (event *QueueJoined, err error) 
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "queue_joined".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "queue_joined".
 func (target *QueueJoined) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_joined" {
 		return &UnexpectedEventError{clientEvent}
@@ -2065,8 +2163,10 @@ type QueueMemberJoined struct {
 	UserId      string            `json:"user_id"`
 }
 
-// NewQueueMemberJoined creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "queue_member_joined".
+// NewQueueMemberJoined creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "queue_member_joined".
 func NewQueueMemberJoined(clientEvent *ninchat.Event) (event *QueueMemberJoined, err error) {
 	if clientEvent != nil {
 		e := new(QueueMemberJoined)
@@ -2077,9 +2177,10 @@ func NewQueueMemberJoined(clientEvent *ninchat.Event) (event *QueueMemberJoined,
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "queue_member_joined".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "queue_member_joined".
 func (target *QueueMemberJoined) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_member_joined" {
 		return &UnexpectedEventError{clientEvent}
@@ -2137,8 +2238,10 @@ type QueueMemberParted struct {
 	UserId  string `json:"user_id"`
 }
 
-// NewQueueMemberParted creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "queue_member_parted".
+// NewQueueMemberParted creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "queue_member_parted".
 func NewQueueMemberParted(clientEvent *ninchat.Event) (event *QueueMemberParted, err error) {
 	if clientEvent != nil {
 		e := new(QueueMemberParted)
@@ -2149,9 +2252,10 @@ func NewQueueMemberParted(clientEvent *ninchat.Event) (event *QueueMemberParted,
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "queue_member_parted".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "queue_member_parted".
 func (target *QueueMemberParted) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_member_parted" {
 		return &UnexpectedEventError{clientEvent}
@@ -2197,8 +2301,10 @@ type QueueParted struct {
 	RealmId *string `json:"realm_id,omitempty"`
 }
 
-// NewQueueParted creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "queue_parted".
+// NewQueueParted creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "queue_parted".
 func NewQueueParted(clientEvent *ninchat.Event) (event *QueueParted, err error) {
 	if clientEvent != nil {
 		e := new(QueueParted)
@@ -2209,9 +2315,10 @@ func NewQueueParted(clientEvent *ninchat.Event) (event *QueueParted, err error) 
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "queue_parted".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "queue_parted".
 func (target *QueueParted) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_parted" {
 		return &UnexpectedEventError{clientEvent}
@@ -2259,8 +2366,10 @@ type QueueUpdated struct {
 	RealmId       *string     `json:"realm_id,omitempty"`
 }
 
-// NewQueueUpdated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "queue_updated".
+// NewQueueUpdated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "queue_updated".
 func NewQueueUpdated(clientEvent *ninchat.Event) (event *QueueUpdated, err error) {
 	if clientEvent != nil {
 		e := new(QueueUpdated)
@@ -2271,9 +2380,10 @@ func NewQueueUpdated(clientEvent *ninchat.Event) (event *QueueUpdated, err error
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "queue_updated".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "queue_updated".
 func (target *QueueUpdated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "queue_updated" {
 		return &UnexpectedEventError{clientEvent}
@@ -2330,8 +2440,10 @@ type RealmDeleted struct {
 	RealmId string `json:"realm_id"`
 }
 
-// NewRealmDeleted creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "realm_deleted".
+// NewRealmDeleted creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "realm_deleted".
 func NewRealmDeleted(clientEvent *ninchat.Event) (event *RealmDeleted, err error) {
 	if clientEvent != nil {
 		e := new(RealmDeleted)
@@ -2342,9 +2454,10 @@ func NewRealmDeleted(clientEvent *ninchat.Event) (event *RealmDeleted, err error
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "realm_deleted".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "realm_deleted".
 func (target *RealmDeleted) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_deleted" {
 		return &UnexpectedEventError{clientEvent}
@@ -2385,8 +2498,10 @@ type RealmFound struct {
 	RealmMembers map[string]*RealmMember `json:"realm_members,omitempty"`
 }
 
-// NewRealmFound creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "realm_found".
+// NewRealmFound creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "realm_found".
 func NewRealmFound(clientEvent *ninchat.Event) (event *RealmFound, err error) {
 	if clientEvent != nil {
 		e := new(RealmFound)
@@ -2397,9 +2512,10 @@ func NewRealmFound(clientEvent *ninchat.Event) (event *RealmFound, err error) {
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "realm_found".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "realm_found".
 func (target *RealmFound) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_found" {
 		return &UnexpectedEventError{clientEvent}
@@ -2452,8 +2568,10 @@ type RealmJoined struct {
 	RealmMembers map[string]*RealmMember `json:"realm_members"`
 }
 
-// NewRealmJoined creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "realm_joined".
+// NewRealmJoined creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "realm_joined".
 func NewRealmJoined(clientEvent *ninchat.Event) (event *RealmJoined, err error) {
 	if clientEvent != nil {
 		e := new(RealmJoined)
@@ -2464,9 +2582,10 @@ func NewRealmJoined(clientEvent *ninchat.Event) (event *RealmJoined, err error) 
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "realm_joined".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "realm_joined".
 func (target *RealmJoined) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_joined" {
 		return &UnexpectedEventError{clientEvent}
@@ -2520,8 +2639,10 @@ type RealmMemberJoined struct {
 	UserId      string            `json:"user_id"`
 }
 
-// NewRealmMemberJoined creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "realm_member_joined".
+// NewRealmMemberJoined creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "realm_member_joined".
 func NewRealmMemberJoined(clientEvent *ninchat.Event) (event *RealmMemberJoined, err error) {
 	if clientEvent != nil {
 		e := new(RealmMemberJoined)
@@ -2532,9 +2653,10 @@ func NewRealmMemberJoined(clientEvent *ninchat.Event) (event *RealmMemberJoined,
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "realm_member_joined".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "realm_member_joined".
 func (target *RealmMemberJoined) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_member_joined" {
 		return &UnexpectedEventError{clientEvent}
@@ -2593,8 +2715,10 @@ type RealmMemberParted struct {
 	UserId    string  `json:"user_id"`
 }
 
-// NewRealmMemberParted creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "realm_member_parted".
+// NewRealmMemberParted creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "realm_member_parted".
 func NewRealmMemberParted(clientEvent *ninchat.Event) (event *RealmMemberParted, err error) {
 	if clientEvent != nil {
 		e := new(RealmMemberParted)
@@ -2605,9 +2729,10 @@ func NewRealmMemberParted(clientEvent *ninchat.Event) (event *RealmMemberParted,
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "realm_member_parted".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "realm_member_parted".
 func (target *RealmMemberParted) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_member_parted" {
 		return &UnexpectedEventError{clientEvent}
@@ -2660,8 +2785,10 @@ type RealmMemberUpdated struct {
 	UserId      string            `json:"user_id"`
 }
 
-// NewRealmMemberUpdated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "realm_member_updated".
+// NewRealmMemberUpdated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "realm_member_updated".
 func NewRealmMemberUpdated(clientEvent *ninchat.Event) (event *RealmMemberUpdated, err error) {
 	if clientEvent != nil {
 		e := new(RealmMemberUpdated)
@@ -2672,9 +2799,10 @@ func NewRealmMemberUpdated(clientEvent *ninchat.Event) (event *RealmMemberUpdate
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "realm_member_updated".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "realm_member_updated".
 func (target *RealmMemberUpdated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_member_updated" {
 		return &UnexpectedEventError{clientEvent}
@@ -2725,8 +2853,10 @@ type RealmParted struct {
 	RealmId string `json:"realm_id"`
 }
 
-// NewRealmParted creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "realm_parted".
+// NewRealmParted creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "realm_parted".
 func NewRealmParted(clientEvent *ninchat.Event) (event *RealmParted, err error) {
 	if clientEvent != nil {
 		e := new(RealmParted)
@@ -2737,9 +2867,10 @@ func NewRealmParted(clientEvent *ninchat.Event) (event *RealmParted, err error) 
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "realm_parted".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "realm_parted".
 func (target *RealmParted) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_parted" {
 		return &UnexpectedEventError{clientEvent}
@@ -2779,8 +2910,10 @@ type RealmQueuesFound struct {
 	RealmQueues map[string]*RealmQueue `json:"realm_queues"`
 }
 
-// NewRealmQueuesFound creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "realm_queues_found".
+// NewRealmQueuesFound creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "realm_queues_found".
 func NewRealmQueuesFound(clientEvent *ninchat.Event) (event *RealmQueuesFound, err error) {
 	if clientEvent != nil {
 		e := new(RealmQueuesFound)
@@ -2791,9 +2924,10 @@ func NewRealmQueuesFound(clientEvent *ninchat.Event) (event *RealmQueuesFound, e
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "realm_queues_found".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "realm_queues_found".
 func (target *RealmQueuesFound) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_queues_found" {
 		return &UnexpectedEventError{clientEvent}
@@ -2839,8 +2973,10 @@ type RealmUpdated struct {
 	RealmId    string      `json:"realm_id"`
 }
 
-// NewRealmUpdated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "realm_updated".
+// NewRealmUpdated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "realm_updated".
 func NewRealmUpdated(clientEvent *ninchat.Event) (event *RealmUpdated, err error) {
 	if clientEvent != nil {
 		e := new(RealmUpdated)
@@ -2851,9 +2987,10 @@ func NewRealmUpdated(clientEvent *ninchat.Event) (event *RealmUpdated, err error
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "realm_updated".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "realm_updated".
 func (target *RealmUpdated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "realm_updated" {
 		return &UnexpectedEventError{clientEvent}
@@ -2899,8 +3036,10 @@ type SearchResults struct {
 	Users    map[string]*UserResult    `json:"users,omitempty"`
 }
 
-// NewSearchResults creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "search_results".
+// NewSearchResults creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "search_results".
 func NewSearchResults(clientEvent *ninchat.Event) (event *SearchResults, err error) {
 	if clientEvent != nil {
 		e := new(SearchResults)
@@ -2911,9 +3050,10 @@ func NewSearchResults(clientEvent *ninchat.Event) (event *SearchResults, err err
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "search_results".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "search_results".
 func (target *SearchResults) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "search_results" {
 		return &UnexpectedEventError{clientEvent}
@@ -2970,8 +3110,10 @@ type SessionCreated struct {
 	UserSettings     map[string]interface{}       `json:"user_settings"`
 }
 
-// NewSessionCreated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "session_created".
+// NewSessionCreated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "session_created".
 func NewSessionCreated(clientEvent *ninchat.Event) (event *SessionCreated, err error) {
 	if clientEvent != nil {
 		e := new(SessionCreated)
@@ -2982,9 +3124,10 @@ func NewSessionCreated(clientEvent *ninchat.Event) (event *SessionCreated, err e
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "session_created".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "session_created".
 func (target *SessionCreated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "session_created" {
 		return &UnexpectedEventError{clientEvent}
@@ -3097,8 +3240,10 @@ type SessionStatusUpdated struct {
 	UserId    *string `json:"user_id,omitempty"`
 }
 
-// NewSessionStatusUpdated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "session_status_updated".
+// NewSessionStatusUpdated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "session_status_updated".
 func NewSessionStatusUpdated(clientEvent *ninchat.Event) (event *SessionStatusUpdated, err error) {
 	if clientEvent != nil {
 		e := new(SessionStatusUpdated)
@@ -3109,9 +3254,10 @@ func NewSessionStatusUpdated(clientEvent *ninchat.Event) (event *SessionStatusUp
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "session_status_updated".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "session_status_updated".
 func (target *SessionStatusUpdated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "session_status_updated" {
 		return &UnexpectedEventError{clientEvent}
@@ -3162,8 +3308,10 @@ type UserDeleted struct {
 	UserId  string `json:"user_id"`
 }
 
-// NewUserDeleted creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "user_deleted".
+// NewUserDeleted creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "user_deleted".
 func NewUserDeleted(clientEvent *ninchat.Event) (event *UserDeleted, err error) {
 	if clientEvent != nil {
 		e := new(UserDeleted)
@@ -3174,9 +3322,10 @@ func NewUserDeleted(clientEvent *ninchat.Event) (event *UserDeleted, err error) 
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "user_deleted".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "user_deleted".
 func (target *UserDeleted) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "user_deleted" {
 		return &UnexpectedEventError{clientEvent}
@@ -3227,8 +3376,10 @@ type UserFound struct {
 	UserSettings     map[string]interface{}          `json:"user_settings,omitempty"`
 }
 
-// NewUserFound creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "user_found".
+// NewUserFound creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "user_found".
 func NewUserFound(clientEvent *ninchat.Event) (event *UserFound, err error) {
 	if clientEvent != nil {
 		e := new(UserFound)
@@ -3239,9 +3390,10 @@ func NewUserFound(clientEvent *ninchat.Event) (event *UserFound, err error) {
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "user_found".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "user_found".
 func (target *UserFound) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "user_found" {
 		return &UnexpectedEventError{clientEvent}
@@ -3355,8 +3507,10 @@ type UserUpdated struct {
 	UserSettings map[string]interface{} `json:"user_settings,omitempty"`
 }
 
-// NewUserUpdated creates an event object with the parameters specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not "user_updated".
+// NewUserUpdated creates an event object with the parameters
+// specified by the clientEvent.
+// An UnexpectedEventError is returned if its type is not
+// "user_updated".
 func NewUserUpdated(clientEvent *ninchat.Event) (event *UserUpdated, err error) {
 	if clientEvent != nil {
 		e := new(UserUpdated)
@@ -3367,9 +3521,10 @@ func NewUserUpdated(clientEvent *ninchat.Event) (event *UserUpdated, err error) 
 	return
 }
 
-// Init fills in the parameters specified by the clientEvent
-// (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not "user_updated".
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "user_updated".
 func (target *UserUpdated) Init(clientEvent *ninchat.Event) error {
 	if clientEvent.String() != "user_updated" {
 		return &UnexpectedEventError{clientEvent}

@@ -217,7 +217,7 @@ def print_action(action):
 			print '  {} {} `json:"{}{}"`'.format(title(p.name), typ, p.name, tag)
 
 	if payload:
-		print '  Payload [][]byte'
+		print '  Payload []ninchat.Frame'
 
 	print '}'
 	print
@@ -327,12 +327,21 @@ def print_event(event):
 		print '  {} {} `json:"{}{}"`'.format(title(p.name), typ, p.name, tag)
 
 	if payload:
-		print '  Payload [][]byte'
+		print
+		print '  payload []ninchat.Frame'
 
 	print '}'
+
+	if payload:
+		initwhat = "parameters and payload"
+	else:
+		initwhat = "parameters"
+
 	print
-	print '// New{} creates an event object with the parameters specified by the clientEvent.'.format(title(event.name))
-	print '// An UnexpectedEventError is returned if its type is not "{}".'.format(event.name)
+	print '// New{} creates an event object with the {}'.format(title(event.name), initwhat)
+	print '// specified by the clientEvent.'
+	print '// An UnexpectedEventError is returned if its type is not'
+	print '// "{}".'.format(event.name)
 	print 'func New{0}(clientEvent *ninchat.Event) (event *{0}, err error) {{'.format(title(event.name))
 	print '  if clientEvent != nil {'
 	print '    e := new({})'.format(title(event.name))
@@ -343,9 +352,10 @@ def print_event(event):
 	print '  return'
 	print '}'
 	print
-	print '// Init fills in the parameters specified by the clientEvent'
-	print '// (other fields are not touched).'
-	print '// An UnexpectedEventError is returned if its type is not "{}".'.format(event.name)
+	print '// Init fills in the {}'.format(initwhat)
+	print '// specified by the clientEvent (other fields are not touched).'
+	print '// An UnexpectedEventError is returned if its type is not'
+	print '// "{}".'.format(event.name)
 	print 'func (target *{}) Init(clientEvent *ninchat.Event) error {{'.format(title(event.name))
 	print '  if clientEvent.String() != "{}" {{'.format(event.name)
 	print '    return &UnexpectedEventError{clientEvent}'
@@ -407,11 +417,24 @@ def print_event(event):
 
 	if payload:
 		print
-		print '  target.Payload = clientEvent.Payload'
+		print '  target.InitPayload(clientEvent.Payload)'
 
 	print
 	print '  return nil'
 	print '}'
+
+	if payload:
+		print
+		print '// InitPayload sets the payload (other fields are not touched).'
+		print 'func (event *{}) InitPayload(payload []ninchat.Frame) {{'.format(title(event.name))
+		print '  event.payload = payload'
+		print '}'
+		print
+		print '// Payload of the event.'
+		print 'func (event *{}) Payload() []ninchat.Frame {{'.format(title(event.name))
+		print '  return event.payload'
+		print '}'
+
 	print
 	print '// Id returns the EventId parameter.'
 	print 'func (event *{}) Id() int {{'.format(title(event.name))
