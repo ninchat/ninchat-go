@@ -192,7 +192,7 @@ def print_action(action):
 	print 'type {} struct {{'.format(title(action.name))
 
 	if action_id and not action_id.required:
-		print '  ActionIdDisabled bool'
+		print '  ActionIdDisabled bool `json:"-"`'
 
 	for _, p in sorted(action.params.items()):
 		if p.name != "action_id":

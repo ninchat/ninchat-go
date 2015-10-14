@@ -655,7 +655,7 @@ func (action *DeleteUser) Invoke(session *ninchat.Session) (reply *UserDeleted, 
 
 // DescribeAccess action.  https://ninchat.com/api/v2#describe_access
 type DescribeAccess struct {
-	ActionIdDisabled bool
+	ActionIdDisabled bool    `json:"-"`
 	AccessKey        *string `json:"access_key"`
 }
 
@@ -1254,7 +1254,7 @@ func (action *PartChannel) Invoke(session *ninchat.Session) (reply *ChannelParte
 
 // Ping action.  https://ninchat.com/api/v2#ping
 type Ping struct {
-	ActionIdDisabled bool
+	ActionIdDisabled bool `json:"-"`
 }
 
 // String returns "ping".
@@ -1400,7 +1400,7 @@ func (action *RequestAudience) Invoke(session *ninchat.Session) (reply *Audience
 
 // RequestIdentityAuthResetAccess action.  https://ninchat.com/api/v2#request_identity_auth_reset_access
 type RequestIdentityAuthResetAccess struct {
-	ActionIdDisabled bool
+	ActionIdDisabled bool    `json:"-"`
 	IdentityName     *string `json:"identity_name"`
 	IdentityType     *string `json:"identity_type"`
 }
@@ -1456,7 +1456,7 @@ func (action *RequestIdentityAuthResetAccess) Invoke(session *ninchat.Session) (
 
 // RequestIdentityVerifyAccess action.  https://ninchat.com/api/v2#request_identity_verify_access
 type RequestIdentityVerifyAccess struct {
-	ActionIdDisabled bool
+	ActionIdDisabled bool    `json:"-"`
 	IdentityName     *string `json:"identity_name"`
 	IdentityType     *string `json:"identity_type"`
 }
@@ -1666,7 +1666,7 @@ func (action *SendAccess) Invoke(session *ninchat.Session) (reply *AccessFound, 
 
 // SendMessage action.  https://ninchat.com/api/v2#send_message
 type SendMessage struct {
-	ActionIdDisabled    bool
+	ActionIdDisabled    bool     `json:"-"`
 	ChannelId           *string  `json:"channel_id,omitempty"`
 	IdentityName        *string  `json:"identity_name,omitempty"`
 	IdentityType        *string  `json:"identity_type,omitempty"`
@@ -2292,7 +2292,7 @@ func (action *UpdateUser) Invoke(session *ninchat.Session) (reply *UserUpdated, 
 
 // VerifyIdentity action.  https://ninchat.com/api/v2#verify_identity
 type VerifyIdentity struct {
-	ActionIdDisabled bool
+	ActionIdDisabled bool    `json:"-"`
 	AccessKey        *string `json:"access_key"`
 	IdentityAccept   bool    `json:"identity_accept"`
 }
