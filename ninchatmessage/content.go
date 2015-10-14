@@ -11,6 +11,11 @@ import (
 // Content is implemented by all message types in this package.
 type Content interface {
 	MessageType() string
-	Marshal() (payload []ninchat.Frame, err error)
 	Unmarshal(payload []ninchat.Frame) error
+}
+
+// OriginalContent is implemented by non-system message types.
+type OriginalContent interface {
+	Content
+	Marshal() (payload []ninchat.Frame, err error)
 }

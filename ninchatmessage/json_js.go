@@ -3,25 +3,31 @@
 package ninchatmessage
 
 import (
-	"encoding/json"
-
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/ninchat/ninchat-go"
 )
 
-func marshalJSON(c Content) (payload []ninchat.Frame, err error) {
-	data, err := json.Marshal(c)
-	if err != nil {
-		return
-	}
+func marshal(obj map[string]interface{}) (payload []ninchat.Frame, err error) {
+	defer func() {
+		if x := recover(); x != nil {
+			err = x.(error) // TODO
+		}
+	}()
 
-	x := js.Global.Get("Uint8Array").New(data)
-	payload = []ninchat.Frame{x}
+	data := js.Global.Get("JSON").Call("stringify", obj)
+	payload = []ninchat.Frame{data}
 	return
 }
 
-func unmarshalJSON(payload []ninchat.Frame, c Content) error {
-	jsString := ninchat.StringifyFrame(payload[0])
-	data := []byte(jsString.String())
-	return json.Unmarshal(data, c)
+func unmarshal(payload []ninchat.Frame) (obj map[string]interface{}, err error) {
+	defer func() {
+		if x := recover(); x != nil {
+			err = x.(error) // TODO
+		}
+	}()
+
+	data := ninchat.StringifyFrame(payload[0])
+	x := js.Global.Get("JSON").Call("parse", data).Interface()
+	obj = x.(map[string]interface{})
+	return
 }

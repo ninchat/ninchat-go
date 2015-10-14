@@ -19,11 +19,22 @@ func (*Text) MessageType() string {
 }
 
 func (m *Text) Marshal() (payload []ninchat.Frame, err error) {
-	return marshalJSON(m)
+	return marshal(map[string]interface{}{
+		"text": m.Text,
+	})
 }
 
-func (m *Text) Unmarshal(payload []ninchat.Frame) error {
-	return unmarshalJSON(payload, m)
+func (m *Text) Unmarshal(payload []ninchat.Frame) (err error) {
+	obj, err := unmarshal(payload)
+	if err != nil {
+		return
+	}
+
+	if x := obj["text"]; x != nil {
+		m.Text, _ = x.(string)
+	}
+
+	return
 }
 
 func (m *Text) String() string {
@@ -38,14 +49,14 @@ func (*Notice) MessageType() string {
 	return NoticeType
 }
 
-func (m *Notice) Marshal() (payload []ninchat.Frame, err error) {
-	return marshalJSON(m)
+func (m *Notice) Marshal() ([]ninchat.Frame, error) {
+	return (*Text)(m).Marshal()
 }
 
 func (m *Notice) Unmarshal(payload []ninchat.Frame) error {
-	return unmarshalJSON(payload, m)
+	return (*Text)(m).Unmarshal(payload)
 }
 
 func (m *Notice) String() string {
-	return m.Text
+	return (*Text)(m).String()
 }

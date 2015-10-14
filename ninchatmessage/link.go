@@ -13,7 +13,7 @@ type Link struct {
 	Name      string  `json:"name"`
 	Size      int     `json:"size"`
 	Icon      string  `json:"icon"`
-	URL       string  `json:"url"`
+	Url       string  `json:"url"`
 	Thumbnail *string `json:"thumbnail,omitempty"`
 }
 
@@ -22,9 +22,48 @@ func (*Link) MessageType() string {
 }
 
 func (m *Link) Marshal() (payload []ninchat.Frame, err error) {
-	return marshalJSON(m)
+	obj := map[string]interface{}{
+		"name": m.Name,
+		"size": m.Size,
+		"icon": m.Icon,
+		"url":  m.Url,
+	}
+
+	if m.Thumbnail != nil {
+		obj["thumbnail"] = *m.Thumbnail
+	}
+
+	return marshal(obj)
 }
 
-func (m *Link) Unmarshal(payload []ninchat.Frame) error {
-	return unmarshalJSON(payload, m)
+func (m *Link) Unmarshal(payload []ninchat.Frame) (err error) {
+	obj, err := unmarshal(payload)
+	if err != nil {
+		return
+	}
+
+	if x := obj["name"]; x != nil {
+		m.Name, _ = x.(string)
+	}
+
+	if x := obj["size"]; x != nil {
+		y, _ := x.(float64)
+		m.Size = int(y)
+	}
+
+	if x := obj["icon"]; x != nil {
+		m.Icon, _ = x.(string)
+	}
+
+	if x := obj["url"]; x != nil {
+		m.Url, _ = x.(string)
+	}
+
+	if x := obj["thumbnail"]; x != nil {
+		if y, ok := x.(string); ok {
+			m.Thumbnail = &y
+		}
+	}
+
+	return
 }

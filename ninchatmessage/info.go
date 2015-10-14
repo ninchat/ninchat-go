@@ -30,12 +30,33 @@ func (*UserInfo) MessageType() string {
 	return UserInfoType
 }
 
-func (m *UserInfo) Marshal() (payload []ninchat.Frame, err error) {
-	return marshalJSON(m)
-}
+func (m *UserInfo) Unmarshal(payload []ninchat.Frame) (err error) {
+	obj, err := unmarshal(payload)
+	if err != nil {
+		return
+	}
 
-func (m *UserInfo) Unmarshal(payload []ninchat.Frame) error {
-	return unmarshalJSON(payload, m)
+	if x := obj["user_id"]; x != nil {
+		m.UserId, _ = x.(string)
+	}
+
+	if x := obj["user_name"]; x != nil {
+		if y, ok := x.(string); ok {
+			m.UserName = &y
+		}
+	}
+
+	if x := obj["user_name_old"]; x != nil {
+		if y, ok := x.(string); ok {
+			m.UserNameOld = &y
+		}
+	}
+
+	if obj["user_deleted"] != nil {
+		m.UserDeleted = true
+	}
+
+	return
 }
 
 // ChannelInfo represents https://ninchat.com/info/channel messages.
@@ -48,12 +69,21 @@ func (*ChannelInfo) MessageType() string {
 	return ChannelInfoType
 }
 
-func (m *ChannelInfo) Marshal() (payload []ninchat.Frame, err error) {
-	return marshalJSON(m)
-}
+func (m *ChannelInfo) Unmarshal(payload []ninchat.Frame) (err error) {
+	obj, err := unmarshal(payload)
+	if err != nil {
+		return
+	}
 
-func (m *ChannelInfo) Unmarshal(payload []ninchat.Frame) error {
-	return unmarshalJSON(payload, m)
+	if x := obj["channel_attrs_old"]; x != nil {
+		m.ChannelAttrsOld, _ = x.(map[string]interface{})
+	}
+
+	if x := obj["channel_attrs_new"]; x != nil {
+		m.ChannelAttrsNew, _ = x.(map[string]interface{})
+	}
+
+	return
 }
 
 // JoinInfo represents https://ninchat.com/info/join messages.
@@ -67,12 +97,27 @@ func (*JoinInfo) MessageType() string {
 	return JoinInfoType
 }
 
-func (m *JoinInfo) Marshal() (payload []ninchat.Frame, err error) {
-	return marshalJSON(m)
-}
+func (m *JoinInfo) Unmarshal(payload []ninchat.Frame) (err error) {
+	obj, err := unmarshal(payload)
+	if err != nil {
+		return
+	}
 
-func (m *JoinInfo) Unmarshal(payload []ninchat.Frame) error {
-	return unmarshalJSON(payload, m)
+	if x := obj["user_id"]; x != nil {
+		m.UserId, _ = x.(string)
+	}
+
+	if x := obj["user_name"]; x != nil {
+		if y, ok := x.(string); ok {
+			m.UserName = &y
+		}
+	}
+
+	if obj["member_silenced"] != nil {
+		m.MemberSilenced = true
+	}
+
+	return
 }
 
 // PartInfo represents https://ninchat.com/info/part messages.
@@ -85,12 +130,23 @@ func (*PartInfo) MessageType() string {
 	return PartInfoType
 }
 
-func (m *PartInfo) Marshal() (payload []ninchat.Frame, err error) {
-	return marshalJSON(m)
-}
+func (m *PartInfo) Unmarshal(payload []ninchat.Frame) (err error) {
+	obj, err := unmarshal(payload)
+	if err != nil {
+		return
+	}
 
-func (m *PartInfo) Unmarshal(payload []ninchat.Frame) error {
-	return unmarshalJSON(payload, m)
+	if x := obj["user_id"]; x != nil {
+		m.UserId, _ = x.(string)
+	}
+
+	if x := obj["user_name"]; x != nil {
+		if y, ok := x.(string); ok {
+			m.UserName = &y
+		}
+	}
+
+	return
 }
 
 // MemberInfo represents https://ninchat.com/info/member messages.
@@ -104,12 +160,27 @@ func (*MemberInfo) MessageType() string {
 	return MemberInfoType
 }
 
-func (m *MemberInfo) Marshal() (payload []ninchat.Frame, err error) {
-	return marshalJSON(m)
-}
+func (m *MemberInfo) Unmarshal(payload []ninchat.Frame) (err error) {
+	obj, err := unmarshal(payload)
+	if err != nil {
+		return
+	}
 
-func (m *MemberInfo) Unmarshal(payload []ninchat.Frame) error {
-	return unmarshalJSON(payload, m)
+	if x := obj["user_id"]; x != nil {
+		m.UserId, _ = x.(string)
+	}
+
+	if x := obj["user_name"]; x != nil {
+		if y, ok := x.(string); ok {
+			m.UserName = &y
+		}
+	}
+
+	if obj["member_silenced"] != nil {
+		m.MemberSilenced = true
+	}
+
+	return
 }
 
 // AccessInfo represents https://ninchat.com/info/access messages.
@@ -127,10 +198,41 @@ func (*AccessInfo) MessageType() string {
 	return AccessInfoType
 }
 
-func (m *AccessInfo) Marshal() (payload []ninchat.Frame, err error) {
-	return marshalJSON(m)
-}
+func (m *AccessInfo) Unmarshal(payload []ninchat.Frame) (err error) {
+	obj, err := unmarshal(payload)
+	if err != nil {
+		return
+	}
 
-func (m *AccessInfo) Unmarshal(payload []ninchat.Frame) error {
-	return unmarshalJSON(payload, m)
+	if x := obj["user_id"]; x != nil {
+		m.UserId, _ = x.(string)
+	}
+
+	if x := obj["access_key"]; x != nil {
+		m.AccessKey, _ = x.(string)
+	}
+
+	if x := obj["channel_id"]; x != nil {
+		m.ChannelId, _ = x.(string)
+	}
+
+	if x := obj["channel_attrs"]; x != nil {
+		m.ChannelAttrs, _ = x.(map[string]interface{})
+	}
+
+	if x := obj["realm_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			m.RealmId = &y
+		}
+	}
+
+	if x := obj["realm_attrs"]; x != nil {
+		m.RealmAttrs, _ = x.(map[string]interface{})
+	}
+
+	if obj["realm_member"] != nil {
+		m.RealmMember = true
+	}
+
+	return
 }

@@ -8,8 +8,8 @@ import (
 	"github.com/ninchat/ninchat-go"
 )
 
-func marshalJSON(c Content) (payload []ninchat.Frame, err error) {
-	data, err := json.Marshal(c)
+func marshal(obj map[string]interface{}) (payload []ninchat.Frame, err error) {
+	data, err := json.Marshal(obj)
 	if err != nil {
 		return
 	}
@@ -18,6 +18,7 @@ func marshalJSON(c Content) (payload []ninchat.Frame, err error) {
 	return
 }
 
-func unmarshalJSON(payload []ninchat.Frame, c Content) error {
-	return json.Unmarshal(payload[0], c)
+func unmarshal(payload []ninchat.Frame) (obj map[string]interface{}, err error) {
+	err = json.Unmarshal(payload[0], &obj)
+	return
 }
