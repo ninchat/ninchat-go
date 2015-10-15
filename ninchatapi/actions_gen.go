@@ -1209,6 +1209,22 @@ func (action *LoadHistory) newClientAction() (clientAction *ninchat.Action, err 
 	return
 }
 
+// Invoke the action synchronously.
+func (action *LoadHistory) Invoke(session *ninchat.Session) (reply *HistoryResults, err error) {
+	var buf HistoryResults
+
+	ok, err := unaryCall(session, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
+}
+
 // PartChannel action.  https://ninchat.com/api/v2#part_channel
 type PartChannel struct {
 	ChannelId *string `json:"channel_id"`

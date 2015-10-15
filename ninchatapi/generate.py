@@ -93,7 +93,7 @@ unaryreplies = {
 	"discard_history": "history_discarded",
 	"follow_channel": "channel_found",
 	"join_channel": "channel_joined",
-	"load_history": None,
+	"load_history": "history_results",      # message_received events ignored
 	"part_channel": "channel_parted",
 	"ping": "pong",
 	"remove_member": "member_parted",       # pseudo-event implemented manually
