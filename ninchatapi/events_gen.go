@@ -15,14 +15,14 @@ type AccessCreated struct {
 
 // NewAccessCreated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "access_created".
-func NewAccessCreated(clientEvent *ninchat.Event) (event *AccessCreated, err error) {
+// Its type must be "access_created".
+func NewAccessCreated(clientEvent *ninchat.Event) (event *AccessCreated) {
 	if clientEvent != nil {
 		e := new(AccessCreated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -86,14 +86,14 @@ type AccessFound struct {
 
 // NewAccessFound creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "access_found".
-func NewAccessFound(clientEvent *ninchat.Event) (event *AccessFound, err error) {
+// Its type must be "access_found".
+func NewAccessFound(clientEvent *ninchat.Event) (event *AccessFound) {
 	if clientEvent != nil {
 		e := new(AccessFound)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -196,14 +196,14 @@ type AudienceEnqueued struct {
 
 // NewAudienceEnqueued creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "audience_enqueued".
-func NewAudienceEnqueued(clientEvent *ninchat.Event) (event *AudienceEnqueued, err error) {
+// Its type must be "audience_enqueued".
+func NewAudienceEnqueued(clientEvent *ninchat.Event) (event *AudienceEnqueued) {
 	if clientEvent != nil {
 		e := new(AudienceEnqueued)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -264,14 +264,14 @@ type ChannelDeleted struct {
 
 // NewChannelDeleted creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "channel_deleted".
-func NewChannelDeleted(clientEvent *ninchat.Event) (event *ChannelDeleted, err error) {
+// Its type must be "channel_deleted".
+func NewChannelDeleted(clientEvent *ninchat.Event) (event *ChannelDeleted) {
 	if clientEvent != nil {
 		e := new(ChannelDeleted)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -324,14 +324,14 @@ type ChannelFound struct {
 
 // NewChannelFound creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "channel_found".
-func NewChannelFound(clientEvent *ninchat.Event) (event *ChannelFound, err error) {
+// Its type must be "channel_found".
+func NewChannelFound(clientEvent *ninchat.Event) (event *ChannelFound) {
 	if clientEvent != nil {
 		e := new(ChannelFound)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -407,14 +407,14 @@ type ChannelJoined struct {
 
 // NewChannelJoined creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "channel_joined".
-func NewChannelJoined(clientEvent *ninchat.Event) (event *ChannelJoined, err error) {
+// Its type must be "channel_joined".
+func NewChannelJoined(clientEvent *ninchat.Event) (event *ChannelJoined) {
 	if clientEvent != nil {
 		e := new(ChannelJoined)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -484,14 +484,14 @@ type ChannelMemberJoined struct {
 
 // NewChannelMemberJoined creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "channel_member_joined".
-func NewChannelMemberJoined(clientEvent *ninchat.Event) (event *ChannelMemberJoined, err error) {
+// Its type must be "channel_member_joined".
+func NewChannelMemberJoined(clientEvent *ninchat.Event) (event *ChannelMemberJoined) {
 	if clientEvent != nil {
 		e := new(ChannelMemberJoined)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -560,14 +560,14 @@ type ChannelMemberParted struct {
 
 // NewChannelMemberParted creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "channel_member_parted".
-func NewChannelMemberParted(clientEvent *ninchat.Event) (event *ChannelMemberParted, err error) {
+// Its type must be "channel_member_parted".
+func NewChannelMemberParted(clientEvent *ninchat.Event) (event *ChannelMemberParted) {
 	if clientEvent != nil {
 		e := new(ChannelMemberParted)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -631,14 +631,14 @@ type ChannelMemberUpdated struct {
 
 // NewChannelMemberUpdated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "channel_member_updated".
-func NewChannelMemberUpdated(clientEvent *ninchat.Event) (event *ChannelMemberUpdated, err error) {
+// Its type must be "channel_member_updated".
+func NewChannelMemberUpdated(clientEvent *ninchat.Event) (event *ChannelMemberUpdated) {
 	if clientEvent != nil {
 		e := new(ChannelMemberUpdated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -705,14 +705,14 @@ type ChannelParted struct {
 
 // NewChannelParted creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "channel_parted".
-func NewChannelParted(clientEvent *ninchat.Event) (event *ChannelParted, err error) {
+// Its type must be "channel_parted".
+func NewChannelParted(clientEvent *ninchat.Event) (event *ChannelParted) {
 	if clientEvent != nil {
 		e := new(ChannelParted)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -763,14 +763,14 @@ type ChannelUpdated struct {
 
 // NewChannelUpdated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "channel_updated".
-func NewChannelUpdated(clientEvent *ninchat.Event) (event *ChannelUpdated, err error) {
+// Its type must be "channel_updated".
+func NewChannelUpdated(clientEvent *ninchat.Event) (event *ChannelUpdated) {
 	if clientEvent != nil {
 		e := new(ChannelUpdated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -834,14 +834,14 @@ type DialogueUpdated struct {
 
 // NewDialogueUpdated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "dialogue_updated".
-func NewDialogueUpdated(clientEvent *ninchat.Event) (event *DialogueUpdated, err error) {
+// Its type must be "dialogue_updated".
+func NewDialogueUpdated(clientEvent *ninchat.Event) (event *DialogueUpdated) {
 	if clientEvent != nil {
 		e := new(DialogueUpdated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -916,14 +916,14 @@ type Error struct {
 
 // NewError creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "error".
-func NewError(clientEvent *ninchat.Event) (event *Error, err error) {
+// Its type must be "error".
+func NewError(clientEvent *ninchat.Event) (event *Error) {
 	if clientEvent != nil {
 		e := new(Error)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1022,14 +1022,14 @@ type HistoryDiscarded struct {
 
 // NewHistoryDiscarded creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "history_discarded".
-func NewHistoryDiscarded(clientEvent *ninchat.Event) (event *HistoryDiscarded, err error) {
+// Its type must be "history_discarded".
+func NewHistoryDiscarded(clientEvent *ninchat.Event) (event *HistoryDiscarded) {
 	if clientEvent != nil {
 		e := new(HistoryDiscarded)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1092,14 +1092,14 @@ type HistoryResults struct {
 
 // NewHistoryResults creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "history_results".
-func NewHistoryResults(clientEvent *ninchat.Event) (event *HistoryResults, err error) {
+// Its type must be "history_results".
+func NewHistoryResults(clientEvent *ninchat.Event) (event *HistoryResults) {
 	if clientEvent != nil {
 		e := new(HistoryResults)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1162,14 +1162,14 @@ type IdentityCreated struct {
 
 // NewIdentityCreated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "identity_created".
-func NewIdentityCreated(clientEvent *ninchat.Event) (event *IdentityCreated, err error) {
+// Its type must be "identity_created".
+func NewIdentityCreated(clientEvent *ninchat.Event) (event *IdentityCreated) {
 	if clientEvent != nil {
 		e := new(IdentityCreated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1231,14 +1231,14 @@ type IdentityDeleted struct {
 
 // NewIdentityDeleted creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "identity_deleted".
-func NewIdentityDeleted(clientEvent *ninchat.Event) (event *IdentityDeleted, err error) {
+// Its type must be "identity_deleted".
+func NewIdentityDeleted(clientEvent *ninchat.Event) (event *IdentityDeleted) {
 	if clientEvent != nil {
 		e := new(IdentityDeleted)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1296,14 +1296,14 @@ type IdentityFound struct {
 
 // NewIdentityFound creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "identity_found".
-func NewIdentityFound(clientEvent *ninchat.Event) (event *IdentityFound, err error) {
+// Its type must be "identity_found".
+func NewIdentityFound(clientEvent *ninchat.Event) (event *IdentityFound) {
 	if clientEvent != nil {
 		e := new(IdentityFound)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1372,14 +1372,14 @@ type IdentityUpdated struct {
 
 // NewIdentityUpdated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "identity_updated".
-func NewIdentityUpdated(clientEvent *ninchat.Event) (event *IdentityUpdated, err error) {
+// Its type must be "identity_updated".
+func NewIdentityUpdated(clientEvent *ninchat.Event) (event *IdentityUpdated) {
 	if clientEvent != nil {
 		e := new(IdentityUpdated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1440,14 +1440,14 @@ type MasterFound struct {
 
 // NewMasterFound creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "master_found".
-func NewMasterFound(clientEvent *ninchat.Event) (event *MasterFound, err error) {
+// Its type must be "master_found".
+func NewMasterFound(clientEvent *ninchat.Event) (event *MasterFound) {
 	if clientEvent != nil {
 		e := new(MasterFound)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1497,14 +1497,14 @@ type MasterKeyCreated struct {
 
 // NewMasterKeyCreated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "master_key_created".
-func NewMasterKeyCreated(clientEvent *ninchat.Event) (event *MasterKeyCreated, err error) {
+// Its type must be "master_key_created".
+func NewMasterKeyCreated(clientEvent *ninchat.Event) (event *MasterKeyCreated) {
 	if clientEvent != nil {
 		e := new(MasterKeyCreated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1559,14 +1559,14 @@ type MasterKeyDeleted struct {
 
 // NewMasterKeyDeleted creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "master_key_deleted".
-func NewMasterKeyDeleted(clientEvent *ninchat.Event) (event *MasterKeyDeleted, err error) {
+// Its type must be "master_key_deleted".
+func NewMasterKeyDeleted(clientEvent *ninchat.Event) (event *MasterKeyDeleted) {
 	if clientEvent != nil {
 		e := new(MasterKeyDeleted)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1628,14 +1628,14 @@ type MessageReceived struct {
 
 // NewMessageReceived creates an event object with the parameters and payload
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "message_received".
-func NewMessageReceived(clientEvent *ninchat.Event) (event *MessageReceived, err error) {
+// Its type must be "message_received".
+func NewMessageReceived(clientEvent *ninchat.Event) (event *MessageReceived) {
 	if clientEvent != nil {
 		e := new(MessageReceived)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1760,14 +1760,14 @@ type MessageUpdated struct {
 
 // NewMessageUpdated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "message_updated".
-func NewMessageUpdated(clientEvent *ninchat.Event) (event *MessageUpdated, err error) {
+// Its type must be "message_updated".
+func NewMessageUpdated(clientEvent *ninchat.Event) (event *MessageUpdated) {
 	if clientEvent != nil {
 		e := new(MessageUpdated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1825,14 +1825,14 @@ type Pong struct {
 
 // NewPong creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "pong".
-func NewPong(clientEvent *ninchat.Event) (event *Pong, err error) {
+// Its type must be "pong".
+func NewPong(clientEvent *ninchat.Event) (event *Pong) {
 	if clientEvent != nil {
 		e := new(Pong)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1877,14 +1877,14 @@ type QueueCreated struct {
 
 // NewQueueCreated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "queue_created".
-func NewQueueCreated(clientEvent *ninchat.Event) (event *QueueCreated, err error) {
+// Its type must be "queue_created".
+func NewQueueCreated(clientEvent *ninchat.Event) (event *QueueCreated) {
 	if clientEvent != nil {
 		e := new(QueueCreated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -1946,14 +1946,14 @@ type QueueDeleted struct {
 
 // NewQueueDeleted creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "queue_deleted".
-func NewQueueDeleted(clientEvent *ninchat.Event) (event *QueueDeleted, err error) {
+// Its type must be "queue_deleted".
+func NewQueueDeleted(clientEvent *ninchat.Event) (event *QueueDeleted) {
 	if clientEvent != nil {
 		e := new(QueueDeleted)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2012,14 +2012,14 @@ type QueueFound struct {
 
 // NewQueueFound creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "queue_found".
-func NewQueueFound(clientEvent *ninchat.Event) (event *QueueFound, err error) {
+// Its type must be "queue_found".
+func NewQueueFound(clientEvent *ninchat.Event) (event *QueueFound) {
 	if clientEvent != nil {
 		e := new(QueueFound)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2094,14 +2094,14 @@ type QueueJoined struct {
 
 // NewQueueJoined creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "queue_joined".
-func NewQueueJoined(clientEvent *ninchat.Event) (event *QueueJoined, err error) {
+// Its type must be "queue_joined".
+func NewQueueJoined(clientEvent *ninchat.Event) (event *QueueJoined) {
 	if clientEvent != nil {
 		e := new(QueueJoined)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2165,14 +2165,14 @@ type QueueMemberJoined struct {
 
 // NewQueueMemberJoined creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "queue_member_joined".
-func NewQueueMemberJoined(clientEvent *ninchat.Event) (event *QueueMemberJoined, err error) {
+// Its type must be "queue_member_joined".
+func NewQueueMemberJoined(clientEvent *ninchat.Event) (event *QueueMemberJoined) {
 	if clientEvent != nil {
 		e := new(QueueMemberJoined)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2240,14 +2240,14 @@ type QueueMemberParted struct {
 
 // NewQueueMemberParted creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "queue_member_parted".
-func NewQueueMemberParted(clientEvent *ninchat.Event) (event *QueueMemberParted, err error) {
+// Its type must be "queue_member_parted".
+func NewQueueMemberParted(clientEvent *ninchat.Event) (event *QueueMemberParted) {
 	if clientEvent != nil {
 		e := new(QueueMemberParted)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2303,14 +2303,14 @@ type QueueParted struct {
 
 // NewQueueParted creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "queue_parted".
-func NewQueueParted(clientEvent *ninchat.Event) (event *QueueParted, err error) {
+// Its type must be "queue_parted".
+func NewQueueParted(clientEvent *ninchat.Event) (event *QueueParted) {
 	if clientEvent != nil {
 		e := new(QueueParted)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2368,14 +2368,14 @@ type QueueUpdated struct {
 
 // NewQueueUpdated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "queue_updated".
-func NewQueueUpdated(clientEvent *ninchat.Event) (event *QueueUpdated, err error) {
+// Its type must be "queue_updated".
+func NewQueueUpdated(clientEvent *ninchat.Event) (event *QueueUpdated) {
 	if clientEvent != nil {
 		e := new(QueueUpdated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2442,14 +2442,14 @@ type RealmDeleted struct {
 
 // NewRealmDeleted creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "realm_deleted".
-func NewRealmDeleted(clientEvent *ninchat.Event) (event *RealmDeleted, err error) {
+// Its type must be "realm_deleted".
+func NewRealmDeleted(clientEvent *ninchat.Event) (event *RealmDeleted) {
 	if clientEvent != nil {
 		e := new(RealmDeleted)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2500,14 +2500,14 @@ type RealmFound struct {
 
 // NewRealmFound creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "realm_found".
-func NewRealmFound(clientEvent *ninchat.Event) (event *RealmFound, err error) {
+// Its type must be "realm_found".
+func NewRealmFound(clientEvent *ninchat.Event) (event *RealmFound) {
 	if clientEvent != nil {
 		e := new(RealmFound)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2570,14 +2570,14 @@ type RealmJoined struct {
 
 // NewRealmJoined creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "realm_joined".
-func NewRealmJoined(clientEvent *ninchat.Event) (event *RealmJoined, err error) {
+// Its type must be "realm_joined".
+func NewRealmJoined(clientEvent *ninchat.Event) (event *RealmJoined) {
 	if clientEvent != nil {
 		e := new(RealmJoined)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2641,14 +2641,14 @@ type RealmMemberJoined struct {
 
 // NewRealmMemberJoined creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "realm_member_joined".
-func NewRealmMemberJoined(clientEvent *ninchat.Event) (event *RealmMemberJoined, err error) {
+// Its type must be "realm_member_joined".
+func NewRealmMemberJoined(clientEvent *ninchat.Event) (event *RealmMemberJoined) {
 	if clientEvent != nil {
 		e := new(RealmMemberJoined)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2717,14 +2717,14 @@ type RealmMemberParted struct {
 
 // NewRealmMemberParted creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "realm_member_parted".
-func NewRealmMemberParted(clientEvent *ninchat.Event) (event *RealmMemberParted, err error) {
+// Its type must be "realm_member_parted".
+func NewRealmMemberParted(clientEvent *ninchat.Event) (event *RealmMemberParted) {
 	if clientEvent != nil {
 		e := new(RealmMemberParted)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2787,14 +2787,14 @@ type RealmMemberUpdated struct {
 
 // NewRealmMemberUpdated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "realm_member_updated".
-func NewRealmMemberUpdated(clientEvent *ninchat.Event) (event *RealmMemberUpdated, err error) {
+// Its type must be "realm_member_updated".
+func NewRealmMemberUpdated(clientEvent *ninchat.Event) (event *RealmMemberUpdated) {
 	if clientEvent != nil {
 		e := new(RealmMemberUpdated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2855,14 +2855,14 @@ type RealmParted struct {
 
 // NewRealmParted creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "realm_parted".
-func NewRealmParted(clientEvent *ninchat.Event) (event *RealmParted, err error) {
+// Its type must be "realm_parted".
+func NewRealmParted(clientEvent *ninchat.Event) (event *RealmParted) {
 	if clientEvent != nil {
 		e := new(RealmParted)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2912,14 +2912,14 @@ type RealmQueuesFound struct {
 
 // NewRealmQueuesFound creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "realm_queues_found".
-func NewRealmQueuesFound(clientEvent *ninchat.Event) (event *RealmQueuesFound, err error) {
+// Its type must be "realm_queues_found".
+func NewRealmQueuesFound(clientEvent *ninchat.Event) (event *RealmQueuesFound) {
 	if clientEvent != nil {
 		e := new(RealmQueuesFound)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -2975,14 +2975,14 @@ type RealmUpdated struct {
 
 // NewRealmUpdated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "realm_updated".
-func NewRealmUpdated(clientEvent *ninchat.Event) (event *RealmUpdated, err error) {
+// Its type must be "realm_updated".
+func NewRealmUpdated(clientEvent *ninchat.Event) (event *RealmUpdated) {
 	if clientEvent != nil {
 		e := new(RealmUpdated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -3038,14 +3038,14 @@ type SearchResults struct {
 
 // NewSearchResults creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "search_results".
-func NewSearchResults(clientEvent *ninchat.Event) (event *SearchResults, err error) {
+// Its type must be "search_results".
+func NewSearchResults(clientEvent *ninchat.Event) (event *SearchResults) {
 	if clientEvent != nil {
 		e := new(SearchResults)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -3112,14 +3112,14 @@ type SessionCreated struct {
 
 // NewSessionCreated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "session_created".
-func NewSessionCreated(clientEvent *ninchat.Event) (event *SessionCreated, err error) {
+// Its type must be "session_created".
+func NewSessionCreated(clientEvent *ninchat.Event) (event *SessionCreated) {
 	if clientEvent != nil {
 		e := new(SessionCreated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -3242,14 +3242,14 @@ type SessionStatusUpdated struct {
 
 // NewSessionStatusUpdated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "session_status_updated".
-func NewSessionStatusUpdated(clientEvent *ninchat.Event) (event *SessionStatusUpdated, err error) {
+// Its type must be "session_status_updated".
+func NewSessionStatusUpdated(clientEvent *ninchat.Event) (event *SessionStatusUpdated) {
 	if clientEvent != nil {
 		e := new(SessionStatusUpdated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -3310,14 +3310,14 @@ type UserDeleted struct {
 
 // NewUserDeleted creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "user_deleted".
-func NewUserDeleted(clientEvent *ninchat.Event) (event *UserDeleted, err error) {
+// Its type must be "user_deleted".
+func NewUserDeleted(clientEvent *ninchat.Event) (event *UserDeleted) {
 	if clientEvent != nil {
 		e := new(UserDeleted)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -3378,14 +3378,14 @@ type UserFound struct {
 
 // NewUserFound creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "user_found".
-func NewUserFound(clientEvent *ninchat.Event) (event *UserFound, err error) {
+// Its type must be "user_found".
+func NewUserFound(clientEvent *ninchat.Event) (event *UserFound) {
 	if clientEvent != nil {
 		e := new(UserFound)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }
@@ -3509,14 +3509,14 @@ type UserUpdated struct {
 
 // NewUserUpdated creates an event object with the parameters
 // specified by the clientEvent.
-// An UnexpectedEventError is returned if its type is not
-// "user_updated".
-func NewUserUpdated(clientEvent *ninchat.Event) (event *UserUpdated, err error) {
+// Its type must be "user_updated".
+func NewUserUpdated(clientEvent *ninchat.Event) (event *UserUpdated) {
 	if clientEvent != nil {
 		e := new(UserUpdated)
-		if err = e.Init(clientEvent); err == nil {
-			event = e
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
 		}
+		event = e
 	}
 	return
 }

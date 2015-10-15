@@ -65,11 +65,7 @@ func testSession(t *testing.T, transport string) {
 	session, events := openSession(t, transport, params)
 	defer session.Close()
 
-	sessionEvent, err := ninchatapi.NewSessionCreated(<-events)
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	sessionEvent := ninchatapi.NewSessionCreated(<-events)
 	if sessionEvent.Id() <= 0 {
 		t.Error(sessionEvent.Id())
 	}

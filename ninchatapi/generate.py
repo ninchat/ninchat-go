@@ -340,14 +340,14 @@ def print_event(event):
 	print
 	print '// New{} creates an event object with the {}'.format(title(event.name), initwhat)
 	print '// specified by the clientEvent.'
-	print '// An UnexpectedEventError is returned if its type is not'
-	print '// "{}".'.format(event.name)
-	print 'func New{0}(clientEvent *ninchat.Event) (event *{0}, err error) {{'.format(title(event.name))
+	print '// Its type must be "{}".'.format(event.name)
+	print 'func New{0}(clientEvent *ninchat.Event) (event *{0}) {{'.format(title(event.name))
 	print '  if clientEvent != nil {'
 	print '    e := new({})'.format(title(event.name))
-	print '    if err = e.Init(clientEvent); err == nil {'
-	print '      event = e'
+	print '    if err := e.Init(clientEvent); err != nil {'
+	print '      panic(err)'
 	print '    }'
+	print '    event = e'
 	print '  }'
 	print '  return'
 	print '}'
