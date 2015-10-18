@@ -1087,6 +1087,7 @@ type HistoryResults struct {
 	ChannelId     *string `json:"channel_id,omitempty"`
 	EventId       int     `json:"event_id,omitempty"`
 	HistoryLength int     `json:"history_length"`
+	MessageId     *string `json:"message_id,omitempty"`
 	UserId        *string `json:"user_id,omitempty"`
 }
 
@@ -1130,6 +1131,12 @@ func (target *HistoryResults) Init(clientEvent *ninchat.Event) error {
 	if x := source["history_length"]; x != nil {
 		if y, ok := x.(float64); ok {
 			target.HistoryLength = int(y)
+		}
+	}
+
+	if x := source["message_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.MessageId = &y
 		}
 	}
 
