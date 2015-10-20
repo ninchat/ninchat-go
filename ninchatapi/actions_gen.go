@@ -51,7 +51,8 @@ func (action *AcceptAudience) Invoke(session *ninchat.Session) (reply *DialogueU
 
 // AddMember action.  https://ninchat.com/api/v2#add_member
 type AddMember struct {
-	QueueId *string `json:"queue_id"`
+	QueueId *string `json:"queue_id,omitempty"`
+	RealmId *string `json:"realm_id,omitempty"`
 	UserId  *string `json:"user_id"`
 }
 
@@ -69,9 +70,10 @@ func (action *AddMember) newClientAction() (clientAction *ninchat.Action, err er
 
 	if x := action.QueueId; x != nil {
 		clientAction.Params["queue_id"] = *x
-	} else {
-		err = newRequestMalformedError("add_member action requires queue_id parameter")
-		return
+	}
+
+	if x := action.RealmId; x != nil {
+		clientAction.Params["realm_id"] = *x
 	}
 
 	if x := action.UserId; x != nil {
