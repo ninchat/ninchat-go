@@ -85,7 +85,7 @@ unaryreplies = {
 	"describe_channel": "channel_found",
 	"describe_file": "file_found",
 	"describe_identity": "identity_found",
-	"describe_master": "master_found",
+	"describe_master_keys": "master_keys_found",
 	"describe_queue": "queue_found",
 	"describe_realm": "realm_found",
 	"describe_realm_queues": "realm_queues_found",
@@ -176,7 +176,8 @@ def main():
 		print_header()
 
 		for obj in sorted(ninchat.api.objecttypes.values(), key=lambda o: o.name):
-			print_object(obj)
+			if obj.name != "master_key" and not obj.name.endswith("_2"):
+				print_object(obj)
 
 def print_header():
 	print 'package ninchatapi'
@@ -308,7 +309,16 @@ def print_event(event):
 			if obj.value:
 				val = obj.value
 				if val not in requiredtypes:
-					val = "*" + title(val)
+					obj2 = ninchat.api.objecttypes.get(val)
+					if obj2 and obj2.value:
+						val2 = obj2.value
+						if val2 == "master_key":
+							val2 = "struct{}"
+						else:
+							val2 = "*" + title(val2)
+						val = "map[string]" + val2
+					else:
+						val = "*" + title(val)
 				typ = "map[string]{}".format(val)
 			elif obj.item:
 				typ = "[]*{}".format(title(obj.item))
@@ -504,9 +514,20 @@ def print_attrs(attrs, objectname, commentname):
 
 def print_object(obj):
 	if obj.value:
+		obj2 = None
+		val2 = None
 		val = obj.value
 		if val not in requiredtypes:
-			val = "*" + title(val)
+			obj2 = ninchat.api.objecttypes.get(val)
+			if obj2 and obj2.value:
+				val2 = obj2.value
+				if val2 == "master_key":
+					val2 = "struct{}"
+				else:
+					val2 = "*" + title(val2)
+				val = "map[string]" + val2
+			else:
+				val = "*" + title(val)
 
 		print
 		print '// Make{} duplicates the map while unwrapping the values.'.format(title(obj.name))
@@ -515,7 +536,26 @@ def print_object(obj):
 		print
 		print '  for key, x := range source {'
 
-		if obj.value in requiredtypes or obj.name == "member_attrs" or obj.name.endswith("_settings"):
+		if val2:
+			print '    if y, ok := x.(map[string]interface{}); ok {'
+			print '      t := make({})'.format(val)
+			print
+			print '      for key2, x2 := range y {'
+
+			if val2 == "struct{}":
+				print '        if _, ok2 := x2.(map[string]interface{}); ok2 {'
+				print '          t[key2] = struct{}{}'
+				print '        }'
+			else:
+				print '        if y2, ok2 := x2.(map[string]interface{}); ok2 {'
+				print '          t[key2] = New{}(y2)'.format(title(obj2.value))
+				print '        }'
+
+			print '      }'
+			print
+			print '      target[key] = t'.format(val)
+			print '    }'
+		elif obj.value in requiredtypes or obj.name == "member_attrs" or obj.name.endswith("_settings"):
 			print '    if y, ok := x.({}); ok {{'.format(requiredtypes[obj.value])
 			print '      target[key] = y'
 			print '    }'

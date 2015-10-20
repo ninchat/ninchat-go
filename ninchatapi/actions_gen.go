@@ -286,6 +286,8 @@ func (action *CreateIdentity) Invoke(session *ninchat.Session) (reply *IdentityC
 
 // CreateMasterKey action.  https://ninchat.com/api/v2#create_master_key
 type CreateMasterKey struct {
+	MasterKeyId   *string `json:"master_key_id,omitempty"`
+	MasterKeyType *string `json:"master_key_type,omitempty"`
 }
 
 // String returns "create_master_key".
@@ -298,6 +300,14 @@ func (action *CreateMasterKey) newClientAction() (clientAction *ninchat.Action, 
 		Params: map[string]interface{}{
 			"action": "create_master_key",
 		},
+	}
+
+	if x := action.MasterKeyId; x != nil {
+		clientAction.Params["master_key_id"] = *x
+	}
+
+	if x := action.MasterKeyType; x != nil {
+		clientAction.Params["master_key_type"] = *x
 	}
 
 	return
@@ -475,6 +485,7 @@ func (action *DeleteIdentity) Invoke(session *ninchat.Session) (reply *IdentityD
 type DeleteMasterKey struct {
 	MasterKeyId     *string `json:"master_key_id"`
 	MasterKeySecret *string `json:"master_key_secret,omitempty"`
+	MasterKeyType   *string `json:"master_key_type,omitempty"`
 	UserAuth        *string `json:"user_auth,omitempty"`
 }
 
@@ -499,6 +510,10 @@ func (action *DeleteMasterKey) newClientAction() (clientAction *ninchat.Action, 
 
 	if x := action.MasterKeySecret; x != nil {
 		clientAction.Params["master_key_secret"] = *x
+	}
+
+	if x := action.MasterKeyType; x != nil {
+		clientAction.Params["master_key_type"] = *x
 	}
 
 	if x := action.UserAuth; x != nil {
@@ -795,19 +810,19 @@ func (action *DescribeIdentity) Invoke(session *ninchat.Session) (reply *Identit
 	return nil, nil
 }
 
-// DescribeMaster action.  https://ninchat.com/api/v2#describe_master
-type DescribeMaster struct {
+// DescribeMasterKeys action.  https://ninchat.com/api/v2#describe_master_keys
+type DescribeMasterKeys struct {
 }
 
-// String returns "describe_master".
-func (*DescribeMaster) String() string {
-	return "describe_master"
+// String returns "describe_master_keys".
+func (*DescribeMasterKeys) String() string {
+	return "describe_master_keys"
 }
 
-func (action *DescribeMaster) newClientAction() (clientAction *ninchat.Action, err error) {
+func (action *DescribeMasterKeys) newClientAction() (clientAction *ninchat.Action, err error) {
 	clientAction = &ninchat.Action{
 		Params: map[string]interface{}{
-			"action": "describe_master",
+			"action": "describe_master_keys",
 		},
 	}
 
@@ -815,8 +830,8 @@ func (action *DescribeMaster) newClientAction() (clientAction *ninchat.Action, e
 }
 
 // Invoke the action synchronously.
-func (action *DescribeMaster) Invoke(session *ninchat.Session) (reply *MasterFound, err error) {
-	var buf MasterFound
+func (action *DescribeMasterKeys) Invoke(session *ninchat.Session) (reply *MasterKeysFound, err error) {
+	var buf MasterKeysFound
 
 	ok, err := unaryCall(session, action, &buf)
 	if err != nil {
@@ -1097,10 +1112,11 @@ func (action *FollowChannel) Invoke(session *ninchat.Session) (reply *ChannelFou
 
 // JoinChannel action.  https://ninchat.com/api/v2#join_channel
 type JoinChannel struct {
-	AccessKey   *string             `json:"access_key,omitempty"`
-	ChannelId   *string             `json:"channel_id,omitempty"`
-	MasterSign  *string             `json:"master_sign,omitempty"`
-	MemberAttrs *ChannelMemberAttrs `json:"member_attrs,omitempty"`
+	AccessKey     *string             `json:"access_key,omitempty"`
+	ChannelId     *string             `json:"channel_id,omitempty"`
+	MasterKeyType *string             `json:"master_key_type,omitempty"`
+	MasterSign    *string             `json:"master_sign,omitempty"`
+	MemberAttrs   *ChannelMemberAttrs `json:"member_attrs,omitempty"`
 }
 
 // String returns "join_channel".
@@ -1121,6 +1137,10 @@ func (action *JoinChannel) newClientAction() (clientAction *ninchat.Action, err 
 
 	if x := action.ChannelId; x != nil {
 		clientAction.Params["channel_id"] = *x
+	}
+
+	if x := action.MasterKeyType; x != nil {
+		clientAction.Params["master_key_type"] = *x
 	}
 
 	if x := action.MasterSign; x != nil {

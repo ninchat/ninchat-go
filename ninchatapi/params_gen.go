@@ -106,29 +106,21 @@ func MakeDialogueMembers(source map[string]interface{}) (target map[string]*Dial
 	return
 }
 
-// MasterKey event parameter type.
-type MasterKey struct {
-}
-
-// NewMasterKey creates an object with the parameters specified by the source.
-func NewMasterKey(source map[string]interface{}) (target *MasterKey) {
-	target = new(MasterKey)
-	target.Init(source)
-	return
-}
-
-// Init fills in the parameters specified by the source
-// (other fields are not touched).
-func (target *MasterKey) Init(source map[string]interface{}) {
-}
-
 // MakeMasterKeys duplicates the map while unwrapping the values.
-func MakeMasterKeys(source map[string]interface{}) (target map[string]*MasterKey) {
-	target = make(map[string]*MasterKey)
+func MakeMasterKeys(source map[string]interface{}) (target map[string]map[string]struct{}) {
+	target = make(map[string]map[string]struct{})
 
 	for key, x := range source {
 		if y, ok := x.(map[string]interface{}); ok {
-			target[key] = NewMasterKey(y)
+			t := make(map[string]struct{})
+
+			for key2, x2 := range y {
+				if _, ok2 := x2.(map[string]interface{}); ok2 {
+					t[key2] = struct{}{}
+				}
+			}
+
+			target[key] = t
 		}
 	}
 
@@ -551,12 +543,20 @@ func MakeUserDialogues(source map[string]interface{}) (target map[string]*UserDi
 }
 
 // MakeUserIdentities duplicates the map while unwrapping the values.
-func MakeUserIdentities(source map[string]interface{}) (target map[string]*IdentityAttrs) {
-	target = make(map[string]*IdentityAttrs)
+func MakeUserIdentities(source map[string]interface{}) (target map[string]map[string]*IdentityAttrs) {
+	target = make(map[string]map[string]*IdentityAttrs)
 
 	for key, x := range source {
 		if y, ok := x.(map[string]interface{}); ok {
-			target[key] = NewIdentityAttrs(y)
+			t := make(map[string]*IdentityAttrs)
+
+			for key2, x2 := range y {
+				if y2, ok2 := x2.(map[string]interface{}); ok2 {
+					t[key2] = NewIdentityAttrs(y2)
+				}
+			}
+
+			target[key] = t
 		}
 	}
 

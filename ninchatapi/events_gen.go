@@ -1439,67 +1439,12 @@ func (*IdentityUpdated) String() string {
 	return "identity_updated"
 }
 
-// MasterFound event.  https://ninchat.com/api/v2#master_found
-type MasterFound struct {
-	EventId    int                   `json:"event_id,omitempty"`
-	MasterKeys map[string]*MasterKey `json:"master_keys"`
-}
-
-// NewMasterFound creates an event object with the parameters
-// specified by the clientEvent.
-// Its type must be "master_found".
-func NewMasterFound(clientEvent *ninchat.Event) (event *MasterFound) {
-	if clientEvent != nil {
-		e := new(MasterFound)
-		if err := e.Init(clientEvent); err != nil {
-			panic(err)
-		}
-		event = e
-	}
-	return
-}
-
-// Init fills in the parameters
-// specified by the clientEvent (other fields are not touched).
-// An UnexpectedEventError is returned if its type is not
-// "master_found".
-func (target *MasterFound) Init(clientEvent *ninchat.Event) error {
-	if clientEvent.String() != "master_found" {
-		return &UnexpectedEventError{clientEvent}
-	}
-
-	source := clientEvent.Params
-
-	if x := source["event_id"]; x != nil {
-		if y, ok := x.(float64); ok {
-			target.EventId = int(y)
-		}
-	}
-
-	if x := source["master_keys"]; x != nil {
-		if y, ok := x.(map[string]interface{}); ok {
-			target.MasterKeys = MakeMasterKeys(y)
-		}
-	}
-
-	return nil
-}
-
-// Id returns the EventId parameter.
-func (event *MasterFound) Id() int {
-	return event.EventId
-}
-
-// String returns "master_found".
-func (*MasterFound) String() string {
-	return "master_found"
-}
-
 // MasterKeyCreated event.  https://ninchat.com/api/v2#master_key_created
 type MasterKeyCreated struct {
 	EventId         int     `json:"event_id,omitempty"`
 	MasterKeyId     string  `json:"master_key_id"`
 	MasterKeySecret *string `json:"master_key_secret,omitempty"`
+	MasterKeyType   string  `json:"master_key_type"`
 }
 
 // NewMasterKeyCreated creates an event object with the parameters
@@ -1545,6 +1490,12 @@ func (target *MasterKeyCreated) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["master_key_type"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.MasterKeyType = y
+		}
+	}
+
 	return nil
 }
 
@@ -1560,8 +1511,9 @@ func (*MasterKeyCreated) String() string {
 
 // MasterKeyDeleted event.  https://ninchat.com/api/v2#master_key_deleted
 type MasterKeyDeleted struct {
-	EventId     int    `json:"event_id,omitempty"`
-	MasterKeyId string `json:"master_key_id"`
+	EventId       int    `json:"event_id,omitempty"`
+	MasterKeyId   string `json:"master_key_id"`
+	MasterKeyType string `json:"master_key_type"`
 }
 
 // NewMasterKeyDeleted creates an event object with the parameters
@@ -1601,6 +1553,12 @@ func (target *MasterKeyDeleted) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["master_key_type"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.MasterKeyType = y
+		}
+	}
+
 	return nil
 }
 
@@ -1612,6 +1570,62 @@ func (event *MasterKeyDeleted) Id() int {
 // String returns "master_key_deleted".
 func (*MasterKeyDeleted) String() string {
 	return "master_key_deleted"
+}
+
+// MasterKeysFound event.  https://ninchat.com/api/v2#master_keys_found
+type MasterKeysFound struct {
+	EventId    int                            `json:"event_id,omitempty"`
+	MasterKeys map[string]map[string]struct{} `json:"master_keys"`
+}
+
+// NewMasterKeysFound creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "master_keys_found".
+func NewMasterKeysFound(clientEvent *ninchat.Event) (event *MasterKeysFound) {
+	if clientEvent != nil {
+		e := new(MasterKeysFound)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "master_keys_found".
+func (target *MasterKeysFound) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "master_keys_found" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	if x := source["master_keys"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.MasterKeys = MakeMasterKeys(y)
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *MasterKeysFound) Id() int {
+	return event.EventId
+}
+
+// String returns "master_keys_found".
+func (*MasterKeysFound) String() string {
+	return "master_keys_found"
 }
 
 // MessageReceived event.  https://ninchat.com/api/v2#message_received
@@ -3101,20 +3115,20 @@ func (*SearchResults) String() string {
 
 // SessionCreated event.  https://ninchat.com/api/v2#session_created
 type SessionCreated struct {
-	EventId          int                          `json:"event_id,omitempty"`
-	SessionHost      *string                      `json:"session_host,omitempty"`
-	SessionId        string                       `json:"session_id"`
-	UserAccount      *UserAccount                 `json:"user_account"`
-	UserAttrs        *UserAttrs                   `json:"user_attrs"`
-	UserAuth         *string                      `json:"user_auth,omitempty"`
-	UserChannels     map[string]*UserChannel      `json:"user_channels"`
-	UserDialogues    map[string]*UserDialogue     `json:"user_dialogues"`
-	UserId           string                       `json:"user_id"`
-	UserIdentities   map[string]*IdentityAttrs    `json:"user_identities"`
-	UserQueues       map[string]*UserQueue        `json:"user_queues,omitempty"`
-	UserRealms       map[string]*RealmAttrs       `json:"user_realms"`
-	UserRealmsMember map[string]*RealmMemberAttrs `json:"user_realms_member,omitempty"`
-	UserSettings     map[string]interface{}       `json:"user_settings"`
+	EventId          int                                  `json:"event_id,omitempty"`
+	SessionHost      *string                              `json:"session_host,omitempty"`
+	SessionId        string                               `json:"session_id"`
+	UserAccount      *UserAccount                         `json:"user_account"`
+	UserAttrs        *UserAttrs                           `json:"user_attrs"`
+	UserAuth         *string                              `json:"user_auth,omitempty"`
+	UserChannels     map[string]*UserChannel              `json:"user_channels"`
+	UserDialogues    map[string]*UserDialogue             `json:"user_dialogues"`
+	UserId           string                               `json:"user_id"`
+	UserIdentities   map[string]map[string]*IdentityAttrs `json:"user_identities"`
+	UserQueues       map[string]*UserQueue                `json:"user_queues,omitempty"`
+	UserRealms       map[string]*RealmAttrs               `json:"user_realms"`
+	UserRealmsMember map[string]*RealmMemberAttrs         `json:"user_realms_member,omitempty"`
+	UserSettings     map[string]interface{}               `json:"user_settings"`
 }
 
 // NewSessionCreated creates an event object with the parameters
@@ -3367,20 +3381,20 @@ func (*UserDeleted) String() string {
 
 // UserFound event.  https://ninchat.com/api/v2#user_found
 type UserFound struct {
-	AudienceMetadata map[string]interface{}          `json:"audience_metadata,omitempty"`
-	DialogueMembers  map[string]*DialogueMemberAttrs `json:"dialogue_members,omitempty"`
-	DialogueStatus   *string                         `json:"dialogue_status,omitempty"`
-	EventId          int                             `json:"event_id,omitempty"`
-	UserAccount      *UserAccount                    `json:"user_account,omitempty"`
-	UserAttrs        *UserAttrs                      `json:"user_attrs"`
-	UserChannels     map[string]*UserChannel         `json:"user_channels,omitempty"`
-	UserDialogues    map[string]*UserDialogue        `json:"user_dialogues,omitempty"`
-	UserId           string                          `json:"user_id"`
-	UserIdentities   map[string]*IdentityAttrs       `json:"user_identities"`
-	UserQueues       map[string]*UserQueue           `json:"user_queues,omitempty"`
-	UserRealms       map[string]*RealmAttrs          `json:"user_realms,omitempty"`
-	UserRealmsMember map[string]*RealmMemberAttrs    `json:"user_realms_member,omitempty"`
-	UserSettings     map[string]interface{}          `json:"user_settings,omitempty"`
+	AudienceMetadata map[string]interface{}               `json:"audience_metadata,omitempty"`
+	DialogueMembers  map[string]*DialogueMemberAttrs      `json:"dialogue_members,omitempty"`
+	DialogueStatus   *string                              `json:"dialogue_status,omitempty"`
+	EventId          int                                  `json:"event_id,omitempty"`
+	UserAccount      *UserAccount                         `json:"user_account,omitempty"`
+	UserAttrs        *UserAttrs                           `json:"user_attrs"`
+	UserChannels     map[string]*UserChannel              `json:"user_channels,omitempty"`
+	UserDialogues    map[string]*UserDialogue             `json:"user_dialogues,omitempty"`
+	UserId           string                               `json:"user_id"`
+	UserIdentities   map[string]map[string]*IdentityAttrs `json:"user_identities"`
+	UserQueues       map[string]*UserQueue                `json:"user_queues,omitempty"`
+	UserRealms       map[string]*RealmAttrs               `json:"user_realms,omitempty"`
+	UserRealmsMember map[string]*RealmMemberAttrs         `json:"user_realms_member,omitempty"`
+	UserSettings     map[string]interface{}               `json:"user_settings,omitempty"`
 }
 
 // NewUserFound creates an event object with the parameters
