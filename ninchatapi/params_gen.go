@@ -127,6 +127,41 @@ func MakeMasterKeys(source map[string]interface{}) (target map[string]map[string
 	return
 }
 
+// PuppetMaster event parameter type.
+type PuppetMaster struct {
+	PuppetAttrs *PuppetAttrs `json:"puppet_attrs"`
+}
+
+// NewPuppetMaster creates an object with the parameters specified by the source.
+func NewPuppetMaster(source map[string]interface{}) (target *PuppetMaster) {
+	target = new(PuppetMaster)
+	target.Init(source)
+	return
+}
+
+// Init fills in the parameters specified by the source
+// (other fields are not touched).
+func (target *PuppetMaster) Init(source map[string]interface{}) {
+	if x := source["puppet_attrs"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.PuppetAttrs = NewPuppetAttrs(y)
+		}
+	}
+}
+
+// MakePuppetMasters duplicates the map while unwrapping the values.
+func MakePuppetMasters(source map[string]interface{}) (target map[string]*PuppetMaster) {
+	target = make(map[string]*PuppetMaster)
+
+	for key, x := range source {
+		if y, ok := x.(map[string]interface{}); ok {
+			target[key] = NewPuppetMaster(y)
+		}
+	}
+
+	return
+}
+
 // QueueMember event parameter type.
 type QueueMember struct {
 	MemberAttrs *QueueMemberAttrs `json:"member_attrs"`

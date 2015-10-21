@@ -3116,6 +3116,7 @@ func (*SearchResults) String() string {
 // SessionCreated event.  https://ninchat.com/api/v2#session_created
 type SessionCreated struct {
 	EventId          int                                  `json:"event_id,omitempty"`
+	PuppetMasters    map[string]*PuppetMaster             `json:"puppet_masters,omitempty"`
 	SessionHost      *string                              `json:"session_host,omitempty"`
 	SessionId        string                               `json:"session_id"`
 	UserAccount      *UserAccount                         `json:"user_account"`
@@ -3159,6 +3160,12 @@ func (target *SessionCreated) Init(clientEvent *ninchat.Event) error {
 	if x := source["event_id"]; x != nil {
 		if y, ok := x.(float64); ok {
 			target.EventId = int(y)
+		}
+	}
+
+	if x := source["puppet_masters"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.PuppetMasters = MakePuppetMasters(y)
 		}
 	}
 
@@ -3385,6 +3392,7 @@ type UserFound struct {
 	DialogueMembers  map[string]*DialogueMemberAttrs      `json:"dialogue_members,omitempty"`
 	DialogueStatus   *string                              `json:"dialogue_status,omitempty"`
 	EventId          int                                  `json:"event_id,omitempty"`
+	PuppetMasters    map[string]*PuppetMaster             `json:"puppet_masters,omitempty"`
 	UserAccount      *UserAccount                         `json:"user_account,omitempty"`
 	UserAttrs        *UserAttrs                           `json:"user_attrs"`
 	UserChannels     map[string]*UserChannel              `json:"user_channels,omitempty"`
@@ -3443,6 +3451,12 @@ func (target *UserFound) Init(clientEvent *ninchat.Event) error {
 	if x := source["event_id"]; x != nil {
 		if y, ok := x.(float64); ok {
 			target.EventId = int(y)
+		}
+	}
+
+	if x := source["puppet_masters"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.PuppetMasters = MakePuppetMasters(y)
 		}
 	}
 
@@ -3521,11 +3535,12 @@ func (*UserFound) String() string {
 
 // UserUpdated event.  https://ninchat.com/api/v2#user_updated
 type UserUpdated struct {
-	EventId      int                    `json:"event_id,omitempty"`
-	UserAccount  *UserAccount           `json:"user_account,omitempty"`
-	UserAttrs    *UserAttrs             `json:"user_attrs"`
-	UserId       string                 `json:"user_id"`
-	UserSettings map[string]interface{} `json:"user_settings,omitempty"`
+	EventId       int                      `json:"event_id,omitempty"`
+	PuppetMasters map[string]*PuppetMaster `json:"puppet_masters,omitempty"`
+	UserAccount   *UserAccount             `json:"user_account,omitempty"`
+	UserAttrs     *UserAttrs               `json:"user_attrs"`
+	UserId        string                   `json:"user_id"`
+	UserSettings  map[string]interface{}   `json:"user_settings,omitempty"`
 }
 
 // NewUserUpdated creates an event object with the parameters
@@ -3556,6 +3571,12 @@ func (target *UserUpdated) Init(clientEvent *ninchat.Event) error {
 	if x := source["event_id"]; x != nil {
 		if y, ok := x.(float64); ok {
 			target.EventId = int(y)
+		}
+	}
+
+	if x := source["puppet_masters"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.PuppetMasters = MakePuppetMasters(y)
 		}
 	}
 
