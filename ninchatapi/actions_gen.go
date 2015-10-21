@@ -1069,8 +1069,9 @@ func (action *DiscardHistory) Invoke(session *ninchat.Session) (reply *HistoryDi
 
 // FollowChannel action.  https://ninchat.com/api/v2#follow_channel
 type FollowChannel struct {
-	AccessKey *string `json:"access_key,omitempty"`
-	ChannelId *string `json:"channel_id,omitempty"`
+	ChannelId     *string `json:"channel_id"`
+	MasterKeyType *string `json:"master_key_type,omitempty"`
+	MasterSign    *string `json:"master_sign,omitempty"`
 }
 
 // String returns "follow_channel".
@@ -1085,12 +1086,19 @@ func (action *FollowChannel) newClientAction() (clientAction *ninchat.Action, er
 		},
 	}
 
-	if x := action.AccessKey; x != nil {
-		clientAction.Params["access_key"] = *x
-	}
-
 	if x := action.ChannelId; x != nil {
 		clientAction.Params["channel_id"] = *x
+	} else {
+		err = newRequestMalformedError("follow_channel action requires channel_id parameter")
+		return
+	}
+
+	if x := action.MasterKeyType; x != nil {
+		clientAction.Params["master_key_type"] = *x
+	}
+
+	if x := action.MasterSign; x != nil {
+		clientAction.Params["master_sign"] = *x
 	}
 
 	return
