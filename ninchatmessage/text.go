@@ -25,16 +25,19 @@ func (m *Text) Marshal() (payload []ninchat.Frame, err error) {
 }
 
 func (m *Text) Unmarshal(payload []ninchat.Frame) (err error) {
-	obj, err := unmarshal(payload)
-	if err != nil {
-		return
+	x, err := unmarshal(payload)
+	if err == nil {
+		m.Init(x)
 	}
-
-	if x := obj["text"]; x != nil {
-		m.Text, _ = x.(string)
-	}
-
 	return
+}
+
+func (m *Text) Init(payload interface{}) {
+	if obj, ok := payload.(map[string]interface{}); ok {
+		if x := obj["text"]; x != nil {
+			m.Text, _ = x.(string)
+		}
+	}
 }
 
 func (m *Text) String() string {
@@ -55,6 +58,10 @@ func (m *Notice) Marshal() ([]ninchat.Frame, error) {
 
 func (m *Notice) Unmarshal(payload []ninchat.Frame) error {
 	return (*Text)(m).Unmarshal(payload)
+}
+
+func (m *Notice) Init(payload interface{}) {
+	(*Text)(m).Init(payload)
 }
 
 func (m *Notice) String() string {

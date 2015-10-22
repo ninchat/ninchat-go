@@ -19,7 +19,7 @@ func marshal(obj map[string]interface{}) (payload []ninchat.Frame, err error) {
 	return
 }
 
-func unmarshal(payload []ninchat.Frame) (obj map[string]interface{}, err error) {
+func unmarshal(payload []ninchat.Frame) (x interface{}, err error) {
 	defer func() {
 		if x := recover(); x != nil {
 			err = x.(error) // TODO
@@ -27,7 +27,6 @@ func unmarshal(payload []ninchat.Frame) (obj map[string]interface{}, err error) 
 	}()
 
 	data := ninchat.StringifyFrame(payload[0])
-	x := js.Global.Get("JSON").Call("parse", data).Interface()
-	obj = x.(map[string]interface{})
+	x = js.Global.Get("JSON").Call("parse", data).Interface()
 	return
 }

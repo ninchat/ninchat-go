@@ -18,7 +18,7 @@ func marshal(obj map[string]interface{}) (payload []ninchat.Frame, err error) {
 	return
 }
 
-func unmarshal(payload []ninchat.Frame) (obj map[string]interface{}, err error) {
-	err = json.Unmarshal(payload[0], &obj)
+func unmarshal(payload []ninchat.Frame) (x interface{}, err error) {
+	err = json.Unmarshal(payload[0], &x)
 	return
 }

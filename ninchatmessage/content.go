@@ -19,3 +19,9 @@ type OriginalContent interface {
 	Content
 	Marshal() (payload []ninchat.Frame, err error)
 }
+
+// UnaryContent is implemented by all message types in this package.
+type UnaryContent interface {
+	Content
+	Init(payload interface{})
+}

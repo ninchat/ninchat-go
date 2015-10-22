@@ -37,33 +37,36 @@ func (m *Link) Marshal() (payload []ninchat.Frame, err error) {
 }
 
 func (m *Link) Unmarshal(payload []ninchat.Frame) (err error) {
-	obj, err := unmarshal(payload)
-	if err != nil {
-		return
+	x, err := unmarshal(payload)
+	if err == nil {
+		m.Init(x)
 	}
+	return
+}
 
-	if x := obj["name"]; x != nil {
-		m.Name, _ = x.(string)
-	}
+func (m *Link) Init(payload interface{}) {
+	if obj, ok := payload.(map[string]interface{}); ok {
+		if x := obj["name"]; x != nil {
+			m.Name, _ = x.(string)
+		}
 
-	if x := obj["size"]; x != nil {
-		y, _ := x.(float64)
-		m.Size = int(y)
-	}
+		if x := obj["size"]; x != nil {
+			y, _ := x.(float64)
+			m.Size = int(y)
+		}
 
-	if x := obj["icon"]; x != nil {
-		m.Icon, _ = x.(string)
-	}
+		if x := obj["icon"]; x != nil {
+			m.Icon, _ = x.(string)
+		}
 
-	if x := obj["url"]; x != nil {
-		m.Url, _ = x.(string)
-	}
+		if x := obj["url"]; x != nil {
+			m.Url, _ = x.(string)
+		}
 
-	if x := obj["thumbnail"]; x != nil {
-		if y, ok := x.(string); ok {
-			m.Thumbnail = &y
+		if x := obj["thumbnail"]; x != nil {
+			if y, ok := x.(string); ok {
+				m.Thumbnail = &y
+			}
 		}
 	}
-
-	return
 }

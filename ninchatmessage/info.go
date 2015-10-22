@@ -31,32 +31,35 @@ func (*UserInfo) MessageType() string {
 }
 
 func (m *UserInfo) Unmarshal(payload []ninchat.Frame) (err error) {
-	obj, err := unmarshal(payload)
-	if err != nil {
-		return
+	x, err := unmarshal(payload)
+	if err == nil {
+		m.Init(x)
 	}
-
-	if x := obj["user_id"]; x != nil {
-		m.UserId, _ = x.(string)
-	}
-
-	if x := obj["user_name"]; x != nil {
-		if y, ok := x.(string); ok {
-			m.UserName = &y
-		}
-	}
-
-	if x := obj["user_name_old"]; x != nil {
-		if y, ok := x.(string); ok {
-			m.UserNameOld = &y
-		}
-	}
-
-	if obj["user_deleted"] != nil {
-		m.UserDeleted = true
-	}
-
 	return
+}
+
+func (m *UserInfo) Init(payload interface{}) {
+	if obj, ok := payload.(map[string]interface{}); ok {
+		if x := obj["user_id"]; x != nil {
+			m.UserId, _ = x.(string)
+		}
+
+		if x := obj["user_name"]; x != nil {
+			if y, ok := x.(string); ok {
+				m.UserName = &y
+			}
+		}
+
+		if x := obj["user_name_old"]; x != nil {
+			if y, ok := x.(string); ok {
+				m.UserNameOld = &y
+			}
+		}
+
+		if obj["user_deleted"] != nil {
+			m.UserDeleted = true
+		}
+	}
 }
 
 // ChannelInfo represents https://ninchat.com/info/channel messages.
@@ -70,20 +73,23 @@ func (*ChannelInfo) MessageType() string {
 }
 
 func (m *ChannelInfo) Unmarshal(payload []ninchat.Frame) (err error) {
-	obj, err := unmarshal(payload)
-	if err != nil {
-		return
+	x, err := unmarshal(payload)
+	if err == nil {
+		m.Init(x)
 	}
-
-	if x := obj["channel_attrs_old"]; x != nil {
-		m.ChannelAttrsOld, _ = x.(map[string]interface{})
-	}
-
-	if x := obj["channel_attrs_new"]; x != nil {
-		m.ChannelAttrsNew, _ = x.(map[string]interface{})
-	}
-
 	return
+}
+
+func (m *ChannelInfo) Init(payload interface{}) {
+	if obj, ok := payload.(map[string]interface{}); ok {
+		if x := obj["channel_attrs_old"]; x != nil {
+			m.ChannelAttrsOld, _ = x.(map[string]interface{})
+		}
+
+		if x := obj["channel_attrs_new"]; x != nil {
+			m.ChannelAttrsNew, _ = x.(map[string]interface{})
+		}
+	}
 }
 
 // JoinInfo represents https://ninchat.com/info/join messages.
@@ -98,26 +104,29 @@ func (*JoinInfo) MessageType() string {
 }
 
 func (m *JoinInfo) Unmarshal(payload []ninchat.Frame) (err error) {
-	obj, err := unmarshal(payload)
-	if err != nil {
-		return
+	x, err := unmarshal(payload)
+	if err == nil {
+		m.Init(x)
 	}
+	return
+}
 
-	if x := obj["user_id"]; x != nil {
-		m.UserId, _ = x.(string)
-	}
+func (m *JoinInfo) Init(payload interface{}) {
+	if obj, ok := payload.(map[string]interface{}); ok {
+		if x := obj["user_id"]; x != nil {
+			m.UserId, _ = x.(string)
+		}
 
-	if x := obj["user_name"]; x != nil {
-		if y, ok := x.(string); ok {
-			m.UserName = &y
+		if x := obj["user_name"]; x != nil {
+			if y, ok := x.(string); ok {
+				m.UserName = &y
+			}
+		}
+
+		if obj["member_silenced"] != nil {
+			m.MemberSilenced = true
 		}
 	}
-
-	if obj["member_silenced"] != nil {
-		m.MemberSilenced = true
-	}
-
-	return
 }
 
 // PartInfo represents https://ninchat.com/info/part messages.
@@ -131,22 +140,25 @@ func (*PartInfo) MessageType() string {
 }
 
 func (m *PartInfo) Unmarshal(payload []ninchat.Frame) (err error) {
-	obj, err := unmarshal(payload)
-	if err != nil {
-		return
+	x, err := unmarshal(payload)
+	if err == nil {
+		m.Init(x)
 	}
+	return
+}
 
-	if x := obj["user_id"]; x != nil {
-		m.UserId, _ = x.(string)
-	}
+func (m *PartInfo) Init(payload interface{}) {
+	if obj, ok := payload.(map[string]interface{}); ok {
+		if x := obj["user_id"]; x != nil {
+			m.UserId, _ = x.(string)
+		}
 
-	if x := obj["user_name"]; x != nil {
-		if y, ok := x.(string); ok {
-			m.UserName = &y
+		if x := obj["user_name"]; x != nil {
+			if y, ok := x.(string); ok {
+				m.UserName = &y
+			}
 		}
 	}
-
-	return
 }
 
 // MemberInfo represents https://ninchat.com/info/member messages.
@@ -161,26 +173,29 @@ func (*MemberInfo) MessageType() string {
 }
 
 func (m *MemberInfo) Unmarshal(payload []ninchat.Frame) (err error) {
-	obj, err := unmarshal(payload)
-	if err != nil {
-		return
+	x, err := unmarshal(payload)
+	if err == nil {
+		m.Init(x)
 	}
+	return
+}
 
-	if x := obj["user_id"]; x != nil {
-		m.UserId, _ = x.(string)
-	}
+func (m *MemberInfo) Init(payload interface{}) {
+	if obj, ok := payload.(map[string]interface{}); ok {
+		if x := obj["user_id"]; x != nil {
+			m.UserId, _ = x.(string)
+		}
 
-	if x := obj["user_name"]; x != nil {
-		if y, ok := x.(string); ok {
-			m.UserName = &y
+		if x := obj["user_name"]; x != nil {
+			if y, ok := x.(string); ok {
+				m.UserName = &y
+			}
+		}
+
+		if obj["member_silenced"] != nil {
+			m.MemberSilenced = true
 		}
 	}
-
-	if obj["member_silenced"] != nil {
-		m.MemberSilenced = true
-	}
-
-	return
 }
 
 // AccessInfo represents https://ninchat.com/info/access messages.
@@ -199,40 +214,43 @@ func (*AccessInfo) MessageType() string {
 }
 
 func (m *AccessInfo) Unmarshal(payload []ninchat.Frame) (err error) {
-	obj, err := unmarshal(payload)
-	if err != nil {
-		return
+	x, err := unmarshal(payload)
+	if err == nil {
+		m.Init(x)
 	}
+	return
+}
 
-	if x := obj["user_id"]; x != nil {
-		m.UserId, _ = x.(string)
-	}
+func (m *AccessInfo) Init(payload interface{}) {
+	if obj, ok := payload.(map[string]interface{}); ok {
+		if x := obj["user_id"]; x != nil {
+			m.UserId, _ = x.(string)
+		}
 
-	if x := obj["access_key"]; x != nil {
-		m.AccessKey, _ = x.(string)
-	}
+		if x := obj["access_key"]; x != nil {
+			m.AccessKey, _ = x.(string)
+		}
 
-	if x := obj["channel_id"]; x != nil {
-		m.ChannelId, _ = x.(string)
-	}
+		if x := obj["channel_id"]; x != nil {
+			m.ChannelId, _ = x.(string)
+		}
 
-	if x := obj["channel_attrs"]; x != nil {
-		m.ChannelAttrs, _ = x.(map[string]interface{})
-	}
+		if x := obj["channel_attrs"]; x != nil {
+			m.ChannelAttrs, _ = x.(map[string]interface{})
+		}
 
-	if x := obj["realm_id"]; x != nil {
-		if y, ok := x.(string); ok {
-			m.RealmId = &y
+		if x := obj["realm_id"]; x != nil {
+			if y, ok := x.(string); ok {
+				m.RealmId = &y
+			}
+		}
+
+		if x := obj["realm_attrs"]; x != nil {
+			m.RealmAttrs, _ = x.(map[string]interface{})
+		}
+
+		if obj["realm_member"] != nil {
+			m.RealmMember = true
 		}
 	}
-
-	if x := obj["realm_attrs"]; x != nil {
-		m.RealmAttrs, _ = x.(map[string]interface{})
-	}
-
-	if obj["realm_member"] != nil {
-		m.RealmMember = true
-	}
-
-	return
 }
