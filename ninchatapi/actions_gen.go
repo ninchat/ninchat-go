@@ -1120,6 +1120,54 @@ func (action *FollowChannel) Invoke(session *ninchat.Session) (reply *ChannelFou
 	return nil, nil
 }
 
+// GetTranscript action.  https://ninchat.com/api/v2#get_transcript
+type GetTranscript struct {
+	DialogueId []string `json:"dialogue_id"`
+	MessageId  *string  `json:"message_id,omitempty"`
+}
+
+// String returns "get_transcript".
+func (*GetTranscript) String() string {
+	return "get_transcript"
+}
+
+func (action *GetTranscript) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "get_transcript",
+		},
+	}
+
+	if x := action.DialogueId; x != nil {
+		clientAction.Params["dialogue_id"] = x
+	} else {
+		err = newRequestMalformedError("get_transcript action requires dialogue_id parameter")
+		return
+	}
+
+	if x := action.MessageId; x != nil {
+		clientAction.Params["message_id"] = *x
+	}
+
+	return
+}
+
+// Invoke the action synchronously.
+func (action *GetTranscript) Invoke(session *ninchat.Session) (reply *TranscriptContents, err error) {
+	var buf TranscriptContents
+
+	ok, err := unaryCall(session, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
+}
+
 // JoinChannel action.  https://ninchat.com/api/v2#join_channel
 type JoinChannel struct {
 	AccessKey     *string             `json:"access_key,omitempty"`

@@ -3344,6 +3344,83 @@ func (*SessionStatusUpdated) String() string {
 	return "session_status_updated"
 }
 
+// TranscriptContents event.  https://ninchat.com/api/v2#transcript_contents
+type TranscriptContents struct {
+	AudienceMetadata   map[string]interface{}          `json:"audience_metadata,omitempty"`
+	DialogueMembers    map[string]*DialogueMemberAttrs `json:"dialogue_members,omitempty"`
+	EventId            int                             `json:"event_id,omitempty"`
+	MessageId          *string                         `json:"message_id,omitempty"`
+	TranscriptMessages []*TranscriptMessage            `json:"transcript_messages"`
+}
+
+// NewTranscriptContents creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "transcript_contents".
+func NewTranscriptContents(clientEvent *ninchat.Event) (event *TranscriptContents) {
+	if clientEvent != nil {
+		e := new(TranscriptContents)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "transcript_contents".
+func (target *TranscriptContents) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "transcript_contents" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["audience_metadata"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.AudienceMetadata = y
+		}
+	}
+
+	if x := source["dialogue_members"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.DialogueMembers = MakeDialogueMembers(y)
+		}
+	}
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	if x := source["message_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.MessageId = &y
+		}
+	}
+
+	if x := source["transcript_messages"]; x != nil {
+		if y, ok := x.([]interface{}); ok {
+			target.TranscriptMessages = AppendTranscriptMessages(nil, y)
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *TranscriptContents) Id() int {
+	return event.EventId
+}
+
+// String returns "transcript_contents".
+func (*TranscriptContents) String() string {
+	return "transcript_contents"
+}
+
 // UserDeleted event.  https://ninchat.com/api/v2#user_deleted
 type UserDeleted struct {
 	EventId int    `json:"event_id,omitempty"`

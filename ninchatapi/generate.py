@@ -9,9 +9,10 @@ requiredtypes = {
 	"float":        "float64",
 	"int":          "int",
 	"object":       "map[string]interface{}",
-	"string":       "string",
 	"string array": "[]string",
+	"string":       "string",
 	"time":         "int",
+	None:           "interface{}",
 }
 
 optionaltypes = {
@@ -19,9 +20,10 @@ optionaltypes = {
 	"float":        "*float64",
 	"int":          "*int",
 	"object":       "map[string]interface{}",
-	"string":       "*string",
 	"string array": "[]string",
+	"string":       "*string",
 	"time":         "*int",
+	None:           "interface{}",
 }
 
 checks = {
@@ -92,6 +94,7 @@ unaryreplies = {
 	"describe_user": "user_found",
 	"discard_history": "history_discarded",
 	"follow_channel": "channel_found",
+	"get_transcript": "transcript_contents",
 	"join_channel": "channel_joined",
 	"load_history": "history_results",      # message_received events ignored
 	"part_channel": "channel_parted",
@@ -324,6 +327,9 @@ def print_event(event):
 				typ = "[]*{}".format(title(obj.item))
 			else:
 				typ = "*" + title(p.name)
+		elif p.type == "object array":
+			obj = ninchat.api.objecttypes[p.name]
+			typ = "[]*" + title(obj.item)
 		elif p.required or p.name == "event_id":
 			typ = requiredtypes[p.type]
 		else:
@@ -384,6 +390,10 @@ def print_event(event):
 			elif p.type == "string array":
 				print '  if y, ok := x.([]interface{}); ok {'
 				print '    target.{} = AppendStrings(nil, y)'.format(title(p.name))
+				print '  }'
+			elif p.type == "object array":
+				print '  if y, ok := x.([]interface{}); ok {'
+				print '    target.{0} = Append{0}(nil, y)'.format(title(p.name))
 				print '  }'
 			elif p.type != "object":
 				if p.type == "int":

@@ -123,9 +123,10 @@ func (target *ChannelMemberAttrs) Init(source map[string]interface{}) {
 
 // DialogueMemberAttrs.  https://ninchat.com/api/v2#dialogue-membership
 type DialogueMemberAttrs struct {
-	QueueId *string `json:"queue_id,omitempty"`
-	Rating  *int    `json:"rating,omitempty"`
-	Writing bool    `json:"writing,omitempty"`
+	AudienceEnded bool    `json:"audience_ended,omitempty"`
+	QueueId       *string `json:"queue_id,omitempty"`
+	Rating        *int    `json:"rating,omitempty"`
+	Writing       bool    `json:"writing,omitempty"`
 }
 
 // NewDialogueMemberAttrs creates an object with the attributes specified by the source.
@@ -138,6 +139,10 @@ func NewDialogueMemberAttrs(source map[string]interface{}) (target *DialogueMemb
 // Init fills in the attributes specified by the source
 // (other fields are not touched).
 func (target *DialogueMemberAttrs) Init(source map[string]interface{}) {
+	if x := source["audience_ended"]; x != nil {
+		target.AudienceEnded = true
+	}
+
 	if x := source["queue_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.QueueId = &y

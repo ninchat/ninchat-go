@@ -302,6 +302,84 @@ func MakeRealmQueues(source map[string]interface{}) (target map[string]*RealmQue
 	return
 }
 
+// TranscriptMessage event parameter type.
+type TranscriptMessage struct {
+	MessageId       string      `json:"message_id"`
+	MessageTime     float64     `json:"message_time"`
+	MessageType     string      `json:"message_type"`
+	MessageUserId   *string     `json:"message_user_id,omitempty"`
+	MessageUserName *string     `json:"message_user_name,omitempty"`
+	Payload         interface{} `json:"payload"`
+}
+
+// NewTranscriptMessage creates an object with the parameters specified by the source.
+func NewTranscriptMessage(source map[string]interface{}) (target *TranscriptMessage) {
+	target = new(TranscriptMessage)
+	target.Init(source)
+	return
+}
+
+// Init fills in the parameters specified by the source
+// (other fields are not touched).
+func (target *TranscriptMessage) Init(source map[string]interface{}) {
+	if x := source["message_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.MessageId = y
+		}
+	}
+
+	if x := source["message_time"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.MessageTime = y
+		}
+	}
+
+	if x := source["message_type"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.MessageType = y
+		}
+	}
+
+	if x := source["message_user_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.MessageUserId = &y
+		}
+	}
+
+	if x := source["message_user_name"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.MessageUserName = &y
+		}
+	}
+
+	if x := source["payload"]; x != nil {
+		if y, ok := x.(interface{}); ok {
+			target.Payload = y
+		}
+	}
+}
+
+// AppendTranscriptMessages duplicates the source slice while unwrapping the elements.
+func AppendTranscriptMessages(target []*TranscriptMessage, source []interface{}) []*TranscriptMessage {
+	if source != nil {
+		if target == nil || cap(target) < len(target)+len(source) {
+			t := make([]*TranscriptMessage, len(target), len(target)+len(source))
+			copy(t, target)
+			target = t
+		}
+
+		for _, x := range source {
+			var z *TranscriptMessage
+			if y, ok := x.(map[string]interface{}); ok {
+				z = NewTranscriptMessage(y)
+			}
+			target = append(target, z)
+		}
+	}
+
+	return target
+}
+
 // UserAccount event parameter type.
 type UserAccount struct {
 	Channels      *UserAccountObjects        `json:"channels,omitempty"`

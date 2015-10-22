@@ -49,6 +49,7 @@ var EventFactories = map[string]func() Event{
 	"search_results":         func() Event { return new(SearchResults) },
 	"session_created":        func() Event { return new(SessionCreated) },
 	"session_status_updated": func() Event { return new(SessionStatusUpdated) },
+	"transcript_contents":    func() Event { return new(TranscriptContents) },
 	"user_deleted":           func() Event { return new(UserDeleted) },
 	"user_found":             func() Event { return new(UserFound) },
 	"user_updated":           func() Event { return new(UserUpdated) },
