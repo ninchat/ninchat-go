@@ -478,6 +478,7 @@ type ChannelMemberJoined struct {
 	ChannelId   string              `json:"channel_id"`
 	EventId     int                 `json:"event_id,omitempty"`
 	MemberAttrs *ChannelMemberAttrs `json:"member_attrs"`
+	PuppetAttrs *PuppetAttrs        `json:"puppet_attrs,omitempty"`
 	UserAttrs   *UserAttrs          `json:"user_attrs"`
 	UserId      string              `json:"user_id"`
 }
@@ -522,6 +523,12 @@ func (target *ChannelMemberJoined) Init(clientEvent *ninchat.Event) error {
 	if x := source["member_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.MemberAttrs = NewChannelMemberAttrs(y)
+		}
+	}
+
+	if x := source["puppet_attrs"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.PuppetAttrs = NewPuppetAttrs(y)
 		}
 	}
 
@@ -2655,6 +2662,7 @@ func (*RealmJoined) String() string {
 type RealmMemberJoined struct {
 	EventId     int               `json:"event_id,omitempty"`
 	MemberAttrs *RealmMemberAttrs `json:"member_attrs"`
+	PuppetAttrs *PuppetAttrs      `json:"puppet_attrs,omitempty"`
 	RealmId     string            `json:"realm_id"`
 	UserAttrs   *UserAttrs        `json:"user_attrs"`
 	UserId      string            `json:"user_id"`
@@ -2694,6 +2702,12 @@ func (target *RealmMemberJoined) Init(clientEvent *ninchat.Event) error {
 	if x := source["member_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.MemberAttrs = NewRealmMemberAttrs(y)
+		}
+	}
+
+	if x := source["puppet_attrs"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.PuppetAttrs = NewPuppetAttrs(y)
 		}
 	}
 

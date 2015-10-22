@@ -5,6 +5,7 @@ package ninchatapi
 // ChannelMember event parameter type.
 type ChannelMember struct {
 	MemberAttrs *ChannelMemberAttrs `json:"member_attrs"`
+	PuppetAttrs *PuppetAttrs        `json:"puppet_attrs,omitempty"`
 	UserAttrs   *UserAttrs          `json:"user_attrs"`
 }
 
@@ -21,6 +22,12 @@ func (target *ChannelMember) Init(source map[string]interface{}) {
 	if x := source["member_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.MemberAttrs = NewChannelMemberAttrs(y)
+		}
+	}
+
+	if x := source["puppet_attrs"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.PuppetAttrs = NewPuppetAttrs(y)
 		}
 	}
 
@@ -207,6 +214,7 @@ func MakeQueueMembers(source map[string]interface{}) (target map[string]*QueueMe
 // RealmMember event parameter type.
 type RealmMember struct {
 	MemberAttrs *RealmMemberAttrs `json:"member_attrs"`
+	PuppetAttrs *PuppetAttrs      `json:"puppet_attrs,omitempty"`
 	UserAttrs   *UserAttrs        `json:"user_attrs"`
 }
 
@@ -223,6 +231,12 @@ func (target *RealmMember) Init(source map[string]interface{}) {
 	if x := source["member_attrs"]; x != nil {
 		if y, ok := x.(map[string]interface{}); ok {
 			target.MemberAttrs = NewRealmMemberAttrs(y)
+		}
+	}
+
+	if x := source["puppet_attrs"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.PuppetAttrs = NewPuppetAttrs(y)
 		}
 	}
 
