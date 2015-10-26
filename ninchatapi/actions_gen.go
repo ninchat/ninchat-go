@@ -584,6 +584,65 @@ func (action *DeleteQueue) Invoke(session *ninchat.Session) (reply *QueueDeleted
 	return nil, nil
 }
 
+// DeleteQueueTranscripts action.  https://ninchat.com/api/v2#delete_queue_transcripts
+type DeleteQueueTranscripts struct {
+	IntervalBegin *float64 `json:"interval_begin"`
+	IntervalEnd   *float64 `json:"interval_end"`
+	QueueId       *string  `json:"queue_id"`
+}
+
+// String returns "delete_queue_transcripts".
+func (*DeleteQueueTranscripts) String() string {
+	return "delete_queue_transcripts"
+}
+
+func (action *DeleteQueueTranscripts) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "delete_queue_transcripts",
+		},
+	}
+
+	if x := action.IntervalBegin; x != nil {
+		clientAction.Params["interval_begin"] = *x
+	} else {
+		err = newRequestMalformedError("delete_queue_transcripts action requires interval_begin parameter")
+		return
+	}
+
+	if x := action.IntervalEnd; x != nil {
+		clientAction.Params["interval_end"] = *x
+	} else {
+		err = newRequestMalformedError("delete_queue_transcripts action requires interval_end parameter")
+		return
+	}
+
+	if x := action.QueueId; x != nil {
+		clientAction.Params["queue_id"] = *x
+	} else {
+		err = newRequestMalformedError("delete_queue_transcripts action requires queue_id parameter")
+		return
+	}
+
+	return
+}
+
+// Invoke the action synchronously.
+func (action *DeleteQueueTranscripts) Invoke(session *ninchat.Session) (reply *QueueTranscriptsDeleted, err error) {
+	var buf QueueTranscriptsDeleted
+
+	ok, err := unaryCall(session, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
+}
+
 // DeleteRealm action.  https://ninchat.com/api/v2#delete_realm
 type DeleteRealm struct {
 	RealmId *string `json:"realm_id"`
@@ -614,6 +673,49 @@ func (action *DeleteRealm) newClientAction() (clientAction *ninchat.Action, err 
 // Invoke the action synchronously.
 func (action *DeleteRealm) Invoke(session *ninchat.Session) (reply *RealmDeleted, err error) {
 	var buf RealmDeleted
+
+	ok, err := unaryCall(session, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
+}
+
+// DeleteTranscript action.  https://ninchat.com/api/v2#delete_transcript
+type DeleteTranscript struct {
+	DialogueId []string `json:"dialogue_id"`
+}
+
+// String returns "delete_transcript".
+func (*DeleteTranscript) String() string {
+	return "delete_transcript"
+}
+
+func (action *DeleteTranscript) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "delete_transcript",
+		},
+	}
+
+	if x := action.DialogueId; x != nil {
+		clientAction.Params["dialogue_id"] = x
+	} else {
+		err = newRequestMalformedError("delete_transcript action requires dialogue_id parameter")
+		return
+	}
+
+	return
+}
+
+// Invoke the action synchronously.
+func (action *DeleteTranscript) Invoke(session *ninchat.Session) (reply *TranscriptDeleted, err error) {
+	var buf TranscriptDeleted
 
 	ok, err := unaryCall(session, action, &buf)
 	if err != nil {
@@ -877,6 +979,62 @@ func (action *DescribeQueue) newClientAction() (clientAction *ninchat.Action, er
 // Invoke the action synchronously.
 func (action *DescribeQueue) Invoke(session *ninchat.Session) (reply *QueueFound, err error) {
 	var buf QueueFound
+
+	ok, err := unaryCall(session, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
+}
+
+// DescribeQueueTranscripts action.  https://ninchat.com/api/v2#describe_queue_transcripts
+type DescribeQueueTranscripts struct {
+	IntervalBegin *float64 `json:"interval_begin"`
+	IntervalEnd   *float64 `json:"interval_end,omitempty"`
+	QueueId       *string  `json:"queue_id"`
+}
+
+// String returns "describe_queue_transcripts".
+func (*DescribeQueueTranscripts) String() string {
+	return "describe_queue_transcripts"
+}
+
+func (action *DescribeQueueTranscripts) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "describe_queue_transcripts",
+		},
+	}
+
+	if x := action.IntervalBegin; x != nil {
+		clientAction.Params["interval_begin"] = *x
+	} else {
+		err = newRequestMalformedError("describe_queue_transcripts action requires interval_begin parameter")
+		return
+	}
+
+	if x := action.IntervalEnd; x != nil {
+		clientAction.Params["interval_end"] = *x
+	}
+
+	if x := action.QueueId; x != nil {
+		clientAction.Params["queue_id"] = *x
+	} else {
+		err = newRequestMalformedError("describe_queue_transcripts action requires queue_id parameter")
+		return
+	}
+
+	return
+}
+
+// Invoke the action synchronously.
+func (action *DescribeQueueTranscripts) Invoke(session *ninchat.Session) (reply *QueueTranscriptsFound, err error) {
+	var buf QueueTranscriptsFound
 
 	ok, err := unaryCall(session, action, &buf)
 	if err != nil {

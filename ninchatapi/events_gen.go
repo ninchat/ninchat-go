@@ -2385,6 +2385,139 @@ func (*QueueParted) String() string {
 	return "queue_parted"
 }
 
+// QueueTranscriptsDeleted event.  https://ninchat.com/api/v2#queue_transcripts_deleted
+type QueueTranscriptsDeleted struct {
+	EventId       int     `json:"event_id,omitempty"`
+	IntervalBegin float64 `json:"interval_begin"`
+	IntervalEnd   float64 `json:"interval_end"`
+	QueueId       string  `json:"queue_id"`
+}
+
+// NewQueueTranscriptsDeleted creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "queue_transcripts_deleted".
+func NewQueueTranscriptsDeleted(clientEvent *ninchat.Event) (event *QueueTranscriptsDeleted) {
+	if clientEvent != nil {
+		e := new(QueueTranscriptsDeleted)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "queue_transcripts_deleted".
+func (target *QueueTranscriptsDeleted) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "queue_transcripts_deleted" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	if x := source["interval_begin"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.IntervalBegin = y
+		}
+	}
+
+	if x := source["interval_end"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.IntervalEnd = y
+		}
+	}
+
+	if x := source["queue_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.QueueId = y
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *QueueTranscriptsDeleted) Id() int {
+	return event.EventId
+}
+
+// String returns "queue_transcripts_deleted".
+func (*QueueTranscriptsDeleted) String() string {
+	return "queue_transcripts_deleted"
+}
+
+// QueueTranscriptsFound event.  https://ninchat.com/api/v2#queue_transcripts_found
+type QueueTranscriptsFound struct {
+	EventId          int                `json:"event_id,omitempty"`
+	QueueId          string             `json:"queue_id"`
+	QueueTranscripts []*QueueTranscript `json:"queue_transcripts"`
+}
+
+// NewQueueTranscriptsFound creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "queue_transcripts_found".
+func NewQueueTranscriptsFound(clientEvent *ninchat.Event) (event *QueueTranscriptsFound) {
+	if clientEvent != nil {
+		e := new(QueueTranscriptsFound)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "queue_transcripts_found".
+func (target *QueueTranscriptsFound) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "queue_transcripts_found" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	if x := source["queue_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.QueueId = y
+		}
+	}
+
+	if x := source["queue_transcripts"]; x != nil {
+		if y, ok := x.([]interface{}); ok {
+			target.QueueTranscripts = AppendQueueTranscripts(nil, y)
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *QueueTranscriptsFound) Id() int {
+	return event.EventId
+}
+
+// String returns "queue_transcripts_found".
+func (*QueueTranscriptsFound) String() string {
+	return "queue_transcripts_found"
+}
+
 // QueueUpdated event.  https://ninchat.com/api/v2#queue_updated
 type QueueUpdated struct {
 	EventId       int         `json:"event_id,omitempty"`
@@ -3419,6 +3552,62 @@ func (event *TranscriptContents) Id() int {
 // String returns "transcript_contents".
 func (*TranscriptContents) String() string {
 	return "transcript_contents"
+}
+
+// TranscriptDeleted event.  https://ninchat.com/api/v2#transcript_deleted
+type TranscriptDeleted struct {
+	DialogueId []string `json:"dialogue_id,omitempty"`
+	EventId    int      `json:"event_id,omitempty"`
+}
+
+// NewTranscriptDeleted creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "transcript_deleted".
+func NewTranscriptDeleted(clientEvent *ninchat.Event) (event *TranscriptDeleted) {
+	if clientEvent != nil {
+		e := new(TranscriptDeleted)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "transcript_deleted".
+func (target *TranscriptDeleted) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "transcript_deleted" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["dialogue_id"]; x != nil {
+		if y, ok := x.([]interface{}); ok {
+			target.DialogueId = AppendStrings(nil, y)
+		}
+	}
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *TranscriptDeleted) Id() int {
+	return event.EventId
+}
+
+// String returns "transcript_deleted".
+func (*TranscriptDeleted) String() string {
+	return "transcript_deleted"
 }
 
 // UserDeleted event.  https://ninchat.com/api/v2#user_deleted

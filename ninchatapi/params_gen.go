@@ -211,6 +211,91 @@ func MakeQueueMembers(source map[string]interface{}) (target map[string]*QueueMe
 	return
 }
 
+// QueueTranscript event parameter type.
+type QueueTranscript struct {
+	AcceptTime   float64  `json:"accept_time"`
+	AgentId      string   `json:"agent_id"`
+	CompleteTime float64  `json:"complete_time"`
+	DialogueId   []string `json:"dialogue_id"`
+	FinishTime   float64  `json:"finish_time"`
+	Rating       *int     `json:"rating,omitempty"`
+	RequestTime  float64  `json:"request_time"`
+}
+
+// NewQueueTranscript creates an object with the parameters specified by the source.
+func NewQueueTranscript(source map[string]interface{}) (target *QueueTranscript) {
+	target = new(QueueTranscript)
+	target.Init(source)
+	return
+}
+
+// Init fills in the parameters specified by the source
+// (other fields are not touched).
+func (target *QueueTranscript) Init(source map[string]interface{}) {
+	if x := source["accept_time"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.AcceptTime = y
+		}
+	}
+
+	if x := source["agent_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.AgentId = y
+		}
+	}
+
+	if x := source["complete_time"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.CompleteTime = y
+		}
+	}
+
+	if x := source["dialogue_id"]; x != nil {
+		if y, ok := x.([]interface{}); ok {
+			target.DialogueId = AppendStrings(nil, y)
+		}
+	}
+
+	if x := source["finish_time"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.FinishTime = y
+		}
+	}
+
+	if x := source["rating"]; x != nil {
+		if y, ok := x.(int); ok {
+			target.Rating = &y
+		}
+	}
+
+	if x := source["request_time"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.RequestTime = y
+		}
+	}
+}
+
+// AppendQueueTranscripts duplicates the source slice while unwrapping the elements.
+func AppendQueueTranscripts(target []*QueueTranscript, source []interface{}) []*QueueTranscript {
+	if source != nil {
+		if target == nil || cap(target) < len(target)+len(source) {
+			t := make([]*QueueTranscript, len(target), len(target)+len(source))
+			copy(t, target)
+			target = t
+		}
+
+		for _, x := range source {
+			var z *QueueTranscript
+			if y, ok := x.(map[string]interface{}); ok {
+				z = NewQueueTranscript(y)
+			}
+			target = append(target, z)
+		}
+	}
+
+	return target
+}
+
 // RealmMember event parameter type.
 type RealmMember struct {
 	MemberAttrs *RealmMemberAttrs `json:"member_attrs"`
@@ -304,6 +389,7 @@ func MakeRealmQueues(source map[string]interface{}) (target map[string]*RealmQue
 
 // TranscriptMessage event parameter type.
 type TranscriptMessage struct {
+	MessageFold     bool        `json:"message_fold,omitempty"`
 	MessageId       string      `json:"message_id"`
 	MessageTime     float64     `json:"message_time"`
 	MessageType     string      `json:"message_type"`
@@ -322,6 +408,10 @@ func NewTranscriptMessage(source map[string]interface{}) (target *TranscriptMess
 // Init fills in the parameters specified by the source
 // (other fields are not touched).
 func (target *TranscriptMessage) Init(source map[string]interface{}) {
+	if x := source["message_fold"]; x != nil {
+		target.MessageFold = true
+	}
+
 	if x := source["message_id"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.MessageId = y
