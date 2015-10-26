@@ -552,6 +552,15 @@ func (s *Session) handleEvent(event *Event) (actionId int64, sessionLost, needsA
 		}
 	}
 
+	if event.String() == "user_deleted" {
+		s.sessionId = nil
+		s.running = false
+		s.OnSessionEvent(event)
+
+		sessionLost = true
+		return
+	}
+
 	errorType, errorReason, sessionLost, err := event.getError()
 	if err != nil {
 		s.log("event:", err)
