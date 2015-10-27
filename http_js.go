@@ -84,6 +84,7 @@ func putResponseToChannel(req *httpRequest, timeout duration, c chan<- httpRespo
 
 	xhr.Set("onprogress", func() {
 		// https://stackoverflow.com/questions/7037627/long-poll-and-ies-xdomainrequest-object
+		js.Global.Call("setTimeout", func() {}, 0)
 	})
 
 	xhr.Set("ontimeout", func() {
@@ -107,5 +108,8 @@ func putResponseToChannel(req *httpRequest, timeout duration, c chan<- httpRespo
 		}
 	}
 
-	xhr.Call("send", req.data)
+	js.Global.Call("setTimeout", func() {
+		// http://cypressnorth.com/programming/internet-explorer-aborting-ajax-requests-fixed/
+		xhr.Call("send", req.data)
+	}, 0)
 }
