@@ -6,6 +6,7 @@ package ninchatapi
 type ChannelAttrs struct {
 	Autosilence             bool     `json:"autosilence,omitempty"`
 	BlacklistedMessageTypes []string `json:"blacklisted_message_types,omitempty"`
+	Closed                  bool     `json:"closed,omitempty"`
 	DisclosedSince          *int     `json:"disclosed_since,omitempty"`
 	Followable              bool     `json:"followable,omitempty"`
 	Name                    *string  `json:"name,omitempty"`
@@ -36,6 +37,10 @@ func (target *ChannelAttrs) Init(source map[string]interface{}) {
 		if y, ok := x.([]interface{}); ok {
 			target.BlacklistedMessageTypes = AppendStrings(nil, y)
 		}
+	}
+
+	if x := source["closed"]; x != nil {
+		target.Closed = true
 	}
 
 	if x := source["disclosed_since"]; x != nil {

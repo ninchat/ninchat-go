@@ -2542,6 +2542,57 @@ func (action *UpdateUser) Invoke(session *ninchat.Session) (reply *UserUpdated, 
 	return nil, nil
 }
 
+// UpdateUserMessages action.  https://ninchat.com/api/v2#update_user_messages
+type UpdateUserMessages struct {
+	ChannelId     *string `json:"channel_id"`
+	MessageHidden bool    `json:"message_hidden"`
+	MessageId     *string `json:"message_id"`
+	MessageUserId *string `json:"message_user_id"`
+}
+
+// String returns "update_user_messages".
+func (*UpdateUserMessages) String() string {
+	return "update_user_messages"
+}
+
+func (action *UpdateUserMessages) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "update_user_messages",
+		},
+	}
+
+	if x := action.ChannelId; x != nil {
+		clientAction.Params["channel_id"] = *x
+	} else {
+		err = newRequestMalformedError("update_user_messages action requires channel_id parameter")
+		return
+	}
+
+	if x := action.MessageHidden; x {
+		clientAction.Params["message_hidden"] = x
+	} else {
+		err = newRequestMalformedError("update_user_messages action requires message_hidden parameter")
+		return
+	}
+
+	if x := action.MessageId; x != nil {
+		clientAction.Params["message_id"] = *x
+	} else {
+		err = newRequestMalformedError("update_user_messages action requires message_id parameter")
+		return
+	}
+
+	if x := action.MessageUserId; x != nil {
+		clientAction.Params["message_user_id"] = *x
+	} else {
+		err = newRequestMalformedError("update_user_messages action requires message_user_id parameter")
+		return
+	}
+
+	return
+}
+
 // VerifyIdentity action.  https://ninchat.com/api/v2#verify_identity
 type VerifyIdentity struct {
 	ActionIdDisabled bool    `json:"-"`

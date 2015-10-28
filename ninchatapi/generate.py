@@ -122,6 +122,7 @@ unaryreplies = {
 	"update_realm": "realm_updated",
 	"update_session": None,
 	"update_user": "user_updated",
+	"update_user_messages": None,
 	"verify_identity": "identity_updated",
 }
 
