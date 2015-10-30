@@ -477,6 +477,7 @@ type UserAccount struct {
 	Queues        *UserAccountObjects        `json:"queues,omitempty"`
 	Realms        *UserAccountObjects        `json:"realms,omitempty"`
 	Subscriptions []*UserAccountSubscription `json:"subscriptions,omitempty"`
+	Uploads       *UserAccountExtent         `json:"uploads,omitempty"`
 }
 
 // NewUserAccount creates an object with the parameters specified by the source.
@@ -516,6 +517,41 @@ func (target *UserAccount) Init(source map[string]interface{}) {
 	if x := source["subscriptions"]; x != nil {
 		if y, ok := x.([]interface{}); ok {
 			target.Subscriptions = AppendUserAccountSubscriptions(nil, y)
+		}
+	}
+
+	if x := source["uploads"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.Uploads = NewUserAccountExtent(y)
+		}
+	}
+}
+
+// UserAccountExtent event parameter type.
+type UserAccountExtent struct {
+	Available float64 `json:"available"`
+	Quota     float64 `json:"quota"`
+}
+
+// NewUserAccountExtent creates an object with the parameters specified by the source.
+func NewUserAccountExtent(source map[string]interface{}) (target *UserAccountExtent) {
+	target = new(UserAccountExtent)
+	target.Init(source)
+	return
+}
+
+// Init fills in the parameters specified by the source
+// (other fields are not touched).
+func (target *UserAccountExtent) Init(source map[string]interface{}) {
+	if x := source["available"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.Available = y
+		}
+	}
+
+	if x := source["quota"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.Quota = y
 		}
 	}
 }

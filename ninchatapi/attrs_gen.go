@@ -4,6 +4,7 @@ package ninchatapi
 
 // ChannelAttrs.  https://ninchat.com/api/v2#channel
 type ChannelAttrs struct {
+	Autohide                bool     `json:"autohide,omitempty"`
 	Autosilence             bool     `json:"autosilence,omitempty"`
 	BlacklistedMessageTypes []string `json:"blacklisted_message_types,omitempty"`
 	Closed                  bool     `json:"closed,omitempty"`
@@ -16,6 +17,7 @@ type ChannelAttrs struct {
 	Ratelimit               *string  `json:"ratelimit,omitempty"`
 	Suspended               bool     `json:"suspended,omitempty"`
 	Topic                   *string  `json:"topic,omitempty"`
+	Upload                  *string  `json:"upload,omitempty"`
 	VerifiedJoin            bool     `json:"verified_join,omitempty"`
 }
 
@@ -29,6 +31,10 @@ func NewChannelAttrs(source map[string]interface{}) (target *ChannelAttrs) {
 // Init fills in the attributes specified by the source
 // (other fields are not touched).
 func (target *ChannelAttrs) Init(source map[string]interface{}) {
+	if x := source["autohide"]; x != nil {
+		target.Autohide = true
+	}
+
 	if x := source["autosilence"]; x != nil {
 		target.Autosilence = true
 	}
@@ -89,6 +95,12 @@ func (target *ChannelAttrs) Init(source map[string]interface{}) {
 		}
 	}
 
+	if x := source["upload"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.Upload = &y
+		}
+	}
+
 	if x := source["verified_join"]; x != nil {
 		target.VerifiedJoin = true
 	}
@@ -96,9 +108,11 @@ func (target *ChannelAttrs) Init(source map[string]interface{}) {
 
 // ChannelMemberAttrs.  https://ninchat.com/api/v2#channel-membership
 type ChannelMemberAttrs struct {
-	Operator bool `json:"operator,omitempty"`
-	Silenced bool `json:"silenced,omitempty"`
-	Since    *int `json:"since,omitempty"`
+	Autohide  bool `json:"autohide,omitempty"`
+	Moderator bool `json:"moderator,omitempty"`
+	Operator  bool `json:"operator,omitempty"`
+	Silenced  bool `json:"silenced,omitempty"`
+	Since     *int `json:"since,omitempty"`
 }
 
 // NewChannelMemberAttrs creates an object with the attributes specified by the source.
@@ -111,6 +125,14 @@ func NewChannelMemberAttrs(source map[string]interface{}) (target *ChannelMember
 // Init fills in the attributes specified by the source
 // (other fields are not touched).
 func (target *ChannelMemberAttrs) Init(source map[string]interface{}) {
+	if x := source["autohide"]; x != nil {
+		target.Autohide = true
+	}
+
+	if x := source["moderator"]; x != nil {
+		target.Moderator = true
+	}
+
 	if x := source["operator"]; x != nil {
 		target.Operator = true
 	}
@@ -234,6 +256,7 @@ type QueueAttrs struct {
 	Length    *int    `json:"length,omitempty"`
 	Name      *string `json:"name,omitempty"`
 	Suspended bool    `json:"suspended,omitempty"`
+	Upload    *string `json:"upload,omitempty"`
 }
 
 // NewQueueAttrs creates an object with the attributes specified by the source.
@@ -270,6 +293,12 @@ func (target *QueueAttrs) Init(source map[string]interface{}) {
 
 	if x := source["suspended"]; x != nil {
 		target.Suspended = true
+	}
+
+	if x := source["upload"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.Upload = &y
+		}
 	}
 }
 
