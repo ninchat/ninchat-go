@@ -469,8 +469,15 @@ func (s *Session) handleSessionEvent(params map[string]interface{}) (ok bool) {
 
 	if event.String() == "error" {
 		s.sessionId = nil
-		s.running = false
 		quit = true
+
+		switch errorType, _ := event.Str("error_type"); errorType {
+		case "internal":
+			// keep trying
+
+		default:
+			s.running = false
+		}
 	}
 
 	s.OnSessionEvent(event)
