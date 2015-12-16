@@ -8,7 +8,13 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 )
 
-var webSocketSupported = js.Global.Get("WebSocket") != js.Undefined
+var webSocketSupported bool
+
+func init() {
+	// https://stackoverflow.com/questions/13349305/web-sockets-on-samsung-galaxy-s3-android-browser
+	class := js.Global.Get("WebSocket")
+	webSocketSupported = (class != js.Undefined && class.Get("CLOSING") != js.Undefined)
+}
 
 type webSocket struct {
 	notify    chan struct{}
