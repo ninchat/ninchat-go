@@ -2544,10 +2544,11 @@ func (action *UpdateUser) Invoke(session *ninchat.Session) (reply *UserUpdated, 
 
 // UpdateUserMessages action.  https://ninchat.com/api/v2#update_user_messages
 type UpdateUserMessages struct {
-	ChannelId     *string `json:"channel_id"`
-	MessageHidden bool    `json:"message_hidden"`
-	MessageId     *string `json:"message_id"`
-	MessageUserId *string `json:"message_user_id"`
+	ChannelId     *string  `json:"channel_id"`
+	IntervalEnd   *float64 `json:"interval_end,omitempty"`
+	MessageHidden bool     `json:"message_hidden"`
+	MessageId     *string  `json:"message_id,omitempty"`
+	MessageUserId *string  `json:"message_user_id"`
 }
 
 // String returns "update_user_messages".
@@ -2569,6 +2570,10 @@ func (action *UpdateUserMessages) newClientAction() (clientAction *ninchat.Actio
 		return
 	}
 
+	if x := action.IntervalEnd; x != nil {
+		clientAction.Params["interval_end"] = *x
+	}
+
 	if x := action.MessageHidden; x {
 		clientAction.Params["message_hidden"] = x
 	} else {
@@ -2578,9 +2583,6 @@ func (action *UpdateUserMessages) newClientAction() (clientAction *ninchat.Actio
 
 	if x := action.MessageId; x != nil {
 		clientAction.Params["message_id"] = *x
-	} else {
-		err = newRequestMalformedError("update_user_messages action requires message_id parameter")
-		return
 	}
 
 	if x := action.MessageUserId; x != nil {
