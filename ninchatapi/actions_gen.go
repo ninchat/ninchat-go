@@ -34,10 +34,10 @@ func (action *AcceptAudience) newClientAction() (clientAction *ninchat.Action, e
 }
 
 // Invoke the action synchronously.
-func (action *AcceptAudience) Invoke(session *ninchat.Session) (reply *DialogueUpdated, err error) {
+func (action *AcceptAudience) Invoke(sender Sender) (reply *DialogueUpdated, err error) {
 	var buf DialogueUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -87,10 +87,10 @@ func (action *AddMember) newClientAction() (clientAction *ninchat.Action, err er
 }
 
 // Invoke the action synchronously.
-func (action *AddMember) Invoke(session *ninchat.Session) (reply *MemberJoined, err error) {
+func (action *AddMember) Invoke(sender Sender) (reply *MemberJoined, err error) {
 	var buf MemberJoined
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -165,10 +165,10 @@ func (action *CreateAccess) newClientAction() (clientAction *ninchat.Action, err
 }
 
 // Invoke the action synchronously.
-func (action *CreateAccess) Invoke(session *ninchat.Session) (reply *AccessCreated, err error) {
+func (action *CreateAccess) Invoke(sender Sender) (reply *AccessCreated, err error) {
 	var buf AccessCreated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -210,10 +210,10 @@ func (action *CreateChannel) newClientAction() (clientAction *ninchat.Action, er
 }
 
 // Invoke the action synchronously.
-func (action *CreateChannel) Invoke(session *ninchat.Session) (reply *ChannelJoined, err error) {
+func (action *CreateChannel) Invoke(sender Sender) (reply *ChannelJoined, err error) {
 	var buf ChannelJoined
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -271,10 +271,10 @@ func (action *CreateIdentity) newClientAction() (clientAction *ninchat.Action, e
 }
 
 // Invoke the action synchronously.
-func (action *CreateIdentity) Invoke(session *ninchat.Session) (reply *IdentityCreated, err error) {
+func (action *CreateIdentity) Invoke(sender Sender) (reply *IdentityCreated, err error) {
 	var buf IdentityCreated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -321,10 +321,10 @@ func (action *CreateMasterKey) newClientAction() (clientAction *ninchat.Action, 
 }
 
 // Invoke the action synchronously.
-func (action *CreateMasterKey) Invoke(session *ninchat.Session) (reply *MasterKeyCreated, err error) {
+func (action *CreateMasterKey) Invoke(sender Sender) (reply *MasterKeyCreated, err error) {
 	var buf MasterKeyCreated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -372,10 +372,10 @@ func (action *CreateQueue) newClientAction() (clientAction *ninchat.Action, err 
 }
 
 // Invoke the action synchronously.
-func (action *CreateQueue) Invoke(session *ninchat.Session) (reply *QueueCreated, err error) {
+func (action *CreateQueue) Invoke(sender Sender) (reply *QueueCreated, err error) {
 	var buf QueueCreated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -417,10 +417,10 @@ func (action *CreateRealm) newClientAction() (clientAction *ninchat.Action, err 
 }
 
 // Invoke the action synchronously.
-func (action *CreateRealm) Invoke(session *ninchat.Session) (reply *RealmJoined, err error) {
+func (action *CreateRealm) Invoke(sender Sender) (reply *RealmJoined, err error) {
 	var buf RealmJoined
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -468,10 +468,10 @@ func (action *CreateTag) newClientAction() (clientAction *ninchat.Action, err er
 }
 
 // Invoke the action synchronously.
-func (action *CreateTag) Invoke(session *ninchat.Session) (reply *TagCreated, err error) {
+func (action *CreateTag) Invoke(sender Sender) (reply *TagCreated, err error) {
 	var buf TagCreated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -523,10 +523,10 @@ func (action *CreateUser) newClientAction() (clientAction *ninchat.Action, err e
 }
 
 // Invoke the action synchronously.
-func (action *CreateUser) Invoke(session *ninchat.Session) (reply *UserCreated, err error) {
+func (action *CreateUser) Invoke(sender Sender) (reply *UserCreated, err error) {
 	var buf UserCreated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -579,10 +579,10 @@ func (action *DeleteIdentity) newClientAction() (clientAction *ninchat.Action, e
 }
 
 // Invoke the action synchronously.
-func (action *DeleteIdentity) Invoke(session *ninchat.Session) (reply *IdentityDeleted, err error) {
+func (action *DeleteIdentity) Invoke(sender Sender) (reply *IdentityDeleted, err error) {
 	var buf IdentityDeleted
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -642,10 +642,10 @@ func (action *DeleteMasterKey) newClientAction() (clientAction *ninchat.Action, 
 }
 
 // Invoke the action synchronously.
-func (action *DeleteMasterKey) Invoke(session *ninchat.Session) (reply *MasterKeyDeleted, err error) {
+func (action *DeleteMasterKey) Invoke(sender Sender) (reply *MasterKeyDeleted, err error) {
 	var buf MasterKeyDeleted
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -685,10 +685,10 @@ func (action *DeleteQueue) newClientAction() (clientAction *ninchat.Action, err 
 }
 
 // Invoke the action synchronously.
-func (action *DeleteQueue) Invoke(session *ninchat.Session) (reply *QueueDeleted, err error) {
+func (action *DeleteQueue) Invoke(sender Sender) (reply *QueueDeleted, err error) {
 	var buf QueueDeleted
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -744,10 +744,10 @@ func (action *DeleteQueueTranscripts) newClientAction() (clientAction *ninchat.A
 }
 
 // Invoke the action synchronously.
-func (action *DeleteQueueTranscripts) Invoke(session *ninchat.Session) (reply *QueueTranscriptsDeleted, err error) {
+func (action *DeleteQueueTranscripts) Invoke(sender Sender) (reply *QueueTranscriptsDeleted, err error) {
 	var buf QueueTranscriptsDeleted
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -787,10 +787,10 @@ func (action *DeleteRealm) newClientAction() (clientAction *ninchat.Action, err 
 }
 
 // Invoke the action synchronously.
-func (action *DeleteRealm) Invoke(session *ninchat.Session) (reply *RealmDeleted, err error) {
+func (action *DeleteRealm) Invoke(sender Sender) (reply *RealmDeleted, err error) {
 	var buf RealmDeleted
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -830,10 +830,10 @@ func (action *DeleteTag) newClientAction() (clientAction *ninchat.Action, err er
 }
 
 // Invoke the action synchronously.
-func (action *DeleteTag) Invoke(session *ninchat.Session) (reply *TagDeleted, err error) {
+func (action *DeleteTag) Invoke(sender Sender) (reply *TagDeleted, err error) {
 	var buf TagDeleted
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -873,10 +873,10 @@ func (action *DeleteTranscript) newClientAction() (clientAction *ninchat.Action,
 }
 
 // Invoke the action synchronously.
-func (action *DeleteTranscript) Invoke(session *ninchat.Session) (reply *TranscriptDeleted, err error) {
+func (action *DeleteTranscript) Invoke(sender Sender) (reply *TranscriptDeleted, err error) {
 	var buf TranscriptDeleted
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -916,10 +916,10 @@ func (action *DeleteUser) newClientAction() (clientAction *ninchat.Action, err e
 }
 
 // Invoke the action synchronously.
-func (action *DeleteUser) Invoke(session *ninchat.Session) (reply *UserDeleted, err error) {
+func (action *DeleteUser) Invoke(sender Sender) (reply *UserDeleted, err error) {
 	var buf UserDeleted
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -964,10 +964,10 @@ func (action *DescribeAccess) newClientAction() (clientAction *ninchat.Action, e
 }
 
 // Invoke the action synchronously.
-func (action *DescribeAccess) Invoke(session *ninchat.Session) (reply *AccessFound, err error) {
+func (action *DescribeAccess) Invoke(sender Sender) (reply *AccessFound, err error) {
 	var buf AccessFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1007,10 +1007,10 @@ func (action *DescribeChannel) newClientAction() (clientAction *ninchat.Action, 
 }
 
 // Invoke the action synchronously.
-func (action *DescribeChannel) Invoke(session *ninchat.Session) (reply *ChannelFound, err error) {
+func (action *DescribeChannel) Invoke(sender Sender) (reply *ChannelFound, err error) {
 	var buf ChannelFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1058,10 +1058,10 @@ func (action *DescribeIdentity) newClientAction() (clientAction *ninchat.Action,
 }
 
 // Invoke the action synchronously.
-func (action *DescribeIdentity) Invoke(session *ninchat.Session) (reply *IdentityFound, err error) {
+func (action *DescribeIdentity) Invoke(sender Sender) (reply *IdentityFound, err error) {
 	var buf IdentityFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1093,10 +1093,10 @@ func (action *DescribeMasterKeys) newClientAction() (clientAction *ninchat.Actio
 }
 
 // Invoke the action synchronously.
-func (action *DescribeMasterKeys) Invoke(session *ninchat.Session) (reply *MasterKeysFound, err error) {
+func (action *DescribeMasterKeys) Invoke(sender Sender) (reply *MasterKeysFound, err error) {
 	var buf MasterKeysFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1136,10 +1136,10 @@ func (action *DescribeQueue) newClientAction() (clientAction *ninchat.Action, er
 }
 
 // Invoke the action synchronously.
-func (action *DescribeQueue) Invoke(session *ninchat.Session) (reply *QueueFound, err error) {
+func (action *DescribeQueue) Invoke(sender Sender) (reply *QueueFound, err error) {
 	var buf QueueFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1192,10 +1192,10 @@ func (action *DescribeQueueTranscripts) newClientAction() (clientAction *ninchat
 }
 
 // Invoke the action synchronously.
-func (action *DescribeQueueTranscripts) Invoke(session *ninchat.Session) (reply *QueueTranscriptsFound, err error) {
+func (action *DescribeQueueTranscripts) Invoke(sender Sender) (reply *QueueTranscriptsFound, err error) {
 	var buf QueueTranscriptsFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1235,10 +1235,10 @@ func (action *DescribeRealm) newClientAction() (clientAction *ninchat.Action, er
 }
 
 // Invoke the action synchronously.
-func (action *DescribeRealm) Invoke(session *ninchat.Session) (reply *RealmFound, err error) {
+func (action *DescribeRealm) Invoke(sender Sender) (reply *RealmFound, err error) {
 	var buf RealmFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1278,10 +1278,10 @@ func (action *DescribeRealmQueues) newClientAction() (clientAction *ninchat.Acti
 }
 
 // Invoke the action synchronously.
-func (action *DescribeRealmQueues) Invoke(session *ninchat.Session) (reply *RealmQueuesFound, err error) {
+func (action *DescribeRealmQueues) Invoke(sender Sender) (reply *RealmQueuesFound, err error) {
 	var buf RealmQueuesFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1321,10 +1321,10 @@ func (action *DescribeTag) newClientAction() (clientAction *ninchat.Action, err 
 }
 
 // Invoke the action synchronously.
-func (action *DescribeTag) Invoke(session *ninchat.Session) (reply *TagFound, err error) {
+func (action *DescribeTag) Invoke(sender Sender) (reply *TagFound, err error) {
 	var buf TagFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1371,10 +1371,10 @@ func (action *DescribeTags) newClientAction() (clientAction *ninchat.Action, err
 }
 
 // Invoke the action synchronously.
-func (action *DescribeTags) Invoke(session *ninchat.Session) (reply *TagsFound, err error) {
+func (action *DescribeTags) Invoke(sender Sender) (reply *TagsFound, err error) {
 	var buf TagsFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1411,10 +1411,10 @@ func (action *DescribeUser) newClientAction() (clientAction *ninchat.Action, err
 }
 
 // Invoke the action synchronously.
-func (action *DescribeUser) Invoke(session *ninchat.Session) (reply *UserFound, err error) {
+func (action *DescribeUser) Invoke(sender Sender) (reply *UserFound, err error) {
 	var buf UserFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1462,10 +1462,10 @@ func (action *DiscardHistory) newClientAction() (clientAction *ninchat.Action, e
 }
 
 // Invoke the action synchronously.
-func (action *DiscardHistory) Invoke(session *ninchat.Session) (reply *HistoryDiscarded, err error) {
+func (action *DiscardHistory) Invoke(sender Sender) (reply *HistoryDiscarded, err error) {
 	var buf HistoryDiscarded
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1515,10 +1515,10 @@ func (action *FollowChannel) newClientAction() (clientAction *ninchat.Action, er
 }
 
 // Invoke the action synchronously.
-func (action *FollowChannel) Invoke(session *ninchat.Session) (reply *ChannelFound, err error) {
+func (action *FollowChannel) Invoke(sender Sender) (reply *ChannelFound, err error) {
 	var buf ChannelFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1571,10 +1571,10 @@ func (action *GetQueueStats) newClientAction() (clientAction *ninchat.Action, er
 }
 
 // Invoke the action synchronously.
-func (action *GetQueueStats) Invoke(session *ninchat.Session) (reply *QueueStatsContents, err error) {
+func (action *GetQueueStats) Invoke(sender Sender) (reply *QueueStatsContents, err error) {
 	var buf QueueStatsContents
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1619,10 +1619,10 @@ func (action *GetTranscript) newClientAction() (clientAction *ninchat.Action, er
 }
 
 // Invoke the action synchronously.
-func (action *GetTranscript) Invoke(session *ninchat.Session) (reply *TranscriptContents, err error) {
+func (action *GetTranscript) Invoke(sender Sender) (reply *TranscriptContents, err error) {
 	var buf TranscriptContents
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1679,10 +1679,10 @@ func (action *JoinChannel) newClientAction() (clientAction *ninchat.Action, err 
 }
 
 // Invoke the action synchronously.
-func (action *JoinChannel) Invoke(session *ninchat.Session) (reply *ChannelJoined, err error) {
+func (action *JoinChannel) Invoke(sender Sender) (reply *ChannelJoined, err error) {
 	var buf ChannelJoined
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1754,10 +1754,10 @@ func (action *LoadHistory) newClientAction() (clientAction *ninchat.Action, err 
 }
 
 // Invoke the action synchronously.
-func (action *LoadHistory) Invoke(session *ninchat.Session) (reply *HistoryResults, err error) {
+func (action *LoadHistory) Invoke(sender Sender) (reply *HistoryResults, err error) {
 	var buf HistoryResults
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1797,10 +1797,10 @@ func (action *PartChannel) newClientAction() (clientAction *ninchat.Action, err 
 }
 
 // Invoke the action synchronously.
-func (action *PartChannel) Invoke(session *ninchat.Session) (reply *ChannelParted, err error) {
+func (action *PartChannel) Invoke(sender Sender) (reply *ChannelParted, err error) {
 	var buf ChannelParted
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1837,10 +1837,10 @@ func (action *Ping) newClientAction() (clientAction *ninchat.Action, err error) 
 }
 
 // Invoke the action synchronously.
-func (action *Ping) Invoke(session *ninchat.Session) (reply *Pong, err error) {
+func (action *Ping) Invoke(sender Sender) (reply *Pong, err error) {
 	var buf Pong
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1895,10 +1895,10 @@ func (action *RemoveMember) newClientAction() (clientAction *ninchat.Action, err
 }
 
 // Invoke the action synchronously.
-func (action *RemoveMember) Invoke(session *ninchat.Session) (reply *MemberParted, err error) {
+func (action *RemoveMember) Invoke(sender Sender) (reply *MemberParted, err error) {
 	var buf MemberParted
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1943,10 +1943,10 @@ func (action *RequestAudience) newClientAction() (clientAction *ninchat.Action, 
 }
 
 // Invoke the action synchronously.
-func (action *RequestAudience) Invoke(session *ninchat.Session) (reply *AudienceEnqueued, err error) {
+func (action *RequestAudience) Invoke(sender Sender) (reply *AudienceEnqueued, err error) {
 	var buf AudienceEnqueued
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1999,10 +1999,10 @@ func (action *RequestIdentityAuthResetAccess) newClientAction() (clientAction *n
 }
 
 // Invoke the action synchronously.
-func (action *RequestIdentityAuthResetAccess) Invoke(session *ninchat.Session) (reply *AccessCreated, err error) {
+func (action *RequestIdentityAuthResetAccess) Invoke(sender Sender) (reply *AccessCreated, err error) {
 	var buf AccessCreated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2055,10 +2055,10 @@ func (action *RequestIdentityVerifyAccess) newClientAction() (clientAction *ninc
 }
 
 // Invoke the action synchronously.
-func (action *RequestIdentityVerifyAccess) Invoke(session *ninchat.Session) (reply *AccessCreated, err error) {
+func (action *RequestIdentityVerifyAccess) Invoke(sender Sender) (reply *AccessCreated, err error) {
 	var buf AccessCreated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2107,10 +2107,10 @@ func (action *ResetIdentityAuth) newClientAction() (clientAction *ninchat.Action
 }
 
 // Invoke the action synchronously.
-func (action *ResetIdentityAuth) Invoke(session *ninchat.Session) (reply *IdentityUpdated, err error) {
+func (action *ResetIdentityAuth) Invoke(sender Sender) (reply *IdentityUpdated, err error) {
 	var buf IdentityUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2209,10 +2209,10 @@ func (action *SendAccess) newClientAction() (clientAction *ninchat.Action, err e
 }
 
 // Invoke the action synchronously.
-func (action *SendAccess) Invoke(session *ninchat.Session) (reply *AccessFound, err error) {
+func (action *SendAccess) Invoke(sender Sender) (reply *AccessFound, err error) {
 	var buf AccessFound
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2294,10 +2294,10 @@ func (action *SendMessage) newClientAction() (clientAction *ninchat.Action, err 
 }
 
 // Invoke the action synchronously.
-func (action *SendMessage) Invoke(session *ninchat.Session) (reply *MessageReceived, err error) {
+func (action *SendMessage) Invoke(sender Sender) (reply *MessageReceived, err error) {
 	var buf MessageReceived
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2345,10 +2345,10 @@ func (action *UpdateChannel) newClientAction() (clientAction *ninchat.Action, er
 }
 
 // Invoke the action synchronously.
-func (action *UpdateChannel) Invoke(session *ninchat.Session) (reply *ChannelUpdated, err error) {
+func (action *UpdateChannel) Invoke(sender Sender) (reply *ChannelUpdated, err error) {
 	var buf ChannelUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2398,10 +2398,10 @@ func (action *UpdateDialogue) newClientAction() (clientAction *ninchat.Action, e
 }
 
 // Invoke the action synchronously.
-func (action *UpdateDialogue) Invoke(session *ninchat.Session) (reply *DialogueUpdated, err error) {
+func (action *UpdateDialogue) Invoke(sender Sender) (reply *DialogueUpdated, err error) {
 	var buf DialogueUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2457,10 +2457,10 @@ func (action *UpdateIdentity) newClientAction() (clientAction *ninchat.Action, e
 }
 
 // Invoke the action synchronously.
-func (action *UpdateIdentity) Invoke(session *ninchat.Session) (reply *IdentityUpdated, err error) {
+func (action *UpdateIdentity) Invoke(sender Sender) (reply *IdentityUpdated, err error) {
 	var buf IdentityUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2521,10 +2521,10 @@ func (action *UpdateIdentityAuth) newClientAction() (clientAction *ninchat.Actio
 }
 
 // Invoke the action synchronously.
-func (action *UpdateIdentityAuth) Invoke(session *ninchat.Session) (reply *IdentityUpdated, err error) {
+func (action *UpdateIdentityAuth) Invoke(sender Sender) (reply *IdentityUpdated, err error) {
 	var buf IdentityUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2582,10 +2582,10 @@ func (action *UpdateMember) newClientAction() (clientAction *ninchat.Action, err
 }
 
 // Invoke the action synchronously.
-func (action *UpdateMember) Invoke(session *ninchat.Session) (reply *MemberUpdated, err error) {
+func (action *UpdateMember) Invoke(sender Sender) (reply *MemberUpdated, err error) {
 	var buf MemberUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2641,10 +2641,10 @@ func (action *UpdateMessage) newClientAction() (clientAction *ninchat.Action, er
 }
 
 // Invoke the action synchronously.
-func (action *UpdateMessage) Invoke(session *ninchat.Session) (reply *MessageUpdated, err error) {
+func (action *UpdateMessage) Invoke(sender Sender) (reply *MessageUpdated, err error) {
 	var buf MessageUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2692,10 +2692,10 @@ func (action *UpdateQueue) newClientAction() (clientAction *ninchat.Action, err 
 }
 
 // Invoke the action synchronously.
-func (action *UpdateQueue) Invoke(session *ninchat.Session) (reply *QueueUpdated, err error) {
+func (action *UpdateQueue) Invoke(sender Sender) (reply *QueueUpdated, err error) {
 	var buf QueueUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2743,10 +2743,10 @@ func (action *UpdateRealm) newClientAction() (clientAction *ninchat.Action, err 
 }
 
 // Invoke the action synchronously.
-func (action *UpdateRealm) Invoke(session *ninchat.Session) (reply *RealmUpdated, err error) {
+func (action *UpdateRealm) Invoke(sender Sender) (reply *RealmUpdated, err error) {
 	var buf RealmUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2834,10 +2834,10 @@ func (action *UpdateTag) newClientAction() (clientAction *ninchat.Action, err er
 }
 
 // Invoke the action synchronously.
-func (action *UpdateTag) Invoke(session *ninchat.Session) (reply *TagUpdated, err error) {
+func (action *UpdateTag) Invoke(sender Sender) (reply *TagUpdated, err error) {
 	var buf TagUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2886,10 +2886,10 @@ func (action *UpdateUser) newClientAction() (clientAction *ninchat.Action, err e
 }
 
 // Invoke the action synchronously.
-func (action *UpdateUser) Invoke(session *ninchat.Session) (reply *UserUpdated, err error) {
+func (action *UpdateUser) Invoke(sender Sender) (reply *UserUpdated, err error) {
 	var buf UserUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -2995,10 +2995,10 @@ func (action *VerifyIdentity) newClientAction() (clientAction *ninchat.Action, e
 }
 
 // Invoke the action synchronously.
-func (action *VerifyIdentity) Invoke(session *ninchat.Session) (reply *IdentityUpdated, err error) {
+func (action *VerifyIdentity) Invoke(sender Sender) (reply *IdentityUpdated, err error) {
 	var buf IdentityUpdated
 
-	ok, err := unaryCall(session, action, &buf)
+	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {
 		return nil, err
 	}

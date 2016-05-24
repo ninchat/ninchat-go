@@ -285,10 +285,10 @@ def print_action(action):
 	if reply:
 		print
 		print '// Invoke the action synchronously.'.format(action.name)
-		print 'func (action *{}) Invoke(session *ninchat.Session) (reply *{}, err error) {{'.format(title(action.name), title(reply))
+		print 'func (action *{}) Invoke(sender Sender) (reply *{}, err error) {{'.format(title(action.name), title(reply))
 		print '  var buf {}'.format(title(reply))
 		print
-		print '  ok, err := unaryCall(session, action, &buf)'
+		print '  ok, err := unaryCall(sender, action, &buf)'
 		print '  if err != nil {'
 		print '    return nil, err'
 		print '  }'

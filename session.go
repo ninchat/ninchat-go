@@ -204,7 +204,7 @@ func (s *Session) Close() {
 // will be called for each event until the final event.  Only the last event
 // will have the LastReply member set.
 //
-func (s *Session) Send(action *Action) {
+func (s *Session) Send(action *Action) (err error) {
 	if s.sendNotify == nil {
 		panic("session not initialized")
 	}

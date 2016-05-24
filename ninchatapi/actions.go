@@ -12,8 +12,14 @@ type Action interface {
 	newClientAction() (*ninchat.Action, error)
 }
 
-// Call an action with or without a session.
-func Call(session *ninchat.Session, events chan<- *ninchat.Event, action Action) (err error) {
+// Sender can send actions.  It is implemented by ninchat.Session and Caller.
+type Sender interface {
+	// Send an action.
+	Send(action *ninchat.Action) error
+}
+
+// Call an action.  If sender is nil, a trivial Caller will be used.
+func Call(sender Sender, events chan<- *ninchat.Event, action Action) (err error) {
 	clientAction, err := action.newClientAction()
 	if err != nil {
 		close(events)
@@ -31,20 +37,14 @@ func Call(session *ninchat.Session, events chan<- *ninchat.Event, action Action)
 		}
 	}
 
-	if session == nil {
-		if _, err = ninchat.Call(clientAction); err != nil {
-			close(events)
-			return
-		}
-	} else {
-		if x, found := clientAction.Params["action_id"]; found && x == nil {
-			close(events)
-			panic("calling via session but action_id is disabled")
-		}
-
-		session.Send(clientAction)
+	if sender == nil {
+		sender = &defaultCaller
 	}
 
+	err = sender.Send(clientAction)
+	if err != nil {
+		close(events)
+	}
 	return
 }
 
@@ -59,10 +59,10 @@ func Send(session *ninchat.Session, action Action) (err error) {
 	return
 }
 
-func unaryCall(session *ninchat.Session, action Action, event Event) (ok bool, err error) {
+func unaryCall(sender Sender, action Action, event Event) (ok bool, err error) {
 	c := make(chan *ninchat.Event, 1) // XXX: why doesn't this work without buffering?
 
-	if err = Call(session, c, action); err != nil {
+	if err = Call(sender, c, action); err != nil {
 		return
 	}
 
