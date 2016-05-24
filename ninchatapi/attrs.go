@@ -66,20 +66,39 @@ func NewRealmOwnerAccountAttr(source map[string]interface{}) (target *RealmOwner
 	return
 }
 
-// RealmThemeAttr represents the realm "theme" attribute.
-type RealmThemeAttr struct {
+// ThemeAttr represents "theme" attributes.
+type ThemeAttr struct {
 	Color *string `json:"color,omitempty"`
 }
 
-// NewRealmThemeAttr.
-func NewRealmThemeAttr(source map[string]interface{}) (target *RealmThemeAttr) {
-	target = new(RealmThemeAttr)
-
+func (target *ThemeAttr) init(source map[string]interface{}) {
 	if x := source["color"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.Color = &y
 		}
 	}
+}
 
+// RealmThemeAttr represents the realm "theme" attribute.
+type RealmThemeAttr struct {
+	ThemeAttr
+}
+
+// NewRealmThemeAttr.
+func NewRealmThemeAttr(source map[string]interface{}) (target *RealmThemeAttr) {
+	target = new(RealmThemeAttr)
+	target.init(source)
+	return
+}
+
+// TagThemeAttr represents the tag "theme" attribute.
+type TagThemeAttr struct {
+	ThemeAttr
+}
+
+// NewTagThemeAttr.
+func NewTagThemeAttr(source map[string]interface{}) (target *TagThemeAttr) {
+	target = new(TagThemeAttr)
+	target.init(source)
 	return
 }

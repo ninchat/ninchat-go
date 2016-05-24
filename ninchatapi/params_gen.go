@@ -387,6 +387,48 @@ func MakeRealmQueues(source map[string]interface{}) (target map[string]*RealmQue
 	return
 }
 
+// TagChild event parameter type.
+type TagChild struct {
+	TagAttrs    *TagAttrs            `json:"tag_attrs"`
+	TagChildren map[string]*TagChild `json:"tag_children,omitempty"`
+}
+
+// NewTagChild creates an object with the parameters specified by the source.
+func NewTagChild(source map[string]interface{}) (target *TagChild) {
+	target = new(TagChild)
+	target.Init(source)
+	return
+}
+
+// Init fills in the parameters specified by the source
+// (other fields are not touched).
+func (target *TagChild) Init(source map[string]interface{}) {
+	if x := source["tag_attrs"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.TagAttrs = NewTagAttrs(y)
+		}
+	}
+
+	if x := source["tag_children"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.TagChildren = MakeTagChildren(y)
+		}
+	}
+}
+
+// MakeTagChildren duplicates the map while unwrapping the values.
+func MakeTagChildren(source map[string]interface{}) (target map[string]*TagChild) {
+	target = make(map[string]*TagChild)
+
+	for key, x := range source {
+		if y, ok := x.(map[string]interface{}); ok {
+			target[key] = NewTagChild(y)
+		}
+	}
+
+	return
+}
+
 // TranscriptMessage event parameter type.
 type TranscriptMessage struct {
 	MessageFold     bool        `json:"message_fold,omitempty"`

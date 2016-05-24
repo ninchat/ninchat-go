@@ -1452,6 +1452,7 @@ type MasterKeyCreated struct {
 	MasterKeyId     string  `json:"master_key_id"`
 	MasterKeySecret *string `json:"master_key_secret,omitempty"`
 	MasterKeyType   string  `json:"master_key_type"`
+	RealmId         *string `json:"realm_id,omitempty"`
 }
 
 // NewMasterKeyCreated creates an event object with the parameters
@@ -1503,6 +1504,12 @@ func (target *MasterKeyCreated) Init(clientEvent *ninchat.Event) error {
 		}
 	}
 
+	if x := source["realm_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.RealmId = &y
+		}
+	}
+
 	return nil
 }
 
@@ -1518,9 +1525,10 @@ func (*MasterKeyCreated) String() string {
 
 // MasterKeyDeleted event.  https://ninchat.com/api/v2#master_key_deleted
 type MasterKeyDeleted struct {
-	EventId       int    `json:"event_id,omitempty"`
-	MasterKeyId   string `json:"master_key_id"`
-	MasterKeyType string `json:"master_key_type"`
+	EventId       int     `json:"event_id,omitempty"`
+	MasterKeyId   string  `json:"master_key_id"`
+	MasterKeyType string  `json:"master_key_type"`
+	RealmId       *string `json:"realm_id,omitempty"`
 }
 
 // NewMasterKeyDeleted creates an event object with the parameters
@@ -1563,6 +1571,12 @@ func (target *MasterKeyDeleted) Init(clientEvent *ninchat.Event) error {
 	if x := source["master_key_type"]; x != nil {
 		if y, ok := x.(string); ok {
 			target.MasterKeyType = y
+		}
+	}
+
+	if x := source["realm_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.RealmId = &y
 		}
 	}
 
@@ -2383,6 +2397,62 @@ func (event *QueueParted) Id() int {
 // String returns "queue_parted".
 func (*QueueParted) String() string {
 	return "queue_parted"
+}
+
+// QueueStatsContents event.  https://ninchat.com/api/v2#queue_stats_contents
+type QueueStatsContents struct {
+	EventId    int                    `json:"event_id,omitempty"`
+	QueueStats map[string]interface{} `json:"queue_stats"`
+}
+
+// NewQueueStatsContents creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "queue_stats_contents".
+func NewQueueStatsContents(clientEvent *ninchat.Event) (event *QueueStatsContents) {
+	if clientEvent != nil {
+		e := new(QueueStatsContents)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "queue_stats_contents".
+func (target *QueueStatsContents) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "queue_stats_contents" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	if x := source["queue_stats"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.QueueStats = y
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *QueueStatsContents) Id() int {
+	return event.EventId
+}
+
+// String returns "queue_stats_contents".
+func (*QueueStatsContents) String() string {
+	return "queue_stats_contents"
 }
 
 // QueueTranscriptsDeleted event.  https://ninchat.com/api/v2#queue_transcripts_deleted
@@ -3477,6 +3547,363 @@ func (*SessionStatusUpdated) String() string {
 	return "session_status_updated"
 }
 
+// TagCreated event.  https://ninchat.com/api/v2#tag_created
+type TagCreated struct {
+	EventId  int       `json:"event_id,omitempty"`
+	RealmId  *string   `json:"realm_id,omitempty"`
+	TagAttrs *TagAttrs `json:"tag_attrs"`
+	TagId    string    `json:"tag_id"`
+}
+
+// NewTagCreated creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "tag_created".
+func NewTagCreated(clientEvent *ninchat.Event) (event *TagCreated) {
+	if clientEvent != nil {
+		e := new(TagCreated)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "tag_created".
+func (target *TagCreated) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "tag_created" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	if x := source["realm_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.RealmId = &y
+		}
+	}
+
+	if x := source["tag_attrs"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.TagAttrs = NewTagAttrs(y)
+		}
+	}
+
+	if x := source["tag_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.TagId = y
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *TagCreated) Id() int {
+	return event.EventId
+}
+
+// String returns "tag_created".
+func (*TagCreated) String() string {
+	return "tag_created"
+}
+
+// TagDeleted event.  https://ninchat.com/api/v2#tag_deleted
+type TagDeleted struct {
+	EventId  int       `json:"event_id,omitempty"`
+	RealmId  *string   `json:"realm_id,omitempty"`
+	TagAttrs *TagAttrs `json:"tag_attrs"`
+	TagId    string    `json:"tag_id"`
+}
+
+// NewTagDeleted creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "tag_deleted".
+func NewTagDeleted(clientEvent *ninchat.Event) (event *TagDeleted) {
+	if clientEvent != nil {
+		e := new(TagDeleted)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "tag_deleted".
+func (target *TagDeleted) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "tag_deleted" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	if x := source["realm_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.RealmId = &y
+		}
+	}
+
+	if x := source["tag_attrs"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.TagAttrs = NewTagAttrs(y)
+		}
+	}
+
+	if x := source["tag_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.TagId = y
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *TagDeleted) Id() int {
+	return event.EventId
+}
+
+// String returns "tag_deleted".
+func (*TagDeleted) String() string {
+	return "tag_deleted"
+}
+
+// TagFound event.  https://ninchat.com/api/v2#tag_found
+type TagFound struct {
+	EventId  int       `json:"event_id,omitempty"`
+	RealmId  *string   `json:"realm_id,omitempty"`
+	TagAttrs *TagAttrs `json:"tag_attrs"`
+	TagId    string    `json:"tag_id"`
+}
+
+// NewTagFound creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "tag_found".
+func NewTagFound(clientEvent *ninchat.Event) (event *TagFound) {
+	if clientEvent != nil {
+		e := new(TagFound)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "tag_found".
+func (target *TagFound) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "tag_found" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	if x := source["realm_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.RealmId = &y
+		}
+	}
+
+	if x := source["tag_attrs"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.TagAttrs = NewTagAttrs(y)
+		}
+	}
+
+	if x := source["tag_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.TagId = y
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *TagFound) Id() int {
+	return event.EventId
+}
+
+// String returns "tag_found".
+func (*TagFound) String() string {
+	return "tag_found"
+}
+
+// TagUpdated event.  https://ninchat.com/api/v2#tag_updated
+type TagUpdated struct {
+	EventId  int       `json:"event_id,omitempty"`
+	RealmId  *string   `json:"realm_id,omitempty"`
+	TagAttrs *TagAttrs `json:"tag_attrs"`
+	TagId    string    `json:"tag_id"`
+}
+
+// NewTagUpdated creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "tag_updated".
+func NewTagUpdated(clientEvent *ninchat.Event) (event *TagUpdated) {
+	if clientEvent != nil {
+		e := new(TagUpdated)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "tag_updated".
+func (target *TagUpdated) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "tag_updated" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	if x := source["realm_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.RealmId = &y
+		}
+	}
+
+	if x := source["tag_attrs"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.TagAttrs = NewTagAttrs(y)
+		}
+	}
+
+	if x := source["tag_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.TagId = y
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *TagUpdated) Id() int {
+	return event.EventId
+}
+
+// String returns "tag_updated".
+func (*TagUpdated) String() string {
+	return "tag_updated"
+}
+
+// TagsFound event.  https://ninchat.com/api/v2#tags_found
+type TagsFound struct {
+	EventId     int                  `json:"event_id,omitempty"`
+	RealmId     *string              `json:"realm_id,omitempty"`
+	TagAttrs    *TagAttrs            `json:"tag_attrs,omitempty"`
+	TagChildren map[string]*TagChild `json:"tag_children"`
+	TagId       *string              `json:"tag_id,omitempty"`
+}
+
+// NewTagsFound creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "tags_found".
+func NewTagsFound(clientEvent *ninchat.Event) (event *TagsFound) {
+	if clientEvent != nil {
+		e := new(TagsFound)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "tags_found".
+func (target *TagsFound) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "tags_found" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	if x := source["realm_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.RealmId = &y
+		}
+	}
+
+	if x := source["tag_attrs"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.TagAttrs = NewTagAttrs(y)
+		}
+	}
+
+	if x := source["tag_children"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.TagChildren = MakeTagChildren(y)
+		}
+	}
+
+	if x := source["tag_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.TagId = &y
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *TagsFound) Id() int {
+	return event.EventId
+}
+
+// String returns "tags_found".
+func (*TagsFound) String() string {
+	return "tags_found"
+}
+
 // TranscriptContents event.  https://ninchat.com/api/v2#transcript_contents
 type TranscriptContents struct {
 	AudienceMetadata   map[string]interface{}          `json:"audience_metadata,omitempty"`
@@ -3608,6 +4035,90 @@ func (event *TranscriptDeleted) Id() int {
 // String returns "transcript_deleted".
 func (*TranscriptDeleted) String() string {
 	return "transcript_deleted"
+}
+
+// UserCreated event.  https://ninchat.com/api/v2#user_created
+type UserCreated struct {
+	EventId       int                      `json:"event_id,omitempty"`
+	PuppetMasters map[string]*PuppetMaster `json:"puppet_masters,omitempty"`
+	UserAttrs     *UserAttrs               `json:"user_attrs"`
+	UserAuth      *string                  `json:"user_auth,omitempty"`
+	UserId        string                   `json:"user_id"`
+	UserSettings  map[string]interface{}   `json:"user_settings"`
+}
+
+// NewUserCreated creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "user_created".
+func NewUserCreated(clientEvent *ninchat.Event) (event *UserCreated) {
+	if clientEvent != nil {
+		e := new(UserCreated)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "user_created".
+func (target *UserCreated) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "user_created" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	if x := source["puppet_masters"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.PuppetMasters = MakePuppetMasters(y)
+		}
+	}
+
+	if x := source["user_attrs"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.UserAttrs = NewUserAttrs(y)
+		}
+	}
+
+	if x := source["user_auth"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.UserAuth = &y
+		}
+	}
+
+	if x := source["user_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.UserId = y
+		}
+	}
+
+	if x := source["user_settings"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.UserSettings = y
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *UserCreated) Id() int {
+	return event.EventId
+}
+
+// String returns "user_created".
+func (*UserCreated) String() string {
+	return "user_created"
 }
 
 // UserDeleted event.  https://ninchat.com/api/v2#user_deleted

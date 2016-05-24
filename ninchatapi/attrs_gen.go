@@ -386,6 +386,42 @@ func (target *RealmMemberAttrs) Init(source map[string]interface{}) {
 	}
 }
 
+// TagAttrs.  https://ninchat.com/api/v2#tag
+type TagAttrs struct {
+	Name     *string       `json:"name,omitempty"`
+	ParentId *string       `json:"parent_id,omitempty"`
+	Theme    *TagThemeAttr `json:"theme,omitempty"`
+}
+
+// NewTagAttrs creates an object with the attributes specified by the source.
+func NewTagAttrs(source map[string]interface{}) (target *TagAttrs) {
+	target = new(TagAttrs)
+	target.Init(source)
+	return
+}
+
+// Init fills in the attributes specified by the source
+// (other fields are not touched).
+func (target *TagAttrs) Init(source map[string]interface{}) {
+	if x := source["name"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.Name = &y
+		}
+	}
+
+	if x := source["parent_id"]; x != nil {
+		if y, ok := x.(string); ok {
+			target.ParentId = &y
+		}
+	}
+
+	if x := source["theme"]; x != nil {
+		if y, ok := x.(map[string]interface{}); ok {
+			target.Theme = NewTagThemeAttr(y)
+		}
+	}
+}
+
 // UserAttrs.  https://ninchat.com/api/v2#user
 type UserAttrs struct {
 	Admin     bool          `json:"admin,omitempty"`

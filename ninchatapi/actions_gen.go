@@ -290,6 +290,7 @@ func (action *CreateIdentity) Invoke(session *ninchat.Session) (reply *IdentityC
 type CreateMasterKey struct {
 	MasterKeyId   *string `json:"master_key_id,omitempty"`
 	MasterKeyType *string `json:"master_key_type,omitempty"`
+	RealmId       *string `json:"realm_id,omitempty"`
 }
 
 // String returns "create_master_key".
@@ -310,6 +311,10 @@ func (action *CreateMasterKey) newClientAction() (clientAction *ninchat.Action, 
 
 	if x := action.MasterKeyType; x != nil {
 		clientAction.Params["master_key_type"] = *x
+	}
+
+	if x := action.RealmId; x != nil {
+		clientAction.Params["realm_id"] = *x
 	}
 
 	return
@@ -427,6 +432,112 @@ func (action *CreateRealm) Invoke(session *ninchat.Session) (reply *RealmJoined,
 	return nil, nil
 }
 
+// CreateTag action.  https://ninchat.com/api/v2#create_tag
+type CreateTag struct {
+	RealmId  *string   `json:"realm_id"`
+	TagAttrs *TagAttrs `json:"tag_attrs"`
+}
+
+// String returns "create_tag".
+func (*CreateTag) String() string {
+	return "create_tag"
+}
+
+func (action *CreateTag) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "create_tag",
+		},
+	}
+
+	if x := action.RealmId; x != nil {
+		clientAction.Params["realm_id"] = *x
+	} else {
+		err = newRequestMalformedError("create_tag action requires realm_id parameter")
+		return
+	}
+
+	if x := action.TagAttrs; x != nil {
+		clientAction.Params["tag_attrs"] = x
+	} else {
+		err = newRequestMalformedError("create_tag action requires tag_attrs parameter")
+		return
+	}
+
+	return
+}
+
+// Invoke the action synchronously.
+func (action *CreateTag) Invoke(session *ninchat.Session) (reply *TagCreated, err error) {
+	var buf TagCreated
+
+	ok, err := unaryCall(session, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
+}
+
+// CreateUser action.  https://ninchat.com/api/v2#create_user
+type CreateUser struct {
+	ActionIdDisabled bool                   `json:"-"`
+	PuppetAttrs      *PuppetAttrs           `json:"puppet_attrs,omitempty"`
+	UserAttrs        *UserAttrs             `json:"user_attrs,omitempty"`
+	UserSettings     map[string]interface{} `json:"user_settings,omitempty"`
+}
+
+// String returns "create_user".
+func (*CreateUser) String() string {
+	return "create_user"
+}
+
+func (action *CreateUser) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "create_user",
+		},
+	}
+
+	if action.ActionIdDisabled {
+		clientAction.Params["action_id"] = nil
+	}
+
+	if x := action.PuppetAttrs; x != nil {
+		clientAction.Params["puppet_attrs"] = x
+	}
+
+	if x := action.UserAttrs; x != nil {
+		clientAction.Params["user_attrs"] = x
+	}
+
+	if x := action.UserSettings; x != nil {
+		clientAction.Params["user_settings"] = x
+	}
+
+	return
+}
+
+// Invoke the action synchronously.
+func (action *CreateUser) Invoke(session *ninchat.Session) (reply *UserCreated, err error) {
+	var buf UserCreated
+
+	ok, err := unaryCall(session, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
+}
+
 // DeleteIdentity action.  https://ninchat.com/api/v2#delete_identity
 type DeleteIdentity struct {
 	IdentityAuth *string `json:"identity_auth,omitempty"`
@@ -488,6 +599,7 @@ type DeleteMasterKey struct {
 	MasterKeyId     *string `json:"master_key_id"`
 	MasterKeySecret *string `json:"master_key_secret,omitempty"`
 	MasterKeyType   *string `json:"master_key_type,omitempty"`
+	RealmId         *string `json:"realm_id,omitempty"`
 	UserAuth        *string `json:"user_auth,omitempty"`
 }
 
@@ -516,6 +628,10 @@ func (action *DeleteMasterKey) newClientAction() (clientAction *ninchat.Action, 
 
 	if x := action.MasterKeyType; x != nil {
 		clientAction.Params["master_key_type"] = *x
+	}
+
+	if x := action.RealmId; x != nil {
+		clientAction.Params["realm_id"] = *x
 	}
 
 	if x := action.UserAuth; x != nil {
@@ -673,6 +789,49 @@ func (action *DeleteRealm) newClientAction() (clientAction *ninchat.Action, err 
 // Invoke the action synchronously.
 func (action *DeleteRealm) Invoke(session *ninchat.Session) (reply *RealmDeleted, err error) {
 	var buf RealmDeleted
+
+	ok, err := unaryCall(session, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
+}
+
+// DeleteTag action.  https://ninchat.com/api/v2#delete_tag
+type DeleteTag struct {
+	TagId *string `json:"tag_id"`
+}
+
+// String returns "delete_tag".
+func (*DeleteTag) String() string {
+	return "delete_tag"
+}
+
+func (action *DeleteTag) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "delete_tag",
+		},
+	}
+
+	if x := action.TagId; x != nil {
+		clientAction.Params["tag_id"] = *x
+	} else {
+		err = newRequestMalformedError("delete_tag action requires tag_id parameter")
+		return
+	}
+
+	return
+}
+
+// Invoke the action synchronously.
+func (action *DeleteTag) Invoke(session *ninchat.Session) (reply *TagDeleted, err error) {
+	var buf TagDeleted
 
 	ok, err := unaryCall(session, action, &buf)
 	if err != nil {
@@ -1134,6 +1293,99 @@ func (action *DescribeRealmQueues) Invoke(session *ninchat.Session) (reply *Real
 	return nil, nil
 }
 
+// DescribeTag action.  https://ninchat.com/api/v2#describe_tag
+type DescribeTag struct {
+	TagId *string `json:"tag_id"`
+}
+
+// String returns "describe_tag".
+func (*DescribeTag) String() string {
+	return "describe_tag"
+}
+
+func (action *DescribeTag) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "describe_tag",
+		},
+	}
+
+	if x := action.TagId; x != nil {
+		clientAction.Params["tag_id"] = *x
+	} else {
+		err = newRequestMalformedError("describe_tag action requires tag_id parameter")
+		return
+	}
+
+	return
+}
+
+// Invoke the action synchronously.
+func (action *DescribeTag) Invoke(session *ninchat.Session) (reply *TagFound, err error) {
+	var buf TagFound
+
+	ok, err := unaryCall(session, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
+}
+
+// DescribeTags action.  https://ninchat.com/api/v2#describe_tags
+type DescribeTags struct {
+	RealmId  *string `json:"realm_id,omitempty"`
+	TagDepth *int    `json:"tag_depth,omitempty"`
+	TagId    *string `json:"tag_id,omitempty"`
+}
+
+// String returns "describe_tags".
+func (*DescribeTags) String() string {
+	return "describe_tags"
+}
+
+func (action *DescribeTags) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "describe_tags",
+		},
+	}
+
+	if x := action.RealmId; x != nil {
+		clientAction.Params["realm_id"] = *x
+	}
+
+	if x := action.TagDepth; x != nil {
+		clientAction.Params["tag_depth"] = *x
+	}
+
+	if x := action.TagId; x != nil {
+		clientAction.Params["tag_id"] = *x
+	}
+
+	return
+}
+
+// Invoke the action synchronously.
+func (action *DescribeTags) Invoke(session *ninchat.Session) (reply *TagsFound, err error) {
+	var buf TagsFound
+
+	ok, err := unaryCall(session, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
+}
+
 // DescribeUser action.  https://ninchat.com/api/v2#describe_user
 type DescribeUser struct {
 	UserId *string `json:"user_id,omitempty"`
@@ -1265,6 +1517,62 @@ func (action *FollowChannel) newClientAction() (clientAction *ninchat.Action, er
 // Invoke the action synchronously.
 func (action *FollowChannel) Invoke(session *ninchat.Session) (reply *ChannelFound, err error) {
 	var buf ChannelFound
+
+	ok, err := unaryCall(session, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
+}
+
+// GetQueueStats action.  https://ninchat.com/api/v2#get_queue_stats
+type GetQueueStats struct {
+	QueueId     *string `json:"queue_id"`
+	StatsHour   *string `json:"stats_hour,omitempty"`
+	StatsLength *int    `json:"stats_length"`
+}
+
+// String returns "get_queue_stats".
+func (*GetQueueStats) String() string {
+	return "get_queue_stats"
+}
+
+func (action *GetQueueStats) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "get_queue_stats",
+		},
+	}
+
+	if x := action.QueueId; x != nil {
+		clientAction.Params["queue_id"] = *x
+	} else {
+		err = newRequestMalformedError("get_queue_stats action requires queue_id parameter")
+		return
+	}
+
+	if x := action.StatsHour; x != nil {
+		clientAction.Params["stats_hour"] = *x
+	}
+
+	if x := action.StatsLength; x != nil {
+		clientAction.Params["stats_length"] = *x
+	} else {
+		err = newRequestMalformedError("get_queue_stats action requires stats_length parameter")
+		return
+	}
+
+	return
+}
+
+// Invoke the action synchronously.
+func (action *GetQueueStats) Invoke(session *ninchat.Session) (reply *QueueStatsContents, err error) {
+	var buf QueueStatsContents
 
 	ok, err := unaryCall(session, action, &buf)
 	if err != nil {
@@ -2488,6 +2796,57 @@ func (action *UpdateSession) newClientAction() (clientAction *ninchat.Action, er
 	}
 
 	return
+}
+
+// UpdateTag action.  https://ninchat.com/api/v2#update_tag
+type UpdateTag struct {
+	TagAttrs *TagAttrs `json:"tag_attrs"`
+	TagId    *string   `json:"tag_id"`
+}
+
+// String returns "update_tag".
+func (*UpdateTag) String() string {
+	return "update_tag"
+}
+
+func (action *UpdateTag) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "update_tag",
+		},
+	}
+
+	if x := action.TagAttrs; x != nil {
+		clientAction.Params["tag_attrs"] = x
+	} else {
+		err = newRequestMalformedError("update_tag action requires tag_attrs parameter")
+		return
+	}
+
+	if x := action.TagId; x != nil {
+		clientAction.Params["tag_id"] = *x
+	} else {
+		err = newRequestMalformedError("update_tag action requires tag_id parameter")
+		return
+	}
+
+	return
+}
+
+// Invoke the action synchronously.
+func (action *UpdateTag) Invoke(session *ninchat.Session) (reply *TagUpdated, err error) {
+	var buf TagUpdated
+
+	ok, err := unaryCall(session, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
 }
 
 // UpdateUser action.  https://ninchat.com/api/v2#update_user
