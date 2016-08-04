@@ -33,8 +33,10 @@ func webSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 
 				connWorked = true
 				gotOnline, hostHealthy = webSocketHandshake(s, ws)
-			} else {
+			} else if ws.err != nil {
 				s.log("connection failed:", ws.err)
+			} else {
+				s.log("connection failed")
 			}
 
 		case <-s.closeNotify:
@@ -230,6 +232,9 @@ func webSocketSend(s *Session, ws *webSocket, fail chan struct{}, done chan<- st
 // webSocketReceive receives events.  It stops if the server doesn't send
 // anything for some time.
 func webSocketReceive(s *Session, ws *webSocket, fail chan struct{}) (gotEvents, hostHealthy bool) {
+	wsNotify := ws.notify
+	connected := true
+
 	var event *Event
 	var frames int
 
@@ -277,6 +282,11 @@ func webSocketReceive(s *Session, ws *webSocket, fail chan struct{}) (gotEvents,
 			} else {
 				data := ws.receive()
 				if data == nil {
+					if !connected {
+						// disconnected before complete payload was sent
+						event = nil
+						frames = 0
+					}
 					break
 				}
 
@@ -320,16 +330,24 @@ func webSocketReceive(s *Session, ws *webSocket, fail chan struct{}) (gotEvents,
 			}
 		}
 
+		if !connected && event == nil {
+			if ws.err != nil {
+				s.log("receive:", ws.err)
+			} else {
+				s.log("receive disconnect")
+			}
+			fail <- struct{}{}
+			return
+		}
+
 		if ackNeeded && !acker.Active() {
 			acker.Reset(jitterDuration(maxEventAckDelay, -0.3))
 		}
 
 		select {
-		case _, connected := <-ws.notify:
+		case _, connected = <-wsNotify:
 			if !connected {
-				s.log("receive:", ws.err)
-				fail <- struct{}{}
-				return
+				wsNotify = nil
 			}
 
 		case <-watchdog.C:
