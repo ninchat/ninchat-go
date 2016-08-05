@@ -186,6 +186,55 @@ func (*AccessFound) String() string {
 	return "access_found"
 }
 
+// Ack event.  https://ninchat.com/api/v2#ack
+type Ack struct {
+	EventId int `json:"event_id,omitempty"`
+}
+
+// NewAck creates an event object with the parameters
+// specified by the clientEvent.
+// Its type must be "ack".
+func NewAck(clientEvent *ninchat.Event) (event *Ack) {
+	if clientEvent != nil {
+		e := new(Ack)
+		if err := e.Init(clientEvent); err != nil {
+			panic(err)
+		}
+		event = e
+	}
+	return
+}
+
+// Init fills in the parameters
+// specified by the clientEvent (other fields are not touched).
+// An UnexpectedEventError is returned if its type is not
+// "ack".
+func (target *Ack) Init(clientEvent *ninchat.Event) error {
+	if clientEvent.String() != "ack" {
+		return &UnexpectedEventError{clientEvent}
+	}
+
+	source := clientEvent.Params
+
+	if x := source["event_id"]; x != nil {
+		if y, ok := x.(float64); ok {
+			target.EventId = int(y)
+		}
+	}
+
+	return nil
+}
+
+// Id returns the EventId parameter.
+func (event *Ack) Id() int {
+	return event.EventId
+}
+
+// String returns "ack".
+func (*Ack) String() string {
+	return "ack"
+}
+
 // AudienceEnqueued event.  https://ninchat.com/api/v2#audience_enqueued
 type AudienceEnqueued struct {
 	EventId       int         `json:"event_id,omitempty"`

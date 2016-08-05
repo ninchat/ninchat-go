@@ -119,6 +119,7 @@ unaryreplies = {
 	"send_access": "access_found",
 	"send_file": "message_received",
 	"send_message": "message_received",
+	"track": "ack",
 	"update_channel": "channel_updated",
 	"update_dialogue": "dialogue_updated",
 	"update_identity": "identity_updated",

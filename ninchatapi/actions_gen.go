@@ -1252,7 +1252,9 @@ func (action *DescribeRealm) Invoke(sender Sender) (reply *RealmFound, err error
 
 // DescribeRealmQueues action.  https://ninchat.com/api/v2#describe_realm_queues
 type DescribeRealmQueues struct {
-	RealmId *string `json:"realm_id"`
+	QueueIds      []string               `json:"queue_ids,omitempty"`
+	RealmId       *string                `json:"realm_id"`
+	TrackMetadata map[string]interface{} `json:"track_metadata,omitempty"`
 }
 
 // String returns "describe_realm_queues".
@@ -1267,11 +1269,19 @@ func (action *DescribeRealmQueues) newClientAction() (clientAction *ninchat.Acti
 		},
 	}
 
+	if x := action.QueueIds; x != nil {
+		clientAction.Params["queue_ids"] = x
+	}
+
 	if x := action.RealmId; x != nil {
 		clientAction.Params["realm_id"] = *x
 	} else {
 		err = newRequestMalformedError("describe_realm_queues action requires realm_id parameter")
 		return
+	}
+
+	if x := action.TrackMetadata; x != nil {
+		clientAction.Params["track_metadata"] = x
 	}
 
 	return
@@ -2296,6 +2306,70 @@ func (action *SendMessage) newClientAction() (clientAction *ninchat.Action, err 
 // Invoke the action synchronously.
 func (action *SendMessage) Invoke(sender Sender) (reply *MessageReceived, err error) {
 	var buf MessageReceived
+
+	ok, err := unaryCall(sender, action, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok {
+		return &buf, nil
+	}
+
+	return nil, nil
+}
+
+// Track action.  https://ninchat.com/api/v2#track
+type Track struct {
+	QueueIds      []string               `json:"queue_ids,omitempty"`
+	RealmId       *string                `json:"realm_id"`
+	TrackMetadata map[string]interface{} `json:"track_metadata"`
+	TrackStage    *string                `json:"track_stage"`
+}
+
+// String returns "track".
+func (*Track) String() string {
+	return "track"
+}
+
+func (action *Track) newClientAction() (clientAction *ninchat.Action, err error) {
+	clientAction = &ninchat.Action{
+		Params: map[string]interface{}{
+			"action": "track",
+		},
+	}
+
+	if x := action.QueueIds; x != nil {
+		clientAction.Params["queue_ids"] = x
+	}
+
+	if x := action.RealmId; x != nil {
+		clientAction.Params["realm_id"] = *x
+	} else {
+		err = newRequestMalformedError("track action requires realm_id parameter")
+		return
+	}
+
+	if x := action.TrackMetadata; x != nil {
+		clientAction.Params["track_metadata"] = x
+	} else {
+		err = newRequestMalformedError("track action requires track_metadata parameter")
+		return
+	}
+
+	if x := action.TrackStage; x != nil {
+		clientAction.Params["track_stage"] = *x
+	} else {
+		err = newRequestMalformedError("track action requires track_stage parameter")
+		return
+	}
+
+	return
+}
+
+// Invoke the action synchronously.
+func (action *Track) Invoke(sender Sender) (reply *Ack, err error) {
+	var buf Ack
 
 	ok, err := unaryCall(sender, action, &buf)
 	if err != nil {

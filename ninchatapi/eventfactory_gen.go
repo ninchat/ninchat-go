@@ -6,6 +6,7 @@ package ninchatapi
 var EventFactories = map[string]func() Event{
 	"access_created":            func() Event { return new(AccessCreated) },
 	"access_found":              func() Event { return new(AccessFound) },
+	"ack":                       func() Event { return new(Ack) },
 	"audience_enqueued":         func() Event { return new(AudienceEnqueued) },
 	"channel_deleted":           func() Event { return new(ChannelDeleted) },
 	"channel_found":             func() Event { return new(ChannelFound) },

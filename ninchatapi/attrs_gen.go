@@ -113,6 +113,7 @@ type ChannelMemberAttrs struct {
 	Operator  bool `json:"operator,omitempty"`
 	Silenced  bool `json:"silenced,omitempty"`
 	Since     *int `json:"since,omitempty"`
+	Writing   bool `json:"writing,omitempty"`
 }
 
 // NewChannelMemberAttrs creates an object with the attributes specified by the source.
@@ -145,6 +146,10 @@ func (target *ChannelMemberAttrs) Init(source map[string]interface{}) {
 		if y, ok := x.(int); ok {
 			target.Since = &y
 		}
+	}
+
+	if x := source["writing"]; x != nil {
+		target.Writing = true
 	}
 }
 
@@ -189,11 +194,12 @@ func (target *DialogueMemberAttrs) Init(source map[string]interface{}) {
 
 // IdentityAttrs.  https://ninchat.com/api/v2#identity
 type IdentityAttrs struct {
-	Auth     bool `json:"auth,omitempty"`
-	Blocked  bool `json:"blocked,omitempty"`
-	Pending  bool `json:"pending,omitempty"`
-	Public   bool `json:"public,omitempty"`
-	Rejected bool `json:"rejected,omitempty"`
+	Auth      bool `json:"auth,omitempty"`
+	Blocked   bool `json:"blocked,omitempty"`
+	Pending   bool `json:"pending,omitempty"`
+	Protected bool `json:"protected,omitempty"`
+	Public    bool `json:"public,omitempty"`
+	Rejected  bool `json:"rejected,omitempty"`
 }
 
 // NewIdentityAttrs creates an object with the attributes specified by the source.
@@ -216,6 +222,10 @@ func (target *IdentityAttrs) Init(source map[string]interface{}) {
 
 	if x := source["pending"]; x != nil {
 		target.Pending = true
+	}
+
+	if x := source["protected"]; x != nil {
+		target.Protected = true
 	}
 
 	if x := source["public"]; x != nil {
