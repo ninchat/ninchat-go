@@ -138,7 +138,7 @@ func (e *Event) initLastReply(action *Action) {
 		return
 	}
 
-	if action.String() == "search" {
+	if e.String() == "search_results" {
 		if e.Params["users"] != nil || e.Params["channels"] != nil {
 			return
 		}
