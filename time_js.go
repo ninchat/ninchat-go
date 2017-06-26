@@ -16,7 +16,7 @@ const (
 type timeTime int64
 
 func timeNow() timeTime {
-	return timeTime(js.Global.Get("Date").New().Invoke("getTime").Int64())
+	return timeTime(js.Global.Get("Date").New().Call("getTime").Int64())
 }
 
 func timeAdd(t timeTime, d duration) timeTime {
