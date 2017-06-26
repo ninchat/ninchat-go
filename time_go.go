@@ -9,8 +9,23 @@ import (
 type duration time.Duration
 
 const (
-	second = duration(time.Second)
+	second      = duration(time.Second)
+	millisecond = duration(time.Millisecond)
 )
+
+type timeTime time.Time
+
+func timeNow() timeTime {
+	return timeTime(time.Now())
+}
+
+func timeAdd(t timeTime, d duration) timeTime {
+	return timeTime(time.Time(t).Add(time.Duration(d)))
+}
+
+func timeSub(t1, t2 timeTime) duration {
+	return duration(time.Time(t1).Sub(time.Time(t2)))
+}
 
 type timer struct {
 	C <-chan time.Time

@@ -9,8 +9,23 @@ import (
 type duration int64
 
 const (
-	second duration = 1000
+	second      duration = 1000
+	millisecond          = 1
 )
+
+type timeTime int64
+
+func timeNow() timeTime {
+	return timeTime(js.Global.Get("Date").New().Invoke("getTime").Int64())
+}
+
+func timeAdd(t timeTime, d duration) timeTime {
+	return t + timeTime(d)
+}
+
+func timeSub(t1, t2 timeTime) duration {
+	return duration(t1 - t2)
+}
 
 type timer struct {
 	C chan struct{}

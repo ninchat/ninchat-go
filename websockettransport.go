@@ -238,7 +238,9 @@ func webSocketReceive(s *Session, ws *webSocket, fail chan struct{}) (gotEvents,
 	var event *Event
 	var frames int
 
-	watchdog := newTimer(jitterDuration(minReceiveTimeout, 0.3))
+	d := jitterDuration(minReceiveTimeout, 0.3)
+	watchdogTime := timeAdd(timeNow(), d)
+	watchdog := newTimer(d)
 	defer watchdog.Stop()
 
 	acker := newTimer(-1)
@@ -254,7 +256,11 @@ func webSocketReceive(s *Session, ws *webSocket, fail chan struct{}) (gotEvents,
 					break
 				}
 
-				watchdog.Reset(jitterDuration(minReceiveTimeout, 0.7))
+				d := jitterDuration(minReceiveTimeout, 0.7)
+				watchdogTime = timeAdd(timeNow(), d)
+				if !watchdog.Active() {
+					watchdog.Reset(d)
+				}
 				s.connActive()
 
 				text := stringData(data)
@@ -351,9 +357,13 @@ func webSocketReceive(s *Session, ws *webSocket, fail chan struct{}) (gotEvents,
 			}
 
 		case <-watchdog.C:
-			s.log("receive timeout")
-			fail <- struct{}{}
-			return
+			if remain := timeSub(watchdogTime, timeNow()); remain > millisecond*16 {
+				watchdog.Reset(remain)
+			} else {
+				s.log("receive timeout")
+				fail <- struct{}{}
+				return
+			}
 
 		case <-acker.C:
 			if !s.sendEventAck && s.ackedEventId != s.receivedEventId {
