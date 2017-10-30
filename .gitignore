@@ -1,4 +1,5 @@
 /bin/
+/lib/
 /pkg/
 /src/github.com/fsnotify/fsnotify/
 /src/github.com/gopherjs/gopherjs/

@@ -3,7 +3,7 @@ GOPATH	:= $(PWD)
 
 export GOPATH
 
-check: check-client check-api check-message
+check: check-client check-api check-message check-c
 
 check-client: check-client-go check-client-js
 
@@ -28,7 +28,19 @@ bin/gopherjs:
 	$(GO) get github.com/gopherjs/gopherjs
 	$(GO) build -o bin/gopherjs github.com/gopherjs/gopherjs
 
-clean:
-	rm -rf bin pkg
+lib/libninchat.a: $(wildcard c/*.go include/*.h)
+	@ mkdir -p lib
+	$(GO) get github.com/gorilla/websocket
+	$(GO) build -buildmode=c-archive -o $@ c/library.go
 
-.PHONY: check check-client check-client-go check-client-js check-api check-message clean
+bin/c-test: $(wildcard c/test/*.c include/*.h) lib/libninchat.a
+	@ mkdir -p bin
+	$(CC) $(CPPFLAGS) $(CFLAGS) -pthread -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -g -o $@ c/test/test.c lib/libninchat.a
+
+check-c: bin/c-test
+	bin/c-test
+
+clean:
+	rm -rf bin lib pkg
+
+.PHONY: check check-client check-client-go check-client-js check-api check-message check-c clean
