@@ -257,14 +257,14 @@ func (s *Session) sendAck() {
 
 // discover runs an endpoint discovery loop.
 func (s *Session) discover() {
-	s.log("opening")
-	defer s.log("closed")
-
 	defer func() {
 		if s.closed && s.OnClose != nil {
 			s.OnClose()
 		}
 	}()
+
+	s.log("opening")
+	defer s.log("closed")
 
 	defer s.connState("disconnected")
 
