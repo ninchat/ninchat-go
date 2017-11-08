@@ -7,7 +7,7 @@ import (
 )
 
 func emptyData() *js.Object {
-	return js.Global.Get("String").New()
+	return js.Global.Get("ArrayBuffer").New()
 }
 
 func dataLength(x *js.Object) int {
