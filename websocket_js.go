@@ -16,6 +16,9 @@ var (
 func init() {
 	// https://stackoverflow.com/questions/13349305/web-sockets-on-samsung-galaxy-s3-android-browser
 	webSocketClass = js.Global.Get("WebSocket")
+	if webSocketClass == js.Undefined {
+		webSocketClass = js.Module.Get("require").Invoke("ws")
+	}
 	webSocketSupported = (webSocketClass != js.Undefined && webSocketClass.Get("CLOSING") != js.Undefined)
 }
 
