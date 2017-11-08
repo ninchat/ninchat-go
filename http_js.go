@@ -17,6 +17,9 @@ func init() {
 	xhrType = js.Global.Get("XDomainRequest")
 	if xhrType == js.Undefined {
 		xhrType = js.Global.Get("XMLHttpRequest")
+		if xhrType == js.Undefined {
+			xhrType = js.Module.Get("require").Invoke("xhr2")
+		}
 		xhrRequestHeaderSupport = true
 	}
 }

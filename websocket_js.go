@@ -8,12 +8,18 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 )
 
-var webSocketSupported bool
+var (
+	webSocketClass     *js.Object
+	webSocketSupported bool
+)
 
 func init() {
 	// https://stackoverflow.com/questions/13349305/web-sockets-on-samsung-galaxy-s3-android-browser
-	class := js.Global.Get("WebSocket")
-	webSocketSupported = (class != js.Undefined && class.Get("CLOSING") != js.Undefined)
+	webSocketClass = js.Global.Get("WebSocket")
+	if webSocketClass == js.Undefined {
+		webSocketClass = js.Module.Get("require").Invoke("ws")
+	}
+	webSocketSupported = (webSocketClass != js.Undefined && webSocketClass.Get("CLOSING") != js.Undefined)
 }
 
 type webSocket struct {
@@ -29,7 +35,7 @@ type webSocket struct {
 func newWebSocket(url string, timeout duration) (ws *webSocket) {
 	ws = &webSocket{
 		notify: make(chan struct{}, 1),
-		impl:   js.Global.Get("WebSocket").New(url),
+		impl:   webSocketClass.New(url),
 	}
 
 	ws.impl.Set("binaryType", "arraybuffer")
