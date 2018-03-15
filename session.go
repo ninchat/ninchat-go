@@ -73,7 +73,7 @@ type Session struct {
 
 	Address string
 
-	forceLongPoll bool
+	forceLongPoll bool // only for testing
 	sessionParams map[string]interface{}
 	sessionId     interface{}
 
@@ -115,26 +115,6 @@ func (s *Session) SetParams(params map[string]interface{}) {
 		// opened + stopped -> restart
 		s.running = true
 		go s.discover()
-	}
-}
-
-// SetTransport forces a specific network transport implementation to be used.
-// Currently only "longpoll" may be specified.
-func (s *Session) SetTransport(name string) {
-	if name == "" {
-		s.forceLongPoll = false
-		return
-	}
-
-	switch name {
-	case "websocket":
-		panic("websocket transport cannot be forced")
-
-	case "longpoll":
-		s.forceLongPoll = true
-
-	default:
-		panic("unknown transport: " + name)
 	}
 }
 

@@ -14,7 +14,7 @@ var messageData = []byte("{\"text\":\"hello\"}")
 
 var imageData = []byte("\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x00\x00\x00\x00:~\x9bU\x00\x00\x00\nIDAT\x08\xd7c`\x00\x00\x00\x02\x00\x01\xe2!\xbc3\x00\x00\x00\x00IEND\xaeB`\x82")
 
-func openSession(t *testing.T, transport string, params map[string]interface{}) (session *ninchat.Session, events chan *ninchat.Event) {
+func openSession(t *testing.T, params map[string]interface{}) (session *ninchat.Session, events chan *ninchat.Event) {
 	events = make(chan *ninchat.Event, 10)
 
 	session = &ninchat.Session{
@@ -42,27 +42,18 @@ func openSession(t *testing.T, transport string, params map[string]interface{}) 
 	}
 
 	session.SetParams(params)
-	session.SetTransport(transport)
 	session.Open()
 	return
 }
 
 func TestSession(t *testing.T) {
-	testSession(t, "")
-}
-
-func TestSessionLongpoll(t *testing.T) {
-	testSession(t, "longpoll")
-}
-
-func testSession(t *testing.T, transport string) {
 	params := map[string]interface{}{
 		"message_types": []string{
 			"*",
 		},
 	}
 
-	session, events := openSession(t, transport, params)
+	session, events := openSession(t, params)
 	defer session.Close()
 
 	sessionEvent := ninchatapi.NewSessionCreated(<-events)

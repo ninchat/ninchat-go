@@ -1,26 +1,24 @@
-package ninchat_test
+package ninchat
 
 import (
 	"bytes"
 	"testing"
-
-	"."
 )
 
 var messageData = []byte("{\"text\":\"hello\"}")
 
 var imageData = []byte("\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x00\x00\x00\x00:~\x9bU\x00\x00\x00\nIDAT\x08\xd7c`\x00\x00\x00\x02\x00\x01\xe2!\xbc3\x00\x00\x00\x00IEND\xaeB`\x82")
 
-func openSession(t *testing.T, transport string, params map[string]interface{}) (session *ninchat.Session, events chan *ninchat.Event) {
-	events = make(chan *ninchat.Event, 10)
+func openSession(t *testing.T, forceLongPoll bool, params map[string]interface{}) (session *Session, events chan *Event) {
+	events = make(chan *Event, 10)
 
-	session = &ninchat.Session{
-		OnSessionEvent: func(event *ninchat.Event) {
+	session = &Session{
+		OnSessionEvent: func(event *Event) {
 			t.Log("SESSION EVENT:", event.Params)
 			events <- event
 		},
 
-		OnEvent: func(event *ninchat.Event) {
+		OnEvent: func(event *Event) {
 			t.Log("EVENT:", event.Params)
 			events <- event
 		},
@@ -36,30 +34,31 @@ func openSession(t *testing.T, transport string, params map[string]interface{}) 
 		OnLog: func(fragments ...interface{}) {
 			t.Log(append([]interface{}{"LOG:"}, fragments...)...)
 		},
+
+		forceLongPoll: forceLongPoll,
 	}
 
 	session.SetParams(params)
-	session.SetTransport(transport)
 	session.Open()
 	return
 }
 
 func TestSession(t *testing.T) {
-	testSession(t, "")
+	testSession(t, false)
 }
 
-func TestSessionLongpoll(t *testing.T) {
-	testSession(t, "longpoll")
+func TestSessionLongPoll(t *testing.T) {
+	testSession(t, true)
 }
 
-func testSession(t *testing.T, transport string) {
+func testSession(t *testing.T, forceLongPoll bool) {
 	params := map[string]interface{}{
 		"message_types": []string{
 			"*",
 		},
 	}
 
-	session, events := openSession(t, transport, params)
+	session, events := openSession(t, forceLongPoll, params)
 	defer session.Close()
 
 	var (
@@ -73,13 +72,13 @@ func testSession(t *testing.T, transport string) {
 			userId = event.Params["user_id"]
 			userAuth = event.Params["user_auth"]
 
-			session.Send(&ninchat.Action{
+			session.Send(&Action{
 				Params: map[string]interface{}{
 					"action":       "send_message",
 					"user_id":      userId,
 					"message_type": "ninchat.com/text",
 				},
-				Payload: []ninchat.Frame{
+				Payload: []Frame{
 					messageData,
 				},
 			})
@@ -93,12 +92,12 @@ func testSession(t *testing.T, transport string) {
 				t.Error("payload content")
 			}
 
-			session.Send(&ninchat.Action{
+			session.Send(&Action{
 				Params: map[string]interface{}{
 					"action":        "update_user",
 					"payload_attrs": []interface{}{"icon"},
 				},
-				Payload: []ninchat.Frame{
+				Payload: []Frame{
 					imageData,
 				},
 			})
@@ -110,7 +109,7 @@ func testSession(t *testing.T, transport string) {
 				t.Error("iconurl")
 			}
 
-			session.Send(&ninchat.Action{
+			session.Send(&Action{
 				Params: map[string]interface{}{
 					"action":    "delete_user",
 					"user_auth": userAuth,
@@ -124,14 +123,14 @@ func testSession(t *testing.T, transport string) {
 }
 
 func TestLoginFailure(t *testing.T) {
-	testLoginFailure(t, "")
+	testLoginFailure(t, false)
 }
 
-func TestLoginFailureLongpoll(t *testing.T) {
-	testLoginFailure(t, "longpoll")
+func TestLoginFailureLongPoll(t *testing.T) {
+	testLoginFailure(t, true)
 }
 
-func testLoginFailure(t *testing.T, transport string) {
+func testLoginFailure(t *testing.T, forceLongPoll bool) {
 	params := map[string]interface{}{
 		"identity_type": "email",
 		"identity_name": "nonexistent@example.invalid",
@@ -139,7 +138,7 @@ func testLoginFailure(t *testing.T, transport string) {
 		"message_types": []string{},
 	}
 
-	session, events := openSession(t, transport, params)
+	session, events := openSession(t, forceLongPoll, params)
 	defer session.Close()
 
 	event := <-events
