@@ -1,6 +1,6 @@
 // Ninchat API connection library.
 //
-// https://ninchat.com/api/v2
+// https://ninchat.com/api
 //
 package ninchat
 

@@ -15,7 +15,7 @@ var defaultCaller Caller
 // If the action's OnReply callback is set, it will be called with the result
 // events, unless an error occurs.
 //
-// https://ninchat.com/api/v2#sessionless-http-calling
+// https://ninchat.com/api#sessionless-http-calling
 //
 func Call(action *Action) (events []*Event, err error) {
 	return defaultCaller.Call(action)
