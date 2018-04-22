@@ -23,21 +23,20 @@ type Strings struct {
 	a []string
 }
 
-func NewStrings() *Strings {
-	return new(Strings)
-}
+func NewStrings() *Strings { return new(Strings) }
 
 func (ss *Strings) Append(val string) { ss.a = append(ss.a, val) }
 func (ss *Strings) Get(i int) string  { return ss.a[i] }
 func (ss *Strings) Length() int       { return len(ss.a) }
+func (ss *Strings) String() string    { return fmt.Sprint(ss.a) }
 
 type Props struct {
 	m map[string]interface{}
 }
 
-func NewProps() *Props {
-	return &Props{make(map[string]interface{})}
-}
+func NewProps() *Props { return &Props{make(map[string]interface{})} }
+
+func (ps *Props) String() string { return fmt.Sprint(ps.m) }
 
 func (ps *Props) SetBool(key string, val bool)            { ps.m[key] = val }
 func (ps *Props) SetInt(key string, val int)              { ps.m[key] = val }
@@ -124,13 +123,12 @@ type Payload struct {
 	a []ninchat.Frame
 }
 
-func NewPayload() *Payload {
-	return new(Payload)
-}
+func NewPayload() *Payload { return new(Payload) }
 
 func (p *Payload) Append(blob []byte) { p.a = append(p.a, blob) }
 func (p *Payload) Get(i int) []byte   { return p.a[i] }
 func (p *Payload) Length() int        { return len(p.a) }
+func (p *Payload) String() string     { return fmt.Sprint(p.a) }
 
 type SessionEventHandler interface {
 	OnSessionEvent(params *Props)
