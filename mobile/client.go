@@ -133,27 +133,27 @@ func (p *Payload) Get(i int) []byte   { return p.a[i] }
 func (p *Payload) Length() int        { return len(p.a) }
 
 type SessionEventHandler interface {
-	HandleSessionEvent(params *Props)
+	OnSessionEvent(params *Props)
 }
 
 type EventHandler interface {
-	HandleEvent(params *Props, payload *Payload, lastReply bool)
+	OnEvent(params *Props, payload *Payload, lastReply bool)
 }
 
 type CloseHandler interface {
-	HandleClose()
+	OnClose()
 }
 
 type ConnStateHandler interface {
-	HandleConnState(state string)
+	OnConnState(state string)
 }
 
 type ConnActiveHandler interface {
-	HandleConnActive()
+	OnConnActive()
 }
 
 type LogHandler interface {
-	HandleLog(msg string)
+	OnLog(msg string)
 }
 
 type Session struct {
@@ -164,31 +164,31 @@ func NewSession() *Session {
 	return new(Session)
 }
 
-func (s *Session) OnSessionEvent(callback SessionEventHandler) {
+func (s *Session) SetOnSessionEvent(callback SessionEventHandler) {
 	s.s.OnSessionEvent = func(e *ninchat.Event) {
-		callback.HandleSessionEvent(&Props{e.Params})
+		callback.OnSessionEvent(&Props{e.Params})
 	}
 }
 
-func (s *Session) OnEvent(callback EventHandler) {
+func (s *Session) SetOnEvent(callback EventHandler) {
 	s.s.OnEvent = func(e *ninchat.Event) {
-		callback.HandleEvent(&Props{e.Params}, &Payload{e.Payload}, e.LastReply)
+		callback.OnEvent(&Props{e.Params}, &Payload{e.Payload}, e.LastReply)
 	}
 }
 
-func (s *Session) OnClose(callback CloseHandler) {
-	s.s.OnClose = callback.HandleClose
+func (s *Session) SetOnClose(callback CloseHandler) {
+	s.s.OnClose = callback.OnClose
 }
 
-func (s *Session) OnConnState(callback ConnStateHandler) {
-	s.s.OnConnState = callback.HandleConnState
+func (s *Session) SetOnConnState(callback ConnStateHandler) {
+	s.s.OnConnState = callback.OnConnState
 }
 
-func (s *Session) OnConnActive(callback ConnActiveHandler) {
-	s.s.OnConnActive = callback.HandleConnActive
+func (s *Session) SetOnConnActive(callback ConnActiveHandler) {
+	s.s.OnConnActive = callback.OnConnActive
 }
 
-func (s *Session) OnLog(callback LogHandler) {
+func (s *Session) SetOnLog(callback LogHandler) {
 	s.s.OnLog = func(fragments ...interface{}) {
 		var msg bytes.Buffer
 		for i, x := range fragments {
@@ -197,7 +197,7 @@ func (s *Session) OnLog(callback LogHandler) {
 				msg.WriteString(" ")
 			}
 		}
-		callback.HandleLog(msg.String())
+		callback.OnLog(msg.String())
 	}
 }
 
