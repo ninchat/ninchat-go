@@ -241,3 +241,49 @@ func (s *Session) Send(params *Props, payload *Payload) (err error) {
 	err = s.s.Send(action)
 	return
 }
+
+type Event ninchat.Event
+
+func (e *Event) GetProps() *Props     { return &Props{e.Params} }
+func (e *Event) GetPayload() *Payload { return &Payload{e.Payload} }
+func (e *Event) String() string       { return fmt.Sprint(*e) }
+
+type Events struct {
+	a []*ninchat.Event
+}
+
+func (es *Events) Get(i int) *Event { return (*Event)(es.a[i]) }
+func (es *Events) Length() int      { return len(es.a) }
+func (es *Events) String() string   { return fmt.Sprint(es.a) }
+
+type Caller struct {
+	c ninchat.Caller
+}
+
+func NewCaller() *Caller {
+	return new(Caller)
+}
+
+func (c *Caller) SetAddress(address string) {
+	c.c.Address = address
+}
+
+func (c *Caller) Call(params *Props, payload *Payload) (events *Events, err error) {
+	defer func() {
+		if x := recover(); x != nil {
+			err = asError(x)
+		}
+	}()
+
+	action := &ninchat.Action{
+		Params: params.m,
+	}
+	if payload != nil {
+		action.Payload = payload.a
+	}
+	es, err := c.c.Call(action)
+	if err == nil {
+		events = &Events{es}
+	}
+	return
+}
