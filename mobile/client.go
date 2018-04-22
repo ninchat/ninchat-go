@@ -7,6 +7,18 @@ import (
 	ninchat "github.com/ninchat/ninchat-go"
 )
 
+func asError(x interface{}) error {
+	if x == nil {
+		return nil
+	}
+
+	if err, ok := x.(error); ok {
+		return err
+	} else {
+		return fmt.Errorf("%v", x)
+	}
+}
+
 type Strings struct {
 	a []string
 }
@@ -145,7 +157,7 @@ type LogHandler interface {
 }
 
 type Session struct {
-	ninchat.Session
+	s ninchat.Session
 }
 
 func NewSession() *Session {
@@ -153,31 +165,31 @@ func NewSession() *Session {
 }
 
 func (s *Session) OnSessionEvent(callback SessionEventHandler) {
-	s.Session.OnSessionEvent = func(e *ninchat.Event) {
+	s.s.OnSessionEvent = func(e *ninchat.Event) {
 		callback.HandleSessionEvent(&Props{e.Params})
 	}
 }
 
 func (s *Session) OnEvent(callback EventHandler) {
-	s.Session.OnEvent = func(e *ninchat.Event) {
+	s.s.OnEvent = func(e *ninchat.Event) {
 		callback.HandleEvent(&Props{e.Params}, &Payload{e.Payload}, e.LastReply)
 	}
 }
 
 func (s *Session) OnClose(callback CloseHandler) {
-	s.Session.OnClose = callback.HandleClose
+	s.s.OnClose = callback.HandleClose
 }
 
 func (s *Session) OnConnState(callback ConnStateHandler) {
-	s.Session.OnConnState = callback.HandleConnState
+	s.s.OnConnState = callback.HandleConnState
 }
 
 func (s *Session) OnConnActive(callback ConnActiveHandler) {
-	s.Session.OnConnActive = callback.HandleConnActive
+	s.s.OnConnActive = callback.HandleConnActive
 }
 
 func (s *Session) OnLog(callback LogHandler) {
-	s.Session.OnLog = func(fragments ...interface{}) {
+	s.s.OnLog = func(fragments ...interface{}) {
 		var msg bytes.Buffer
 		for i, x := range fragments {
 			fmt.Fprint(&msg, x)
@@ -190,19 +202,44 @@ func (s *Session) OnLog(callback LogHandler) {
 }
 
 func (s *Session) SetAddress(address string) {
-	s.Address = address
+	s.s.Address = address
 }
 
-func (s *Session) SetParams(params *Props) {
-	s.Session.SetParams(params.m)
+func (s *Session) SetParams(params *Props) (err error) {
+	defer func() {
+		err = asError(recover())
+	}()
+
+	s.s.SetParams(params.m)
+	return
 }
 
-func (s *Session) Send(params *Props, payload *Payload) error {
+func (s *Session) Open() (err error) {
+	defer func() {
+		err = asError(recover())
+	}()
+
+	s.s.Open()
+	return
+}
+
+func (s *Session) Close() {
+	s.s.Close()
+}
+
+func (s *Session) Send(params *Props, payload *Payload) (err error) {
+	defer func() {
+		if x := recover(); x != nil {
+			err = asError(x)
+		}
+	}()
+
 	action := &ninchat.Action{
 		Params: params.m,
 	}
 	if payload != nil {
 		action.Payload = payload.a
 	}
-	return s.Session.Send(action)
+	err = s.s.Send(action)
+	return
 }
