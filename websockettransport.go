@@ -31,7 +31,6 @@ func webSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 			s.mutex.Lock()
 
 			if connected {
-				s.log("connected")
 				s.connState("connected")
 
 				connWorked = true

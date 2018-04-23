@@ -262,15 +262,14 @@ func (s *Session) discover() {
 		}
 	}()
 
-	s.log("opening")
-	defer s.log("closed")
+	s.log("starting")
+	defer s.log("stopped")
 
 	defer s.connState("disconnected")
 
 	var backoff backoff
 
 	for s.running {
-		s.log("endpoint discovery")
 		s.connState("connecting")
 
 		url := "https://" + getAddress(s.Address) + endpointPath
@@ -369,8 +368,8 @@ func (s *Session) backOff(b *backoff) (ok bool) {
 		return
 	}
 
-	s.log("sleeping")
 	s.connState("disconnected")
+	s.log("sleeping")
 
 	s.mutex.Unlock()
 	defer s.mutex.Lock()
