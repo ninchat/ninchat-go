@@ -119,6 +119,52 @@ func (ps *Props) GetObject(key string) (ref *Props, err error) {
 	return
 }
 
+type PropVisitor interface {
+	VisitBool(string, bool) error
+	VisitNumber(string, float64) error
+	VisitString(string, string) error
+	VisitStringArray(string, *Strings) error
+	VisitObject(string, *Props) error
+}
+
+func (ps *Props) Accept(callback PropVisitor) (err error) {
+	var (
+		array  *Strings
+		object *Props
+	)
+
+	for k, x := range ps.m {
+		switch v := x.(type) {
+		case bool:
+			err = callback.VisitBool(k, v)
+
+		case float64:
+			err = callback.VisitNumber(k, v)
+
+		case string:
+			err = callback.VisitString(k, v)
+
+		case []interface{}:
+			array, err = ps.GetStringArray(k)
+			if err == nil {
+				err = callback.VisitStringArray(k, array)
+			}
+
+		case map[string]interface{}:
+			object, err = ps.GetObject(k)
+			if err == nil {
+				err = callback.VisitObject(k, object)
+			}
+		}
+
+		if err != nil {
+			break
+		}
+	}
+
+	return
+}
+
 type Payload struct {
 	a []ninchat.Frame
 }
