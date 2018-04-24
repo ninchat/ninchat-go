@@ -3,12 +3,12 @@ GOMOBILE	?= gomobile
 
 LOCALGO		:= GOPATH=$(PWD) $(GO)
 
-all: build-client-go lib/libninchat.a lib/ninchat-client.aar
-
 build-client-go:
 	$(LOCALGO) get github.com/gorilla/websocket
 	$(LOCALGO) vet .
 	$(LOCALGO) build .
+
+all: build-client-go lib/libninchat.a lib/ninchat-client.aar lib/NinchatClient.framework
 
 check: all check-client check-api check-message check-c
 
@@ -49,7 +49,15 @@ lib/ninchat-client.aar: $(wildcard *.go mobile/*.go) Makefile
 	@ mkdir -p lib
 	$(GOMOBILE) bind -target=android -javapkg=com.ninchat -o $@ github.com/ninchat/ninchat-go/mobile
 
+lib/NinchatClient.framework: $(wildcard *.go) tmp/ios/client.go Makefile
+	@ mkdir -p lib
+	$(GOMOBILE) bind -target=ios -o $@ github.com/ninchat/ninchat-go/tmp/ios
+
+tmp/ios/client.go: mobile/client.go Makefile
+	@ mkdir -p $(dir $@)
+	sed 's/^package client$$/package NinchatClient/' mobile/client.go > $@
+
 clean:
-	rm -rf bin lib pkg
+	rm -rf bin lib pkg tmp
 
 .PHONY: all build-client-go check check-client check-client-go check-client-js check-api check-message check-c clean

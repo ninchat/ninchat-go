@@ -1,6 +1,7 @@
 /bin/
 /lib/
 /pkg/
+/tmp/
 /src/github.com/fsnotify/fsnotify/
 /src/github.com/gopherjs/gopherjs/
 /src/github.com/gorilla/websocket/
