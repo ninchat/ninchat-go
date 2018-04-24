@@ -6,6 +6,7 @@ package ninchat
 
 import (
 	"sort"
+	"sync"
 )
 
 const (
@@ -74,6 +75,9 @@ type Session struct {
 	Address string
 
 	forceLongPoll bool // only for testing
+
+	mutex sync.Mutex // guards all variables below
+
 	sessionParams map[string]interface{}
 	sessionId     interface{}
 
@@ -99,6 +103,9 @@ type transport func(s *Session, host string) (connWorked, gotOnline bool)
 // SetParams sets "create_session" action parameters.  If Open has already been
 // called, this takes effect when a session is lost.
 func (s *Session) SetParams(params map[string]interface{}) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
 	if params["message_types"] == nil {
 		panic("message_types parameter not defined")
 	}
@@ -120,6 +127,9 @@ func (s *Session) SetParams(params map[string]interface{}) {
 
 // Open creates a session on the server.
 func (s *Session) Open() {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
 	if s.closed {
 		panic("session already closed")
 	}
@@ -149,6 +159,9 @@ func (s *Session) Open() {
 
 // Close the session on the server.
 func (s *Session) Close() {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
 	if s.closed {
 		return
 	}
@@ -185,6 +198,9 @@ func (s *Session) Close() {
 // will have the LastReply member set.
 //
 func (s *Session) Send(action *Action) (err error) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
 	if s.sendNotify == nil {
 		panic("session not initialized")
 	}
@@ -237,21 +253,23 @@ func (s *Session) sendAck() {
 
 // discover runs an endpoint discovery loop.
 func (s *Session) discover() {
+	s.mutex.Lock()
 	defer func() {
-		if s.closed && s.OnClose != nil {
+		closed := s.closed
+		s.mutex.Unlock()
+		if closed && s.OnClose != nil {
 			s.OnClose()
 		}
 	}()
 
-	s.log("opening")
-	defer s.log("closed")
+	s.log("starting")
+	defer s.log("stopped")
 
 	defer s.connState("disconnected")
 
 	var backoff backoff
 
 	for s.running {
-		s.log("endpoint discovery")
 		s.connState("connecting")
 
 		url := "https://" + getAddress(s.Address) + endpointPath
@@ -261,8 +279,11 @@ func (s *Session) discover() {
 			panic(err)
 		}
 
+		s.mutex.Unlock()
 		select {
 		case response := <-getResponseChannel(request, jitterDuration(discoveryTimeout, 0.1)):
+			s.mutex.Lock()
+
 			var hosts []string
 			err := response.err
 
@@ -289,6 +310,7 @@ func (s *Session) discover() {
 			}
 
 		case <-s.closeNotify:
+			s.mutex.Lock()
 			return
 		}
 
@@ -346,8 +368,11 @@ func (s *Session) backOff(b *backoff) (ok bool) {
 		return
 	}
 
-	s.log("sleeping")
 	s.connState("disconnected")
+	s.log("sleeping")
+
+	s.mutex.Unlock()
+	defer s.mutex.Lock()
 
 	select {
 	case <-newTimer(delay).C:
@@ -460,7 +485,7 @@ func (s *Session) handleSessionEvent(params map[string]interface{}) (ok bool) {
 		}
 	}
 
-	s.OnSessionEvent(event)
+	s.deliverSessionEvent(event)
 
 	if quit {
 		return
@@ -542,7 +567,7 @@ func (s *Session) handleEvent(event *Event) (actionId int64, sessionLost, needsA
 	if event.String() == "user_deleted" {
 		s.sessionId = nil
 		s.running = false
-		s.OnSessionEvent(event)
+		s.deliverSessionEvent(event)
 
 		sessionLost = true
 		return
@@ -557,7 +582,7 @@ func (s *Session) handleEvent(event *Event) (actionId int64, sessionLost, needsA
 
 			if !s.canLogin() {
 				s.running = false
-				s.OnSessionEvent(event)
+				s.deliverSessionEvent(event)
 			}
 		}
 
@@ -568,33 +593,64 @@ func (s *Session) handleEvent(event *Event) (actionId int64, sessionLost, needsA
 		s.log("deprecated:", errorReason)
 	}
 
-	s.OnEvent(event)
+	s.deliverEvent(event)
 
 	ok = true
 	return
 }
 
+func (s *Session) deliverSessionEvent(event *Event) {
+	s.mutex.Unlock()
+	defer s.mutex.Lock()
+
+	s.OnSessionEvent(event)
+}
+
+func (s *Session) deliverEvent(event *Event) {
+	s.mutex.Unlock()
+	defer s.mutex.Lock()
+
+	s.OnEvent(event)
+}
+
 // connState passes an enumeration value to the client code.
 func (s *Session) connState(state string) {
-	if s.latestConnState != state {
-		s.latestConnState = state
-
-		if s.OnConnState != nil {
-			s.OnConnState(s.latestConnState)
-		}
+	if s.latestConnState == state {
+		return
 	}
+
+	s.latestConnState = state
+
+	if s.OnConnState == nil {
+		return
+	}
+
+	s.mutex.Unlock()
+	defer s.mutex.Lock()
+
+	s.OnConnState(state)
 }
 
 // connActive pokes the client code.
 func (s *Session) connActive() {
-	if s.OnConnActive != nil {
-		s.OnConnActive()
+	if s.OnConnActive == nil {
+		return
 	}
+
+	s.mutex.Unlock()
+	defer s.mutex.Lock()
+
+	s.OnConnActive()
 }
 
 // log passes a message to the client code.
 func (s *Session) log(tokens ...interface{}) {
-	if s.OnLog != nil {
-		s.OnLog(tokens...)
+	if s.OnLog == nil {
+		return
 	}
+
+	s.mutex.Unlock()
+	defer s.mutex.Lock()
+
+	s.OnLog(tokens...)
 }

@@ -3,7 +3,7 @@ package ninchat_test
 import (
 	"testing"
 
-	"."
+	ninchat "github.com/ninchat/ninchat-go"
 )
 
 func TestCall(t *testing.T) {

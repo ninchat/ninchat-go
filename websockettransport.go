@@ -25,10 +25,12 @@ func webSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 
 		ws = newWebSocket("wss://"+host+socketPath, jitterDuration(connectTimeout, 0.1))
 
+		s.mutex.Unlock()
 		select {
 		case _, connected := <-ws.notify:
+			s.mutex.Lock()
+
 			if connected {
-				s.log("connected")
 				s.connState("connected")
 
 				connWorked = true
@@ -40,6 +42,7 @@ func webSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 			}
 
 		case <-s.closeNotify:
+			s.mutex.Lock()
 		}
 
 		goingAway := ws.goingAway
@@ -100,10 +103,14 @@ func webSocketHandshake(s *Session, ws *webSocket) (gotOnline, hostHealthy bool)
 				return
 			}
 
+			s.mutex.Unlock()
 			select {
 			case _, connected = <-ws.notify:
+				s.mutex.Lock()
 
 			case <-timer.C:
+				s.mutex.Lock()
+
 				s.log("session creation timeout")
 				return
 			}
@@ -118,29 +125,34 @@ func webSocketHandshake(s *Session, ws *webSocket) (gotOnline, hostHealthy bool)
 		s.connActive()
 	}
 
-	fail := make(chan struct{}, 1)
+	fail := make(chan struct{}, 2)
 	done := make(chan struct{})
 
-	go webSocketSend(s, ws, fail, done)
+	go func() {
+		defer close(done)
+
+		s.mutex.Lock()
+		defer s.mutex.Unlock()
+
+		webSocketSend(s, ws, fail)
+	}()
 
 	gotEvents, hostHealthy := webSocketReceive(s, ws, fail)
 	if gotEvents {
 		gotOnline = true
 	}
 
-	<-done
+	s.mutex.Unlock()
+	defer s.mutex.Lock()
 
+	<-done
 	return
 }
 
 // webSocketSend sends buffered actions and acknowledges events received by
 // webSocketReceive.  It makes sure that something is sent to the server every
 // now and then.
-func webSocketSend(s *Session, ws *webSocket, fail chan struct{}, done chan<- struct{}) {
-	defer func() {
-		done <- struct{}{}
-	}()
-
+func webSocketSend(s *Session, ws *webSocket, fail chan struct{}) {
 	keeper := newTimer(jitterDuration(maxKeepaliveInterval, -0.3))
 	defer keeper.Stop()
 
@@ -199,8 +211,11 @@ func webSocketSend(s *Session, ws *webSocket, fail chan struct{}, done chan<- st
 			}
 		}
 
+		s.mutex.Unlock()
 		select {
 		case _, sending := <-s.sendNotify:
+			s.mutex.Lock()
+
 			if !sending {
 				closeSession := map[string]interface{}{
 					"action": "close_session",
@@ -214,6 +229,8 @@ func webSocketSend(s *Session, ws *webSocket, fail chan struct{}, done chan<- st
 			}
 
 		case <-keeper.C:
+			s.mutex.Lock()
+
 			// empty keepalive frame between actions
 			if err := ws.send(emptyData()); err != nil {
 				s.log("send:", err)
@@ -224,6 +241,7 @@ func webSocketSend(s *Session, ws *webSocket, fail chan struct{}, done chan<- st
 			keeper.Reset(jitterDuration(maxKeepaliveInterval, -0.3))
 
 		case <-fail:
+			s.mutex.Lock()
 			return
 		}
 	}
@@ -324,14 +342,18 @@ func webSocketReceive(s *Session, ws *webSocket, fail chan struct{}) (gotEvents,
 				hostHealthy = true
 			}
 
+			s.mutex.Unlock()
 			select {
 			case <-s.closeNotify:
+				s.mutex.Lock()
 				return
 
 			case <-fail:
+				s.mutex.Lock()
 				return
 
 			default:
+				s.mutex.Lock()
 				// don't wait
 			}
 		}
@@ -350,13 +372,18 @@ func webSocketReceive(s *Session, ws *webSocket, fail chan struct{}) (gotEvents,
 			acker.Reset(jitterDuration(maxEventAckDelay, -0.3))
 		}
 
+		s.mutex.Unlock()
 		select {
 		case _, connected = <-wsNotify:
+			s.mutex.Lock()
+
 			if !connected {
 				wsNotify = nil
 			}
 
 		case <-watchdog.C:
+			s.mutex.Lock()
+
 			if remain := timeSub(watchdogTime, timeNow()); remain > millisecond*16 {
 				watchdog.Reset(remain)
 			} else {
@@ -366,14 +393,18 @@ func webSocketReceive(s *Session, ws *webSocket, fail chan struct{}) (gotEvents,
 			}
 
 		case <-acker.C:
+			s.mutex.Lock()
+
 			if !s.sendEventAck && s.ackedEventId != s.receivedEventId {
 				s.sendAck()
 			}
 
 		case <-s.closeNotify:
+			s.mutex.Lock()
 			return
 
 		case <-fail:
+			s.mutex.Lock()
 			return
 		}
 	}
