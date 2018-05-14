@@ -53,11 +53,7 @@ lib/NinchatClient.framework: $(wildcard *.go mobile/*.go) Makefile
 	@ mkdir -p lib
 	$(GOMOBILE) bind -target=ios -prefix=Ninchat -o $@ github.com/ninchat/ninchat-go/mobile
 
-tmp/ios/client.go: mobile/client.go Makefile
-	@ mkdir -p $(dir $@)
-	sed 's/^package client$$/package NinchatClient/' mobile/client.go > $@
-
 clean:
-	rm -rf bin lib pkg tmp
+	rm -rf bin lib pkg
 
 .PHONY: all build-client-go check check-client check-client-go check-client-js check-api check-message check-c clean
