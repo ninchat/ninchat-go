@@ -49,9 +49,9 @@ lib/ninchat-client.aar: $(wildcard *.go mobile/*.go) Makefile
 	@ mkdir -p lib
 	$(GOMOBILE) bind -target=android -javapkg=com.ninchat -o $@ github.com/ninchat/ninchat-go/mobile
 
-lib/NinchatClient.framework: $(wildcard *.go) tmp/ios/client.go Makefile
+lib/NinchatClient.framework: $(wildcard *.go mobile/*.go) Makefile
 	@ mkdir -p lib
-	$(GOMOBILE) bind -target=ios -o $@ github.com/ninchat/ninchat-go/tmp/ios
+	$(GOMOBILE) bind -target=ios -prefix=Ninchat -o $@ github.com/ninchat/ninchat-go/mobile
 
 tmp/ios/client.go: mobile/client.go Makefile
 	@ mkdir -p $(dir $@)
