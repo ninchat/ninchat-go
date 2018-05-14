@@ -298,7 +298,7 @@ func (s *Session) Send(params *Props, payload *Payload) (err error) {
 
 type Event ninchat.Event
 
-func (e *Event) GetProps() *Props     { return &Props{e.Params} }
+func (e *Event) GetParams() *Props    { return &Props{e.Params} }
 func (e *Event) GetPayload() *Payload { return &Payload{e.Payload} }
 func (e *Event) String() string       { return fmt.Sprint(*e) }
 
