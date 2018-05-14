@@ -2,6 +2,7 @@ package client
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 
 	ninchat "github.com/ninchat/ninchat-go"
@@ -18,6 +19,12 @@ func asError(x interface{}) error {
 		return fmt.Errorf("%v", x)
 	}
 }
+
+type JSON struct {
+	x json.RawMessage
+}
+
+func NewJSON(s string) *JSON { return &JSON{json.RawMessage(s)} }
 
 type Strings struct {
 	a []string
@@ -44,6 +51,7 @@ func (ps *Props) SetFloat(key string, val float64)        { ps.m[key] = val }
 func (ps *Props) SetString(key string, val string)        { ps.m[key] = val }
 func (ps *Props) SetStringArray(key string, ref *Strings) { ps.m[key] = ref.a }
 func (ps *Props) SetObject(key string, ref *Props)        { ps.m[key] = ref.m }
+func (ps *Props) SetJSON(key string, ref *JSON)           { ps.m[key] = ref.x }
 
 func (ps *Props) GetBool(key string) (val bool, err error) {
 	if x, found := ps.m[key]; found {
