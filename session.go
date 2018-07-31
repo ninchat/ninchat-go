@@ -15,7 +15,7 @@ const (
 	connectIterations = 2
 	maxBackoffDelay   = second * 60
 
-	sessionCreateTimeout = second * 13
+	sessionCreateTimeout = second * 37
 
 	maxEventAckDelay  = second * 7
 	maxEventAckWindow = 4096
