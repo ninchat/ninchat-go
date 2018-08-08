@@ -296,9 +296,7 @@ func (s *Session) Send(params *Props, payload *Payload) (actionId int64, err err
 	}
 	err = s.s.Send(action)
 	if err == nil {
-		if x, found := action.Params["action_id"]; found && x != nil {
-			actionId = x.(int64)
-		}
+		actionId, _ = action.GetId()
 	}
 	return
 }
