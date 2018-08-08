@@ -179,10 +179,12 @@ type Payload struct {
 
 func NewPayload() *Payload { return new(Payload) }
 
-func (p *Payload) Append(blob []byte) { p.a = append(p.a, blob) }
-func (p *Payload) Get(i int) []byte   { return p.a[i] }
-func (p *Payload) Length() int        { return len(p.a) }
-func (p *Payload) String() string     { return fmt.Sprint(p.a) }
+func (p *Payload) Append(blob []byte) {
+	p.a = append(p.a, append([]byte{}, blob...))
+}
+func (p *Payload) Get(i int) []byte { return p.a[i] }
+func (p *Payload) Length() int      { return len(p.a) }
+func (p *Payload) String() string   { return fmt.Sprint(p.a) }
 
 type SessionEventHandler interface {
 	OnSessionEvent(params *Props)
