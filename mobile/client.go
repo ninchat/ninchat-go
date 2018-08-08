@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	ninchat "github.com/ninchat/ninchat-go"
@@ -287,6 +288,14 @@ func (s *Session) Send(params *Props, payload *Payload) (actionId int64, err err
 			err = asError(x)
 		}
 	}()
+
+	// This gotcha cannot be checked in the common Send function, in order to
+	// retain bug-by-bug backward-compatibility.  But it can be enforced by
+	// this new API.
+	if x, found := params.m["action_id"]; found && x != nil {
+		err = errors.New("action_id specified and is not null")
+		return
+	}
 
 	action := &ninchat.Action{
 		Params: params.m,
