@@ -279,7 +279,7 @@ func (s *Session) Close() {
 	s.s.Close()
 }
 
-func (s *Session) Send(params *Props, payload *Payload) (err error) {
+func (s *Session) Send(params *Props, payload *Payload) (actionId int64, err error) {
 	defer func() {
 		if x := recover(); x != nil {
 			err = asError(x)
@@ -293,6 +293,11 @@ func (s *Session) Send(params *Props, payload *Payload) (err error) {
 		action.Payload = payload.a
 	}
 	err = s.s.Send(action)
+	if err == nil {
+		if x, found := action.Params["action_id"]; found && x != nil {
+			actionId = x.(int64)
+		}
+	}
 	return
 }
 
