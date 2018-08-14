@@ -151,8 +151,6 @@ type Objects struct {
 	a []*Props
 }
 
-func NewObjects() *Objects { return new(Objects) }
-
 func (os *Objects) Get(i int) *Props { return os.a[i] }
 func (os *Objects) Length() int      { return len(os.a) }
 func (os *Objects) String() string   { return fmt.Sprint(os.a) }
