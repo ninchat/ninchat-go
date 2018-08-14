@@ -128,18 +128,49 @@ func (ps *Props) GetObject(key string) (ref *Props, err error) {
 	return
 }
 
+func (ps *Props) GetObjectArray(key string) (ref *Objects, err error) {
+	if x, found := ps.m[key]; found {
+		if xs, ok := x.([]interface{}); ok {
+			ref = &Objects{make([]*Props, len(xs))}
+			for i, x := range xs {
+				if m, ok := x.(map[string]interface{}); ok {
+					ref.a[i] = &Props{m}
+				} else {
+					err = fmt.Errorf("Prop type: %q is not an object array", key)
+					return
+				}
+			}
+		} else {
+			err = fmt.Errorf("Prop type: %q is not an array", key)
+		}
+	}
+	return
+}
+
+type Objects struct {
+	a []*Props
+}
+
+func NewObjects() *Objects { return new(Objects) }
+
+func (os *Objects) Get(i int) *Props { return os.a[i] }
+func (os *Objects) Length() int      { return len(os.a) }
+func (os *Objects) String() string   { return fmt.Sprint(os.a) }
+
 type PropVisitor interface {
 	VisitBool(string, bool) error
 	VisitNumber(string, float64) error
 	VisitString(string, string) error
 	VisitStringArray(string, *Strings) error
 	VisitObject(string, *Props) error
+	VisitObjectArray(string, *Objects) error
 }
 
 func (ps *Props) Accept(callback PropVisitor) (err error) {
 	var (
-		array  *Strings
-		object *Props
+		strings *Strings
+		object  *Props
+		objects *Objects
 	)
 
 	for k, x := range ps.m {
@@ -154,9 +185,14 @@ func (ps *Props) Accept(callback PropVisitor) (err error) {
 			err = callback.VisitString(k, v)
 
 		case []interface{}:
-			array, err = ps.GetStringArray(k)
+			strings, err = ps.GetStringArray(k)
 			if err == nil {
-				err = callback.VisitStringArray(k, array)
+				err = callback.VisitStringArray(k, strings)
+			} else {
+				objects, err = ps.GetObjectArray(k)
+				if err == nil {
+					err = callback.VisitObjectArray(k, objects)
+				}
 			}
 
 		case map[string]interface{}:
