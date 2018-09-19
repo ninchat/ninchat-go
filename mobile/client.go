@@ -31,7 +31,7 @@ type Strings struct {
 	a []string
 }
 
-func NewStrings() *Strings { return new(Strings) }
+func NewStrings() *Strings { return &Strings{[]string{}} }
 
 func (ss *Strings) Append(val string) { ss.a = append(ss.a, val) }
 func (ss *Strings) Get(i int) string  { return ss.a[i] }
