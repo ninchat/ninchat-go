@@ -247,48 +247,68 @@ type LogHandler interface {
 
 type Session struct {
 	s ninchat.Session
+
+	sessionEventHandler SessionEventHandler
+	eventHandler        EventHandler
+	closeHandler        CloseHandler
+	connStateHandler    ConnStateHandler
+	connActiveHandler   ConnActiveHandler
+	logHandler          LogHandler
 }
 
-func NewSession() *Session {
-	return new(Session)
-}
+func NewSession() (s *Session) {
+	s = new(Session)
 
-func (s *Session) SetOnSessionEvent(callback SessionEventHandler) {
-	s.s.OnSessionEvent = func(e *ninchat.Event) {
-		callback.OnSessionEvent(&Props{e.Params})
-	}
-}
+	s.s = ninchat.Session{
+		OnSessionEvent: func(e *ninchat.Event) {
+			s.sessionEventHandler.OnSessionEvent(&Props{e.Params})
+		},
 
-func (s *Session) SetOnEvent(callback EventHandler) {
-	s.s.OnEvent = func(e *ninchat.Event) {
-		callback.OnEvent(&Props{e.Params}, &Payload{e.Payload}, e.LastReply)
-	}
-}
+		OnEvent: func(e *ninchat.Event) {
+			s.eventHandler.OnEvent(&Props{e.Params}, &Payload{e.Payload}, e.LastReply)
+		},
 
-func (s *Session) SetOnClose(callback CloseHandler) {
-	s.s.OnClose = callback.OnClose
-}
-
-func (s *Session) SetOnConnState(callback ConnStateHandler) {
-	s.s.OnConnState = callback.OnConnState
-}
-
-func (s *Session) SetOnConnActive(callback ConnActiveHandler) {
-	s.s.OnConnActive = callback.OnConnActive
-}
-
-func (s *Session) SetOnLog(callback LogHandler) {
-	s.s.OnLog = func(fragments ...interface{}) {
-		var msg bytes.Buffer
-		for i, x := range fragments {
-			fmt.Fprint(&msg, x)
-			if i < len(fragments)-1 {
-				msg.WriteString(" ")
+		OnClose: func() {
+			if s.closeHandler != nil {
+				s.closeHandler.OnClose()
 			}
-		}
-		callback.OnLog(msg.String())
+		},
+
+		OnConnState: func(state string) {
+			if s.connStateHandler != nil {
+				s.connStateHandler.OnConnState(state)
+			}
+		},
+
+		OnConnActive: func() {
+			if s.connActiveHandler != nil {
+				s.connActiveHandler.OnConnActive()
+			}
+		},
+
+		OnLog: func(fragments ...interface{}) {
+			if s.logHandler != nil {
+				var msg bytes.Buffer
+				for i, x := range fragments {
+					fmt.Fprint(&msg, x)
+					if i < len(fragments)-1 {
+						msg.WriteString(" ")
+					}
+				}
+				s.logHandler.OnLog(msg.String())
+			}
+		},
 	}
+
+	return
 }
+
+func (s *Session) SetOnSessionEvent(h SessionEventHandler) { s.sessionEventHandler = h }
+func (s *Session) SetOnEvent(h EventHandler)               { s.eventHandler = h }
+func (s *Session) SetOnClose(h CloseHandler)               { s.closeHandler = h }
+func (s *Session) SetOnConnState(h ConnStateHandler)       { s.connStateHandler = h }
+func (s *Session) SetOnConnActive(h ConnActiveHandler)     { s.connActiveHandler = h }
+func (s *Session) SetOnLog(h LogHandler)                   { s.logHandler = h }
 
 func (s *Session) SetAddress(address string) {
 	s.s.Address = address
