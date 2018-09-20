@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"runtime"
 
 	ninchat "github.com/ninchat/ninchat-go"
 )
@@ -254,6 +255,8 @@ type Session struct {
 	connStateHandler    ConnStateHandler
 	connActiveHandler   ConnActiveHandler
 	logHandler          LogHandler
+
+	closeCalled bool
 }
 
 func NewSession() (s *Session) {
@@ -262,6 +265,10 @@ func NewSession() (s *Session) {
 	s.s = ninchat.Session{
 		OnSessionEvent: func(e *ninchat.Event) {
 			s.sessionEventHandler.OnSessionEvent(&Props{e.Params})
+
+			if s.closeCalled {
+				s.releaseHandlers()
+			}
 		},
 
 		OnEvent: func(e *ninchat.Event) {
@@ -272,6 +279,8 @@ func NewSession() (s *Session) {
 			if s.closeHandler != nil {
 				s.closeHandler.OnClose()
 			}
+
+			s.releaseHandlers()
 		},
 
 		OnConnState: func(state string) {
@@ -301,6 +310,18 @@ func NewSession() (s *Session) {
 	}
 
 	return
+}
+
+// releaseHandlers attempts to free resources quickly in the iOS world.
+func (s *Session) releaseHandlers() {
+	s.sessionEventHandler = nil
+	s.eventHandler = nil
+	s.closeHandler = nil
+	s.connStateHandler = nil
+	s.connActiveHandler = nil
+	s.logHandler = nil
+
+	runtime.GC()
 }
 
 func (s *Session) SetOnSessionEvent(h SessionEventHandler) { s.sessionEventHandler = h }
@@ -333,6 +354,7 @@ func (s *Session) Open() (err error) {
 }
 
 func (s *Session) Close() {
+	s.closeCalled = true
 	s.s.Close()
 }
 
