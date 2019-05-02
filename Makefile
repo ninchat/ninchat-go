@@ -1,12 +1,9 @@
 GO		?= go
 GOMOBILE	?= gomobile
 
-LOCALGO		:= GOPATH=$(PWD) $(GO)
-
 build-client-go:
-	$(LOCALGO) get github.com/gorilla/websocket
-	$(LOCALGO) vet .
-	$(LOCALGO) build .
+	$(GO) vet .
+	$(GO) build .
 
 all: build-client-go lib/libninchat.a lib/ninchat-client.aar lib/NinchatClient.framework
 
@@ -15,28 +12,26 @@ check: all check-client check-api check-message check-c
 check-client: check-client-go check-client-js
 
 check-client-go: build-client-go
-	$(LOCALGO) test -v .
+	$(GO) test -v .
 
 check-client-js: bin/gopherjs
 	bin/gopherjs build
 
 check-api:
-	$(LOCALGO) get github.com/tsavola/pointer
-	$(LOCALGO) vet ./ninchatapi
-	$(LOCALGO) test -v ./ninchatapi
+	$(GO) vet ./ninchatapi
+	$(GO) test -v ./ninchatapi
 
 check-message:
-	$(LOCALGO) vet ./ninchatmessage
-	$(LOCALGO) test -v ./ninchatmessage
+	$(GO) vet ./ninchatmessage
+	$(GO) test -v ./ninchatmessage
 
 bin/gopherjs: Makefile
-	$(LOCALGO) get github.com/gopherjs/gopherjs
-	$(LOCALGO) build -o bin/gopherjs github.com/gopherjs/gopherjs
+	$(GO) get -d github.com/gopherjs/gopherjs
+	$(GO) build -o bin/gopherjs github.com/gopherjs/gopherjs
 
 lib/libninchat.a: $(wildcard *.go c/*.go include/*.h) Makefile
 	@ mkdir -p lib
-	$(LOCALGO) get github.com/gorilla/websocket
-	$(LOCALGO) build -buildmode=c-archive -o $@ c/library.go
+	$(GO) build -buildmode=c-archive -o $@ c/library.go
 
 bin/c-test: $(wildcard c/test/*.c include/*.h) lib/libninchat.a Makefile
 	@ mkdir -p bin
