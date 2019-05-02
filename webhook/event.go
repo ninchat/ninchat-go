@@ -7,8 +7,18 @@ import (
 type EventType string
 
 const (
+	EventAudienceAccepted EventType = "audience_accepted"
 	EventAudienceComplete EventType = "audience_complete"
 )
+
+type AudienceAccepted struct {
+	RealmID    string   `json:"realm_id"`
+	QueueID    string   `json:"queue_id"`
+	AudienceID string   `json:"audience_id"`
+	Audience   Audience `json:"audience"`
+	DialogueID []string `json:"dialogue_id,omitempty"`
+	ChannelID  string   `json:"channel_id,omitempty"`
+}
 
 type AudienceComplete struct {
 	RealmID    string    `json:"realm_id"`
@@ -24,7 +34,7 @@ type Audience struct {
 	RequestTime  float64                   `json:"request_time"`
 	AcceptTime   float64                   `json:"accept_time,omitempty"`
 	FinishTime   float64                   `json:"finish_time,omitempty"`
-	CompleteTime float64                   `json:"complete_time"`
+	CompleteTime float64                   `json:"complete_time,omitempty"`
 	Members      map[string]AudienceMember `json:"members"`
 	Metadata     Metadata                  `json:"metadata,omitempty"`
 }
