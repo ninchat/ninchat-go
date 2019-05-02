@@ -1,5 +1,5 @@
-module "github.com/ninchat/ninchat-go"
+module github.com/ninchat/ninchat-go
 
 require (
-	"github.com/gorilla/websocket" v1.2.0
+	github.com/gorilla/websocket v1.4.0
 )
