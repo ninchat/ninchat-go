@@ -132,7 +132,7 @@ type UIComposePayload []UICompose
 
 type UICompose struct {
 	Class   string `json:"class,omitempty"`
-	Element string `json:"class"`
+	Element string `json:"element"`
 	ID      string `json:"id,omitempty"`
 	Label   string `json:"label,omitempty"`
 	Name    string `json:"name,omitempty"`
