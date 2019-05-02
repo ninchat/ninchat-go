@@ -5,7 +5,7 @@ build-client-go:
 	$(GO) vet .
 	$(GO) build .
 
-all: build-client-go lib/libninchat.a lib/ninchat-client.aar lib/NinchatClient.framework
+all: build-client-go lib/libninchat.a lib/ninchat-client.aar lib/NinchatLowLevelClient.framework/NinchatLowLevelClient
 
 check: all check-client check-api check-message check-c
 
@@ -44,9 +44,12 @@ lib/ninchat-client.aar: $(wildcard *.go mobile/*.go) Makefile
 	@ mkdir -p lib
 	$(GOMOBILE) bind -target=android -javapkg=com.ninchat -o $@ github.com/ninchat/ninchat-go/mobile
 
-lib/NinchatClient.framework: $(wildcard *.go mobile/*.go) Makefile
+lib/NinchatLowLevelClient.framework/NinchatLowLevelClient: $(wildcard *.go mobile/*.go) Makefile
 	@ mkdir -p lib
-	$(GOMOBILE) bind -target=ios -prefix=Ninchat -o $@ github.com/ninchat/ninchat-go/mobile
+	$(GOMOBILE) bind -target=ios -prefix=NINLowLevel -o $(patsubst %/,%,$(dir $@)) github.com/ninchat/ninchat-go/mobile	
+	mv $(dir $@)/Versions/Current/Client $(dir $@)/Versions/Current/NinchatLowLevelClient
+	rm $(dir $@)/Client
+	ln -sf Versions/Current/NinchatLowLevelClient $@
 
 clean:
 	rm -rf bin lib pkg
