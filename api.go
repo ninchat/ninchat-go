@@ -13,6 +13,10 @@ const (
 	callPath       = protocolPath + "/call"
 )
 
+var (
+	errNoActionId = errors.New("no action_id")
+)
+
 // getAddress
 func getAddress(address string) string {
 	if address == "" {
@@ -60,6 +64,15 @@ func getEndpointHosts(object map[string]interface{}) (hosts []string, err error)
 func (a *Action) String() (s string) {
 	if x, ok := a.Params["action"]; ok {
 		s, _ = x.(string)
+	}
+	return
+}
+
+// GetId returns the action_id if Send has been called and it generated one.
+func (a *Action) GetId() (id int64, err error) {
+	id = a.id
+	if id == 0 {
+		err = errNoActionId
 	}
 	return
 }
