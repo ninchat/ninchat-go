@@ -381,7 +381,7 @@ func (s *Session) Send(params *Props, payload *Payload) (actionId int64, err err
 	}
 	err = s.s.Send(action)
 	if err == nil {
-		actionId, _ = action.GetId()
+		actionId, _ = action.GetID()
 	}
 	return
 }

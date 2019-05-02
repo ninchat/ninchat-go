@@ -14,7 +14,7 @@ const (
 )
 
 var (
-	errNoActionId = errors.New("no action_id")
+	errNoActionID = errors.New("no action_id")
 )
 
 // getAddress
@@ -68,11 +68,11 @@ func (a *Action) String() (s string) {
 	return
 }
 
-// GetId returns the action_id if Send has been called and it generated one.
-func (a *Action) GetId() (id int64, err error) {
+// GetID returns the action_id if Send has been called and it generated one.
+func (a *Action) GetID() (id int64, err error) {
 	id = a.id
 	if id == 0 {
-		err = errNoActionId
+		err = errNoActionID
 	}
 	return
 }
