@@ -18,6 +18,7 @@ type Webhook struct {
 	WebhookVerificationJSON json.RawMessage `json:"webhook_verification,omitempty"`
 	AudienceAcceptedJSON    json.RawMessage `json:"audience_accepted,omitempty"`
 	AudienceCompleteJSON    json.RawMessage `json:"audience_complete,omitempty"`
+	DataAccessJSON          json.RawMessage `json:"data_access,omitempty"`
 }
 
 func (doc *Webhook) WebhookVerificationResponse() (content []byte) {
@@ -35,5 +36,10 @@ func (doc *Webhook) AudienceAccepted() (event AudienceAccepted, err error) {
 
 func (doc *Webhook) AudienceComplete() (event AudienceComplete, err error) {
 	err = json.Unmarshal(doc.AudienceCompleteJSON, &event)
+	return
+}
+
+func (doc *Webhook) DataAccess() (event DataAccess, err error) {
+	err = json.Unmarshal(doc.DataAccessJSON, &event)
 	return
 }

@@ -10,6 +10,7 @@ const (
 	EventWebhookVerification EventType = "webhook_verification"
 	EventAudienceAccepted    EventType = "audience_accepted"
 	EventAudienceComplete    EventType = "audience_complete"
+	EventDataAccess          EventType = "data_access"
 )
 
 type AudienceAccepted struct {
@@ -32,13 +33,19 @@ type AudienceComplete struct {
 	Messages   []Message `json:"messages,omitempty"`
 }
 
+type DataAccess struct {
+	RealmID   string `json:"realm_id,omitempty"`
+	ChannelID string `json:"channel_id,omitempty"`
+	Query     Query  `json:"query"`
+}
+
 type Audience struct {
-	RequestTime  float64                   `json:"request_time"`
+	RequestTime  float64                   `json:"request_time,omitempty"` // Always present in event; never in response.
 	AcceptTime   float64                   `json:"accept_time,omitempty"`
 	FinishTime   float64                   `json:"finish_time,omitempty"`
 	CompleteTime float64                   `json:"complete_time,omitempty"`
-	Members      map[string]AudienceMember `json:"members"`
-	Metadata     Metadata                  `json:"metadata,omitempty"`
+	Members      map[string]AudienceMember `json:"members,omitempty"` // Always present in event; never in response.
+	Metadata     Metadata                  `json:"metadata"`
 }
 
 type AudienceMember struct {
@@ -47,16 +54,27 @@ type AudienceMember struct {
 }
 
 type Channel struct {
-	Metadata Metadata `json:"metadata,omitempty"`
+	Metadata Metadata `json:"metadata"`
 }
 
 type Message struct {
 	ID       string      `json:"id"`
-	Time     float64     `json:"time"`
-	Type     MessageType `json:"type"`
+	Time     float64     `json:"time,omitempty"` // Always present in event, may be omitted in response.
+	Type     MessageType `json:"type,omitempty"` // Always present in event, may be omitted in response.
 	UserID   string      `json:"user_id,omitempty"`
 	UserName *string     `json:"user_name,omitempty"`
 	Fold     bool        `json:"fold,omitempty"`
 
 	PayloadJSON json.RawMessage `json:"payload"`
+}
+
+type Query struct {
+	AudienceMetadata bool           `json:"audience.metadata,omitempty"`
+	ChannelMetadata  bool           `json:"channel.metadata,omitempty"`
+	Messages         *MessagesQuery `json:"messages,omitempty"`
+}
+
+type MessagesQuery struct {
+	MinID string `json:"min_id,omitempty"`
+	MaxID string `json:"max_id,omitempty"`
 }
