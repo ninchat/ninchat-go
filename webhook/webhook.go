@@ -1,3 +1,4 @@
+// See https://github.com/ninchat/ninchat-go/blob/master/webhook/example/processor.go for an example.
 package webhook
 
 import (
