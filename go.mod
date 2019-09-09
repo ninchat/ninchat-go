@@ -1,5 +1,7 @@
 module github.com/ninchat/ninchat-go
 
+go 1.11
+
 require (
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
