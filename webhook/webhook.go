@@ -15,8 +15,17 @@ type Webhook struct {
 	EventID string    `json:"event_id"`
 
 	// Raw JSON event fields can be used to store the data in lossless form.
-	AudienceAcceptedJSON json.RawMessage `json:"audience_accepted,omitempty"`
-	AudienceCompleteJSON json.RawMessage `json:"audience_complete,omitempty"`
+	WebhookVerificationJSON json.RawMessage `json:"webhook_verification,omitempty"`
+	AudienceAcceptedJSON    json.RawMessage `json:"audience_accepted,omitempty"`
+	AudienceCompleteJSON    json.RawMessage `json:"audience_complete,omitempty"`
+}
+
+func (doc *Webhook) WebhookVerificationResponse() (content []byte) {
+	content, err := json.Marshal(WebhookVerificationResponse{AudNinchat, doc.WebhookVerificationJSON})
+	if err != nil {
+		panic(err)
+	}
+	return
 }
 
 func (doc *Webhook) AudienceAccepted() (event AudienceAccepted, err error) {

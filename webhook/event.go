@@ -7,8 +7,9 @@ import (
 type EventType string
 
 const (
-	EventAudienceAccepted EventType = "audience_accepted"
-	EventAudienceComplete EventType = "audience_complete"
+	EventWebhookVerification EventType = "webhook_verification"
+	EventAudienceAccepted    EventType = "audience_accepted"
+	EventAudienceComplete    EventType = "audience_complete"
 )
 
 type AudienceAccepted struct {
