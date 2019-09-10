@@ -28,6 +28,7 @@ type AudienceComplete struct {
 	Audience   Audience  `json:"audience"`
 	DialogueID []string  `json:"dialogue_id,omitempty"`
 	ChannelID  string    `json:"channel_id,omitempty"`
+	Channel    Channel   `json:"channel,omitempty"`
 	Messages   []Message `json:"messages,omitempty"`
 }
 
@@ -43,6 +44,10 @@ type Audience struct {
 type AudienceMember struct {
 	Agent    bool `json:"agent,omitempty"`
 	Customer bool `json:"customer,omitempty"`
+}
+
+type Channel struct {
+	Metadata Metadata `json:"metadata,omitempty"`
 }
 
 type Message struct {
