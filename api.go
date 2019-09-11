@@ -5,12 +5,11 @@ import (
 )
 
 const (
-	defaultAddress = "api.ninchat.com"
-	protocolPath   = "/v2"
-	endpointPath   = protocolPath + "/endpoint"
-	socketPath     = protocolPath + "/socket"
-	pollPath       = protocolPath + "/poll"
-	callPath       = protocolPath + "/call"
+	protocolPath = "/v2"
+	endpointPath = protocolPath + "/endpoint"
+	socketPath   = protocolPath + "/socket"
+	pollPath     = protocolPath + "/poll"
+	callPath     = protocolPath + "/call"
 )
 
 var (

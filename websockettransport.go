@@ -24,6 +24,7 @@ func webSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 		s.log("connecting to", host)
 
 		ws = newWebSocket("wss://"+host+socketPath, jitterDuration(connectTimeout, 0.1))
+		s.test.setWebSocket(ws)
 
 		s.mutex.Unlock()
 		select {
@@ -47,7 +48,7 @@ func webSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 
 		goingAway := ws.goingAway
 
-		ws.close()
+		s.closeWebSocket(ws)
 		ws = nil
 
 		if goingAway {
@@ -55,6 +56,8 @@ func webSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 		} else {
 			s.log("disconnected")
 		}
+
+		s.test.webSocketDisconnected()
 
 		if !gotOnline || !hostHealthy || !s.running || goingAway {
 			return
@@ -159,6 +162,12 @@ func webSocketSend(s *Session, ws *webSocket, fail chan struct{}) {
 	s.numSent = 0
 
 	for {
+		if s.test.shouldAbortConn() {
+			s.log("abort send")
+			fail <- struct{}{}
+			return
+		}
+
 		for s.numSent < len(s.sendBuffer) {
 			action := s.sendBuffer[s.numSent]
 
@@ -268,6 +277,12 @@ func webSocketReceive(s *Session, ws *webSocket, fail chan struct{}) (gotEvents,
 		var ackNeeded bool
 
 		for {
+			if s.test.shouldAbortConn() {
+				s.log("abort receive")
+				fail <- struct{}{}
+				return
+			}
+
 			if event == nil {
 				data := ws.receive()
 				if data == nil {

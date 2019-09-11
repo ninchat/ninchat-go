@@ -94,6 +94,8 @@ type Session struct {
 	closeNotify chan struct{}
 	closed      bool
 	running     bool
+
+	test testSupport
 }
 
 // transport is an interface implemented by webSocketTransport and

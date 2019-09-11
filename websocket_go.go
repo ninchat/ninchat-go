@@ -3,7 +3,6 @@
 package ninchat
 
 import (
-	"crypto/tls"
 	"encoding/json"
 	"sync"
 	"time"
@@ -12,10 +11,6 @@ import (
 )
 
 const webSocketSupported = true
-
-var webSocketTLSConfig = &tls.Config{
-	PreferServerCipherSuites: true,
-}
 
 type webSocket struct {
 	notify    chan struct{}
@@ -29,7 +24,7 @@ type webSocket struct {
 
 func newWebSocket(url string, timeout duration) (ws *webSocket) {
 	dialer := &websocket.Dialer{
-		TLSClientConfig:  webSocketTLSConfig,
+		TLSClientConfig:  &tlsConfig,
 		HandshakeTimeout: time.Duration(timeout),
 	}
 

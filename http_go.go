@@ -4,10 +4,26 @@ package ninchat
 
 import (
 	"bytes"
+	"crypto/tls"
 	"io/ioutil"
 	"net/http"
 	"time"
 )
+
+var tlsConfig = tls.Config{
+	PreferServerCipherSuites: true,
+}
+
+func init() {
+	t := http.DefaultTransport.(*http.Transport)
+	if t.TLSClientConfig != nil {
+		// In case a future Go version has it set.
+		t.TLSClientConfig.PreferServerCipherSuites = tlsConfig.PreferServerCipherSuites
+	} else {
+		// Support testing on best effort basis.
+		t.TLSClientConfig = &tlsConfig
+	}
+}
 
 type httpRequest http.Request
 
