@@ -8,6 +8,7 @@ import (
 	"runtime"
 
 	ninchat "github.com/ninchat/ninchat-go"
+	"github.com/ninchat/ninchat-go/ninchatstate"
 )
 
 func asError(x interface{}) error {
@@ -246,8 +247,15 @@ type LogHandler interface {
 	OnLog(msg string)
 }
 
+type session interface {
+	SetParams(params map[string]interface{})
+	Open()
+	Close()
+	Send(*ninchat.Action) error
+}
+
 type Session struct {
-	s ninchat.Session
+	s session
 
 	sessionEventHandler SessionEventHandler
 	eventHandler        EventHandler
@@ -262,7 +270,7 @@ type Session struct {
 func NewSession() (s *Session) {
 	s = new(Session)
 
-	s.s = ninchat.Session{
+	s.s = &ninchat.Session{
 		OnSessionEvent: func(e *ninchat.Event) {
 			s.sessionEventHandler.OnSessionEvent(&Props{e.Params})
 
@@ -331,8 +339,20 @@ func (s *Session) SetOnConnState(h ConnStateHandler)       { s.connStateHandler 
 func (s *Session) SetOnConnActive(h ConnActiveHandler)     { s.connActiveHandler = h }
 func (s *Session) SetOnLog(h LogHandler)                   { s.logHandler = h }
 
+// SetAddress must be called before EnableState.
 func (s *Session) SetAddress(address string) {
-	s.s.Address = address
+	s.s.(*ninchat.Session).Address = address
+}
+
+func (s *Session) EnableState() (err error) {
+	x, ok := s.s.(*ninchat.Session)
+	if !ok {
+		err = errors.New("state already enabled")
+		return
+	}
+
+	s.s = ninchatstate.New(x)
+	return
 }
 
 func (s *Session) SetParams(params *Props) (err error) {
