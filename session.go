@@ -553,7 +553,7 @@ func (s *Session) handleEvent(event *Event) (actionId int64, sessionLost, needsA
 				event.initLastReply(action)
 
 				if action.OnReply != nil {
-					action.OnReply(event)
+					s.deliverReply(action, event)
 				}
 
 				if event.LastReply {
@@ -611,6 +611,13 @@ func (s *Session) deliverEvent(event *Event) {
 	defer s.mutex.Lock()
 
 	s.OnEvent(event)
+}
+
+func (s *Session) deliverReply(action *Action, event *Event) {
+	s.mutex.Unlock()
+	defer s.mutex.Lock()
+
+	action.OnReply(event)
 }
 
 // connState passes an enumeration value to the client code.
