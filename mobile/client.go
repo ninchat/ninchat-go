@@ -255,7 +255,8 @@ type session interface {
 }
 
 type Session struct {
-	s session
+	session ninchat.Session
+	s       session
 
 	sessionEventHandler SessionEventHandler
 	eventHandler        EventHandler
@@ -270,7 +271,7 @@ type Session struct {
 func NewSession() (s *Session) {
 	s = new(Session)
 
-	s.s = &ninchat.Session{
+	s.session = ninchat.Session{
 		OnSessionEvent: func(e *ninchat.Event) {
 			s.sessionEventHandler.OnSessionEvent(&Props{e.Params})
 
@@ -317,6 +318,7 @@ func NewSession() (s *Session) {
 		},
 	}
 
+	s.s = ninchatstate.New(&s.session)
 	return
 }
 
@@ -339,20 +341,8 @@ func (s *Session) SetOnConnState(h ConnStateHandler)       { s.connStateHandler 
 func (s *Session) SetOnConnActive(h ConnActiveHandler)     { s.connActiveHandler = h }
 func (s *Session) SetOnLog(h LogHandler)                   { s.logHandler = h }
 
-// SetAddress must be called before EnableState.
 func (s *Session) SetAddress(address string) {
-	s.s.(*ninchat.Session).Address = address
-}
-
-func (s *Session) EnableState() (err error) {
-	x, ok := s.s.(*ninchat.Session)
-	if !ok {
-		err = errors.New("state already enabled")
-		return
-	}
-
-	s.s = ninchatstate.New(x)
-	return
+	s.session.Address = address
 }
 
 func (s *Session) SetParams(params *Props) (err error) {
