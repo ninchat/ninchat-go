@@ -13,6 +13,11 @@ const (
 	MetadataVars    = "vars"
 )
 
+// Well-known secure metadata keys.
+const (
+	SecureMetadataIdentifier = "identifier"
+)
+
 type Metadata map[string]json.RawMessage
 
 func (toplevel Metadata) Ninchat() (ninchat Metadata, err error) {
