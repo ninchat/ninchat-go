@@ -23,14 +23,14 @@ type AudienceAccepted struct {
 }
 
 type AudienceComplete struct {
-	RealmID    string    `json:"realm_id"`
-	QueueID    string    `json:"queue_id"`
-	AudienceID string    `json:"audience_id"`
-	Audience   Audience  `json:"audience"`
-	DialogueID []string  `json:"dialogue_id,omitempty"`
-	ChannelID  string    `json:"channel_id,omitempty"`
-	Channel    Channel   `json:"channel,omitempty"`
-	Messages   []Message `json:"messages,omitempty"`
+	RealmID               string              `json:"realm_id"`
+	QueueID               string              `json:"queue_id"`
+	AudienceID            string              `json:"audience_id"`
+	Audience              Audience            `json:"audience"`
+	DialogueID            []string            `json:"dialogue_id,omitempty"`
+	ChannelID             string              `json:"channel_id,omitempty"`
+	MemberMessageMetadata map[string]Metadata `json:"member_message_metadata"`
+	Messages              []Message           `json:"messages,omitempty"`
 }
 
 type DataAccess struct {
@@ -53,10 +53,6 @@ type AudienceMember struct {
 	Customer bool `json:"customer,omitempty"`
 }
 
-type Channel struct {
-	Metadata Metadata `json:"metadata"`
-}
-
 type Message struct {
 	ID       string      `json:"id"`
 	Time     float64     `json:"time,omitempty"` // Always present in event, may be omitted in response.
@@ -69,9 +65,9 @@ type Message struct {
 }
 
 type Query struct {
-	AudienceMetadata bool           `json:"audience.metadata,omitempty"`
-	ChannelMetadata  bool           `json:"channel.metadata,omitempty"`
-	Messages         *MessagesQuery `json:"messages,omitempty"`
+	AudienceMetadata      bool           `json:"audience.metadata,omitempty"`
+	MemberMessageMetadata bool           `json:"member_message_metadata,omitempty"`
+	Messages              *MessagesQuery `json:"messages,omitempty"`
 }
 
 type MessagesQuery struct {

@@ -204,9 +204,9 @@ func handleNinchatWebhook(w http.ResponseWriter, r *http.Request) {
 // Below is a demo implementation of on-site data storage:
 
 type myChannel struct {
-	audienceMetadata map[string]json.RawMessage
-	channelMetadata  map[string]json.RawMessage
-	messages         []myMessage
+	audienceMetadata      map[string]json.RawMessage
+	memberMessageMetadata map[string]webhook.Metadata
+	messages              []myMessage
 }
 
 type myMessage struct {
@@ -241,7 +241,7 @@ func handleAudienceComplete(w http.ResponseWriter, params webhook.AudienceComple
 
 	data := new(myChannel)
 	data.audienceMetadata = params.Audience.Metadata
-	data.channelMetadata = params.Channel.Metadata
+	data.memberMessageMetadata = params.MemberMessageMetadata
 
 	for _, m := range params.Messages {
 		data.messages = append(data.messages, myMessage{
@@ -283,10 +283,8 @@ func handleDataAccess(w http.ResponseWriter, params webhook.DataAccess) {
 		}
 	}
 
-	if params.Query.ChannelMetadata {
-		response.Channel = &webhook.Channel{
-			Metadata: data.channelMetadata,
-		}
+	if params.Query.MemberMessageMetadata {
+		response.MemberMessageMetadata = data.memberMessageMetadata
 	}
 
 	if params.Query.Messages != nil {

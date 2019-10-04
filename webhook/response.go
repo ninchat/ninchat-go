@@ -12,7 +12,7 @@ type WebhookVerificationResponse struct {
 }
 
 type DataAccessResponse struct {
-	Audience *Audience `json:"audience,omitempty"`
-	Channel  *Channel  `json:"channel,omitempty"`
-	Messages []Message `json:"messages,omitempty"`
+	Audience              *Audience           `json:"audience,omitempty"`
+	MemberMessageMetadata map[string]Metadata `json:"member_message_metadata"`
+	Messages              []Message           `json:"messages,omitempty"`
 }
