@@ -175,6 +175,22 @@ func handleNinchatWebhook(w http.ResponseWriter, r *http.Request) {
 		w.Write(document.WebhookVerificationResponse())
 		return
 
+	case webhook.EventAudienceRequested:
+		if _, err := document.AudienceRequested(); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		log.Println("audience requested")
+
+	case webhook.EventAudienceAccepted:
+		if _, err := document.AudienceAccepted(); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		log.Println("audience accepted")
+
 	case webhook.EventAudienceComplete:
 		params, err := document.AudienceComplete()
 		if err != nil {

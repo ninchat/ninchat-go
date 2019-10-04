@@ -8,10 +8,18 @@ type EventType string
 
 const (
 	EventWebhookVerification EventType = "webhook_verification"
+	EventAudienceRequested   EventType = "audience_requested"
 	EventAudienceAccepted    EventType = "audience_accepted"
 	EventAudienceComplete    EventType = "audience_complete"
 	EventDataAccess          EventType = "data_access"
 )
+
+type AudienceRequested struct {
+	RealmID    string   `json:"realm_id"`
+	QueueID    string   `json:"queue_id"`
+	AudienceID string   `json:"audience_id"`
+	Audience   Audience `json:"audience"`
+}
 
 type AudienceAccepted struct {
 	RealmID    string   `json:"realm_id"`
