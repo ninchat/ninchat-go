@@ -11,6 +11,10 @@ type WebhookVerificationResponse struct {
 	WebhookVerificationJSON json.RawMessage `json:"webhook_verification"`
 }
 
+type AudienceCompleteResponse struct {
+	TranscriptDeleteTime int64 `json:"transcript_delete_time,omitempty"`
+}
+
 type DataAccessResponse struct {
 	Audience              *Audience           `json:"audience,omitempty"`
 	MemberMessageMetadata map[string]Metadata `json:"member_message_metadata"`
