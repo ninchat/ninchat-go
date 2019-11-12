@@ -170,6 +170,14 @@ func (event *Event) getError() (errorType, errorReason string, sessionLost bool,
 		errorReason = x.(string)
 	}
 
+	// Request malformed is not serious, unless it's a connection error (no
+	// action id).
+	if errorType == "request_malformed" {
+		if _, found := event.Params["action_id"]; found {
+			return
+		}
+	}
+
 	switch errorType {
 	case "session_not_found":
 		sessionLost = true
