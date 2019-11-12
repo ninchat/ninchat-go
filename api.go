@@ -183,7 +183,7 @@ func (event *Event) getError() (errorType, errorReason string, sessionLost bool,
 		sessionLost = true
 		fallthrough
 
-	case "connection_superseded", "message_has_too_many_parts", "message_part_too_long", "message_too_long", "request_malformed":
+	case "connection_superseded", "message_has_too_many_parts", "message_part_too_long", "message_too_long", "payload_has_too_many_parts", "payload_part_too_long", "request_malformed":
 		if errorReason != "" {
 			err = errors.New("error: " + errorType + " (" + errorReason + ")")
 		} else {
