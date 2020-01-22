@@ -22,19 +22,23 @@ func Call(action *Action) (events []*Event, err error) {
 }
 
 type Caller struct {
+	// Header fields to be added to HTTP requests.  The keys must be in
+	// canonical format (see https://golang.org/pkg/net/http/#CanonicalHeaderKey).
+	Header map[string][]string
+
 	Address string
 }
 
 func (caller *Caller) Call(action *Action) (events []*Event, err error) {
 	url := "https://" + getAddress(caller.Address) + callPath
 
-	req, err := newJSONRequest(url, action.Params)
+	req, err := newJSONRequest(url, caller.Header, action.Params)
 	if err != nil {
 		return
 	}
 
-	req.Header.Set("Accept", "application/json")
-	req.Header.Set("Content-Type", "application/json")
+	req.Header["Accept"] = []string{"application/json"}
+	req.Header["Content-Type"] = []string{"application/json"}
 
 	timeout := jitterDuration(callTimeout, 0.1)
 

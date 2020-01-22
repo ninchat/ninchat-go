@@ -8,6 +8,8 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 )
 
+const userAgentHeader = "X-User-Agent"
+
 var (
 	xhrType                 *js.Object
 	xhrRequestHeaderSupport bool
@@ -24,34 +26,28 @@ func init() {
 	}
 }
 
-type httpHeader map[string]string
-
-func (h httpHeader) Set(key, value string) {
-	h[key] = value
-}
-
 type httpRequest struct {
 	Method string
 	URL    string
-	Header httpHeader
+	Header map[string][]string
 
 	data *js.Object
 }
 
-func newGETRequest(url string) (req *httpRequest, err error) {
+func newGetRequest(url string, header map[string][]string) (req *httpRequest, err error) {
 	req = &httpRequest{
 		Method: "GET",
 		URL:    url,
-		Header: make(httpHeader),
+		Header: prepareHeader(header),
 	}
 	return
 }
 
-func newDataRequest(method, url string, data *js.Object) (req *httpRequest, err error) {
+func newDataRequest(method, url string, header map[string][]string, data *js.Object) (req *httpRequest, err error) {
 	req = &httpRequest{
 		Method: method,
 		URL:    url,
-		Header: make(httpHeader),
+		Header: prepareHeader(header),
 		data:   data,
 	}
 	return
@@ -106,8 +102,10 @@ func putResponseToChannel(req *httpRequest, timeout duration, c chan<- httpRespo
 	xhr.Set("timeout", timeout)
 
 	if xhrRequestHeaderSupport {
-		for key, value := range req.Header {
-			xhr.Call("setRequestHeader", key, value)
+		for k, vv := range req.Header {
+			for _, v := range vv {
+				xhr.Call("setRequestHeader", k, v)
+			}
 		}
 	}
 

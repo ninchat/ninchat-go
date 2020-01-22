@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 	"runtime"
 
 	ninchat "github.com/ninchat/ninchat-go"
@@ -20,6 +21,10 @@ func asError(x interface{}) error {
 	} else {
 		return fmt.Errorf("%v", x)
 	}
+}
+
+func DefaultUserAgent() string {
+	return ninchat.DefaultUserAgent
 }
 
 type JSON struct {
@@ -331,6 +336,13 @@ func (s *Session) SetOnConnState(h ConnStateHandler)       { s.connStateHandler 
 func (s *Session) SetOnConnActive(h ConnActiveHandler)     { s.connActiveHandler = h }
 func (s *Session) SetOnLog(h LogHandler)                   { s.logHandler = h }
 
+func (s *Session) SetHeader(key, value string) {
+	if s.s.Header == nil {
+		s.s.Header = make(http.Header)
+	}
+	http.Header(s.s.Header).Set(key, value)
+}
+
 func (s *Session) SetAddress(address string) {
 	s.s.Address = address
 }
@@ -406,6 +418,13 @@ type Caller struct {
 
 func NewCaller() *Caller {
 	return new(Caller)
+}
+
+func (c *Caller) SetHeader(key, value string) {
+	if c.c.Header == nil {
+		c.c.Header = make(http.Header)
+	}
+	http.Header(c.c.Header).Set(key, value)
 }
 
 func (c *Caller) SetAddress(address string) {

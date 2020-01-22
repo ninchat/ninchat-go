@@ -18,7 +18,7 @@ func longPollTransport(s *Session, host string) (connWorked, gotOnline bool) {
 
 		s.mutex.Unlock()
 		select {
-		case response := <-getJSONRequestResponseChannel(url, action, timeout):
+		case response := <-getJSONRequestResponseChannel(url, s.Header, action, timeout):
 			s.mutex.Lock()
 
 			if response.err != nil {
@@ -85,7 +85,7 @@ func longPollTransfer(s *Session, url string, connWorked, gotOnline *bool) {
 		if poller == nil {
 			action := s.makeResumeSessionAction(true)
 			timeout := jitterDuration(minPollTimeout, 0.2)
-			poller = getJSONRequestResponseChannel(url, action, timeout)
+			poller = getJSONRequestResponseChannel(url, s.Header, action, timeout)
 		}
 
 		if sender == nil && s.numSent < len(s.sendBuffer) {
@@ -109,7 +109,7 @@ func longPollTransfer(s *Session, url string, connWorked, gotOnline *bool) {
 			action.Params["session_id"] = s.sessionId
 
 			timeout := jitterDuration(minSendTimeout, 0.2)
-			channel := getJSONRequestResponseChannel(url, action.Params, timeout)
+			channel := getJSONRequestResponseChannel(url, s.Header, action.Params, timeout)
 
 			delete(action.Params, "session_id")
 			delete(action.Params, "payload")
@@ -243,7 +243,7 @@ func longPollPing(s *Session, url string) {
 		"session_id": s.sessionId,
 	}
 
-	c := getJSONRequestResponseChannel(url, action, jitterDuration(minSendTimeout, 0.9))
+	c := getJSONRequestResponseChannel(url, s.Header, action, jitterDuration(minSendTimeout, 0.9))
 	go logErrorResponseLockless(s, c, "ping error:")
 }
 
@@ -255,7 +255,7 @@ func longPollClose(s *Session, url string) {
 		"session_id": s.sessionId,
 	}
 
-	c := getJSONRequestResponseChannel(url, action, jitterDuration(minSendTimeout, 0.9))
+	c := getJSONRequestResponseChannel(url, s.Header, action, jitterDuration(minSendTimeout, 0.9))
 	go logErrorResponseLockless(s, c, "send error:")
 }
 
