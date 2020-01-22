@@ -22,7 +22,7 @@ type webSocket struct {
 	buf  [][]byte
 }
 
-func newWebSocket(url string, timeout duration) (ws *webSocket) {
+func newWebSocket(url string, header map[string][]string, timeout duration) (ws *webSocket) {
 	dialer := &websocket.Dialer{
 		TLSClientConfig:  &tlsConfig,
 		HandshakeTimeout: time.Duration(timeout),
@@ -32,7 +32,7 @@ func newWebSocket(url string, timeout duration) (ws *webSocket) {
 		notify: make(chan struct{}, 1),
 	}
 
-	if ws.conn, _, ws.err = dialer.Dial(url, nil); ws.err != nil {
+	if ws.conn, _, ws.err = dialer.Dial(url, prepareHeader(header)); ws.err != nil {
 		close(ws.notify)
 		return
 	}
@@ -73,6 +73,10 @@ func newWebSocket(url string, timeout duration) (ws *webSocket) {
 	}()
 
 	return
+}
+
+func (ws *webSocket) sendInitialJSON(object interface{}) error {
+	return ws.sendJSON(object)
 }
 
 func (ws *webSocket) send(data []byte) error {

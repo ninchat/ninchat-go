@@ -35,6 +35,10 @@ func openSession(t *testing.T, forceLongPoll bool, params map[string]interface{}
 			t.Log(append([]interface{}{"LOG:"}, fragments...)...)
 		},
 
+		Header: map[string][]string{
+			"User-Agent": []string{"test"},
+		},
+
 		forceLongPoll: forceLongPoll,
 	}
 

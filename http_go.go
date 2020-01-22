@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+const userAgentHeader = "User-Agent"
+
 var tlsConfig = tls.Config{
 	PreferServerCipherSuites: true,
 }
@@ -27,13 +29,23 @@ func init() {
 
 type httpRequest http.Request
 
-func newGETRequest(url string) (*httpRequest, error) {
+func newGetRequest(url string, header map[string][]string) (*httpRequest, error) {
 	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header = prepareHeader(header)
 	return (*httpRequest)(req), err
 }
 
-func newDataRequest(method, url string, data []byte) (*httpRequest, error) {
+func newDataRequest(method, url string, header map[string][]string, data []byte) (*httpRequest, error) {
 	req, err := http.NewRequest(method, url, ioutil.NopCloser(bytes.NewReader(data)))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header = prepareHeader(header)
 	return (*httpRequest)(req), err
 }
 

@@ -1,18 +1,38 @@
 package ninchat
 
-func newJSONRequest(url string, action map[string]interface{}) (req *httpRequest, err error) {
+import (
+	"fmt"
+	"runtime"
+)
+
+var DefaultUserAgent = fmt.Sprintf("ninchat-go/1 (%s; %s)", runtime.GOOS, runtime.GOARCH)
+
+func prepareHeader(custom map[string][]string) map[string][]string {
+	h := make(map[string][]string)
+	for k, vv := range custom {
+		h[k] = vv
+	}
+
+	if _, found := h[userAgentHeader]; !found {
+		h[userAgentHeader] = []string{DefaultUserAgent}
+	}
+
+	return h
+}
+
+func newJSONRequest(url string, header map[string][]string, action map[string]interface{}) (req *httpRequest, err error) {
 	data, err := jsonMarshal(action)
 	if err != nil {
 		return
 	}
 
-	return newDataRequest("POST", url, data)
+	return newDataRequest("POST", url, header, data)
 }
 
-func getJSONRequestResponseChannel(url string, action map[string]interface{}, timeout duration) <-chan httpResponse {
+func getJSONRequestResponseChannel(url string, header map[string][]string, action map[string]interface{}, timeout duration) <-chan httpResponse {
 	c := make(chan httpResponse, 1)
 
-	if req, err := newJSONRequest(url, action); err == nil {
+	if req, err := newJSONRequest(url, header, action); err == nil {
 		putResponseToChannel(req, timeout, c)
 	} else {
 		c <- httpResponse{err: err}

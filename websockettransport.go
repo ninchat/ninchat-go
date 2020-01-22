@@ -23,7 +23,7 @@ func webSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 
 		s.log("connecting to", host)
 
-		ws = newWebSocket("wss://"+host+socketPath, jitterDuration(connectTimeout, 0.1))
+		ws = newWebSocket("wss://"+host+socketPath, s.Header, jitterDuration(connectTimeout, 0.1))
 		s.test.setWebSocket(ws)
 
 		s.mutex.Unlock()
@@ -78,7 +78,7 @@ func webSocketHandshake(s *Session, ws *webSocket) (gotOnline, hostHealthy bool)
 		params = s.makeResumeSessionAction(true)
 	}
 
-	if err := ws.sendJSON(params); err != nil {
+	if err := ws.sendInitialJSON(params); err != nil {
 		s.log("send:", err)
 	}
 

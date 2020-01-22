@@ -22,6 +22,14 @@ func init() {
 	webSocketSupported = (webSocketClass != js.Undefined && webSocketClass.Get("CLOSING") != js.Undefined)
 }
 
+func getUserAgent(custom map[string][]string) string {
+	if vv, found := custom[userAgentHeader]; found && len(vv) > 0 {
+		return vv[0]
+	}
+
+	return DefaultUserAgent
+}
+
 type webSocket struct {
 	notify    chan struct{}
 	goingAway bool
@@ -30,12 +38,15 @@ type webSocket struct {
 	impl *js.Object
 	open bool
 	buf  []*js.Object
+
+	client string
 }
 
-func newWebSocket(url string, timeout duration) (ws *webSocket) {
+func newWebSocket(url string, header map[string][]string, timeout duration) (ws *webSocket) {
 	ws = &webSocket{
 		notify: make(chan struct{}, 1),
 		impl:   webSocketClass.New(url),
+		client: getUserAgent(header),
 	}
 
 	ws.impl.Set("binaryType", "arraybuffer")
@@ -111,6 +122,13 @@ func newWebSocket(url string, timeout duration) (ws *webSocket) {
 	})
 
 	return
+}
+
+func (ws *webSocket) sendInitialJSON(object map[string]interface{}) error {
+	if ws.client != "" {
+		object["client"] = ws.client
+	}
+	return ws.sendJSON(object)
 }
 
 func (ws *webSocket) send(data *js.Object) (err error) {

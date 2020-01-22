@@ -72,6 +72,10 @@ type Session struct {
 	// OnLog is an optional message logger.
 	OnLog func(fragments ...interface{})
 
+	// Header fields to be added to HTTP requests.  The keys must be in
+	// canonical format (see https://golang.org/pkg/net/http/#CanonicalHeaderKey).
+	Header map[string][]string
+
 	Address string
 
 	forceLongPoll bool // only for testing
@@ -276,7 +280,7 @@ func (s *Session) discover() {
 
 		url := "https://" + getAddress(s.Address) + endpointPath
 
-		request, err := newGETRequest(url)
+		request, err := newGetRequest(url, s.Header)
 		if err != nil {
 			panic(err)
 		}
