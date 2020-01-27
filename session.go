@@ -106,8 +106,10 @@ type Session struct {
 // longPollTransport.
 type transport func(s *Session, host string) (connWorked, gotOnline bool)
 
-// SetParams sets "create_session" action parameters.  If Open has already been
-// called, this takes effect when a session is lost.
+// SetParams sets initial action parameters.  The initial action is
+// "create_session" by default, or "resume_session" if the "session_id"
+// parameter is set.  If Open has already been called, this takes effect when a
+// session is lost.
 func (s *Session) SetParams(params map[string]interface{}) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
