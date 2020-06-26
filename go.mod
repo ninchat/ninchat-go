@@ -4,8 +4,9 @@ go 1.11
 
 require (
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
-	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
+	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
 	github.com/gorilla/websocket v1.4.1
+	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kisielk/gotool v1.0.0 // indirect
 	github.com/neelance/astrewrite v0.0.0-20160511093645-99348263ae86 // indirect
 	github.com/neelance/sourcemap v0.0.0-20151028013722-8c68805598ab // indirect
