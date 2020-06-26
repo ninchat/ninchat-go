@@ -3,6 +3,7 @@ package ninchat
 const (
 	maxKeepaliveInterval = second * 56
 	minReceiveTimeout    = second * 64
+	minWatchdogTimeout   = second * 3
 )
 
 // webSocketTransport runs a reconnect loop for a given host.  It doesn't mind
@@ -265,9 +266,8 @@ func webSocketReceive(s *Session, ws *webSocket, fail chan struct{}) (gotEvents,
 	var event *Event
 	var frames int
 
-	d := jitterDuration(minReceiveTimeout, 0.3)
-	watchdogTime := timeAdd(timeNow(), d)
-	watchdog := newTimer(d)
+	watchdogTime := timeAdd(timeNow(), jitterDuration(minReceiveTimeout, 0.3))
+	watchdog := newTimer(jitterDuration(minWatchdogTimeout, 0.4321))
 	defer watchdog.Stop()
 
 	acker := newTimer(-1)
@@ -289,10 +289,9 @@ func webSocketReceive(s *Session, ws *webSocket, fail chan struct{}) (gotEvents,
 					break
 				}
 
-				d := jitterDuration(minReceiveTimeout, 0.7)
-				watchdogTime = timeAdd(timeNow(), d)
+				watchdogTime = timeAdd(timeNow(), jitterDuration(minReceiveTimeout, 0.7))
 				if !watchdog.Active() {
-					watchdog.Reset(d)
+					watchdog.Reset(jitterDuration(minWatchdogTimeout, 0.4321))
 				}
 				s.connActive()
 
