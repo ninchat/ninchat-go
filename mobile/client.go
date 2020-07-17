@@ -73,7 +73,9 @@ func (ps *Props) GetBool(key string) (val bool, err error) {
 
 func (ps *Props) GetInt(key string) (val int, err error) {
 	if x, found := ps.m[key]; found {
-		if f, ok := x.(float64); ok {
+		if i, ok := x.(int); ok {
+			val = i
+		} else if f, ok := x.(float64); ok {
 			val = int(f)
 		} else {
 			err = fmt.Errorf("Prop type: %q is not a number", key)
