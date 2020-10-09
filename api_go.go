@@ -20,8 +20,3 @@ type Event struct {
 
 // Frame
 type Frame []byte
-
-// singleFrame constructs a payload with one part.
-func singleFrame(x []byte) []Frame {
-	return []Frame{x}
-}

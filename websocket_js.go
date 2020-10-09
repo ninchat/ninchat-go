@@ -9,8 +9,7 @@ import (
 )
 
 var (
-	webSocketClass     *js.Object
-	webSocketSupported bool
+	webSocketClass *js.Object
 )
 
 func init() {
@@ -19,7 +18,6 @@ func init() {
 	if webSocketClass == js.Undefined {
 		webSocketClass = js.Module.Get("require").Invoke("ws")
 	}
-	webSocketSupported = (webSocketClass != js.Undefined && webSocketClass.Get("CLOSING") != js.Undefined)
 }
 
 func getUserAgent(custom map[string][]string) string {

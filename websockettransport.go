@@ -9,7 +9,7 @@ const (
 // webSocketTransport runs a reconnect loop for a given host.  It doesn't mind
 // disconnections, but a failure to connect and establish a session stops the
 // loop.
-func webSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
+func webSocketTransport(s *Session, host string) (gotOnline bool) {
 	var ws *webSocket
 
 	defer func() {
@@ -34,8 +34,6 @@ func webSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 
 			if connected {
 				s.connState("connected")
-
-				connWorked = true
 				gotOnline, hostHealthy = webSocketHandshake(s, ws)
 			} else if ws.err != nil {
 				s.log("connection failed:", ws.err)

@@ -16,8 +16,3 @@ func dataLength(x []byte) int {
 func stringData(data []byte) []byte {
 	return data
 }
-
-// dataString converts the input to a Go string.
-func dataString(x []byte) string {
-	return string(x)
-}

@@ -21,7 +21,3 @@ type Event struct {
 }
 
 type Frame *js.Object
-
-func singleFrame(x *js.Object) []Frame {
-	return []Frame{x}
-}

@@ -10,8 +10,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-const webSocketSupported = true
-
 type webSocket struct {
 	notify    chan struct{}
 	goingAway bool

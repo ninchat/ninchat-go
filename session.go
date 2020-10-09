@@ -78,8 +78,6 @@ type Session struct {
 
 	Address string
 
-	forceLongPoll bool // only for testing
-
 	mutex sync.Mutex // guards all variables below
 
 	sessionParams map[string]interface{}
@@ -101,10 +99,6 @@ type Session struct {
 
 	test testSupport
 }
-
-// transport is an interface implemented by webSocketTransport and
-// longPollTransport.
-type transport func(s *Session, host string) (connWorked, gotOnline bool)
 
 // SetParams sets initial action parameters.  The initial action is
 // "create_session" by default, or "resume_session" if the "session_id"
@@ -305,14 +299,7 @@ func (s *Session) discover() {
 
 			if err == nil {
 				s.log("endpoint discovered")
-
-				if webSocketSupported && !s.forceLongPoll {
-					if s.connect(webSocketTransport, hosts, &backoff) {
-						continue
-					}
-				}
-
-				s.connect(longPollTransport, hosts, &backoff)
+				s.connect(hosts, &backoff)
 			} else {
 				s.log("endpoint discovery:", err)
 			}
@@ -328,9 +315,8 @@ func (s *Session) discover() {
 	}
 }
 
-// connect tries to connect to each host a few times using the given transport
-// implementation.
-func (s *Session) connect(transport transport, hosts []string, backoff *backoff) (transportWorked bool) {
+// connect tries to connect to each host a few times.
+func (s *Session) connect(hosts []string, backoff *backoff) {
 	for trial := 0; trial < connectIterations; trial++ {
 		for _, host := range hosts {
 			s.connState("connecting")
@@ -343,13 +329,7 @@ func (s *Session) connect(transport transport, hosts []string, backoff *backoff)
 			}
 
 			//gopherjs:blocking
-			connWorked, gotOnline := transport(s, host)
-
-			if connWorked {
-				transportWorked = true
-			}
-
-			if gotOnline {
+			if webSocketTransport(s, host) {
 				backoff.success()
 				return
 			}
@@ -363,8 +343,6 @@ func (s *Session) connect(transport transport, hosts []string, backoff *backoff)
 			}
 		}
 	}
-
-	return
 }
 
 // backOff sleeps for a time.  False is returned if session was closed while
@@ -455,7 +433,7 @@ func (s *Session) makeCreateSessionAction() (params map[string]interface{}) {
 }
 
 // makeResumeSessionAction makes a resume_session action header for
-// initializing new connections, or polling and acknowledging events.
+// initializing new connections.
 func (s *Session) makeResumeSessionAction(session bool) (params map[string]interface{}) {
 	params = map[string]interface{}{
 		"action":   "resume_session",

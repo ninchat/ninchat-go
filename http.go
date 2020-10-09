@@ -29,18 +29,6 @@ func newJSONRequest(url string, header map[string][]string, action map[string]in
 	return newDataRequest("POST", url, header, data)
 }
 
-func getJSONRequestResponseChannel(url string, header map[string][]string, action map[string]interface{}, timeout duration) <-chan httpResponse {
-	c := make(chan httpResponse, 1)
-
-	if req, err := newJSONRequest(url, header, action); err == nil {
-		putResponseToChannel(req, timeout, c)
-	} else {
-		c <- httpResponse{err: err}
-	}
-
-	return c
-}
-
 func getResponseChannel(req *httpRequest, timeout duration) <-chan httpResponse {
 	c := make(chan httpResponse, 1)
 	putResponseToChannel(req, timeout, c)

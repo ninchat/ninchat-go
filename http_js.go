@@ -11,18 +11,13 @@ import (
 const userAgentHeader = "X-User-Agent"
 
 var (
-	xhrType                 *js.Object
-	xhrRequestHeaderSupport bool
+	xhrType *js.Object
 )
 
 func init() {
-	xhrType = js.Global.Get("XDomainRequest")
+	xhrType = js.Global.Get("XMLHttpRequest")
 	if xhrType == js.Undefined {
-		xhrType = js.Global.Get("XMLHttpRequest")
-		if xhrType == js.Undefined {
-			xhrType = js.Module.Get("require").Invoke("xhr2")
-		}
-		xhrRequestHeaderSupport = true
+		xhrType = js.Module.Get("require").Invoke("xhr2")
 	}
 }
 
@@ -81,11 +76,6 @@ func putResponseToChannel(req *httpRequest, timeout duration, c chan<- httpRespo
 		}()
 	})
 
-	xhr.Set("onprogress", func() {
-		// https://stackoverflow.com/questions/7037627/long-poll-and-ies-xdomainrequest-object
-		js.Global.Call("setTimeout", func() {}, 0)
-	})
-
 	xhr.Set("ontimeout", func() {
 		go func() {
 			c <- httpResponse{err: errors.New("timeout")}
@@ -101,16 +91,9 @@ func putResponseToChannel(req *httpRequest, timeout duration, c chan<- httpRespo
 	xhr.Call("open", req.Method, req.URL)
 	xhr.Set("timeout", timeout)
 
-	if xhrRequestHeaderSupport {
-		for k, vv := range req.Header {
-			for _, v := range vv {
-				xhr.Call("setRequestHeader", k, v)
-			}
+	for k, vv := range req.Header {
+		for _, v := range vv {
+			xhr.Call("setRequestHeader", k, v)
 		}
 	}
-
-	js.Global.Call("setTimeout", func() {
-		// http://cypressnorth.com/programming/internet-explorer-aborting-ajax-requests-fixed/
-		xhr.Call("send", req.data)
-	}, 0)
 }

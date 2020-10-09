@@ -8,7 +8,6 @@ const (
 	protocolPath = "/v2"
 	endpointPath = protocolPath + "/endpoint"
 	socketPath   = protocolPath + "/socket"
-	pollPath     = protocolPath + "/poll"
 	callPath     = protocolPath + "/call"
 )
 
