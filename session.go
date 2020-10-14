@@ -581,9 +581,13 @@ func (s *Session) handleEvent(event *Event) (actionId int64, sessionLost, needsA
 		return
 	}
 
-	errorType, errorReason, sessionLost, err := event.getError()
+	errorType, errorReason, userAuthLost, sessionLost, err := event.getError()
 	if err != nil {
 		s.log("event:", err)
+
+		if userAuthLost {
+			delete(s.sessionParams, "user_auth")
+		}
 
 		if sessionLost {
 			s.sessionId = nil

@@ -159,7 +159,7 @@ func (e *Event) initLastReply(action *Action) {
 	e.LastReply = true
 }
 
-func (event *Event) getError() (errorType, errorReason string, sessionLost bool, err error) {
+func (event *Event) getError() (errorType, errorReason string, userAuthLost, sessionLost bool, err error) {
 	if x, found := event.Params["event"]; !found || x.(string) != "error" {
 		return
 	}
@@ -181,6 +181,9 @@ func (event *Event) getError() (errorType, errorReason string, sessionLost bool,
 	switch errorType {
 	case "session_not_found":
 		sessionLost = true
+		if x := event.Params["user_auth_deleted"]; x != nil {
+			userAuthLost = x.(bool)
+		}
 		fallthrough
 
 	case "connection_superseded", "message_has_too_many_parts", "message_part_too_long", "message_too_long", "payload_has_too_many_parts", "payload_part_too_long", "request_malformed":
