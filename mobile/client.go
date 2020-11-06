@@ -52,7 +52,7 @@ func NewProps() *Props { return &Props{make(map[string]interface{})} }
 
 func (ps *Props) String() string                  { return fmt.Sprint(ps.m) }
 func (ps *Props) MarshalJSON() ([]byte, error)    { return json.Marshal(ps.m) }
-func (ps *Props) UnMarshalJSON(data string) error { return json.Unmarshal([]byte(data), &ps.m) }
+func (ps *Props) UnmarshalJSON(data string) error { return json.Unmarshal([]byte(data), &ps.m) }
 
 func (ps *Props) SetBool(key string, val bool)            { ps.m[key] = val }
 func (ps *Props) SetInt(key string, val int)              { ps.m[key] = val }
@@ -179,7 +179,7 @@ func (pu PropsUtil) JSONString(props Props) string {
 }
 func (pu PropsUtil) FromJsonString(propsString string) Props {
 	var props Props
-	if err := props.UnMarshalJSON(propsString); err != nil {
+	if err := props.UnmarshalJSON(propsString); err != nil {
 		return Props{}
 	}
 	return props

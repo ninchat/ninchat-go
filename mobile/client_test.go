@@ -35,7 +35,7 @@ func TestProps_Marshal(t *testing.T) {
 		if bt == nil {
 			t.Error("byte representation of the json will not be empty")
 		}
-		err = ninchatProps.UnMarshalJSON(string(bt))
+		err = ninchatProps.UnmarshalJSON(string(bt))
 		if err != nil {
 			t.Error("should be able to unmarshal ninchat string", err)
 		}
@@ -75,7 +75,7 @@ func TestProps_Marshal(t *testing.T) {
 		if bt != nil {
 			t.Error("byte representation of the json will empty")
 		}
-		err = ninchatProps.UnMarshalJSON(string(bt))
+		err = ninchatProps.UnmarshalJSON(string(bt))
 		if err == nil {
 			t.Error("should failed to unmarshal with malformed json", err)
 		}
@@ -88,7 +88,7 @@ func TestProps_UnMarshalJSON(t *testing.T) {
 		m: map[string]interface{}{},
 	}
 	propsString := `{"bar":"asdf","baz":["1","2","3"],"foo":3.14159,"kaz":1,"qux":{"sub-i":"ii","sub-j":"jj"},"taz":true,"uzz":{"data":{"amount":99.87,"base":"test-base","currency":"EU"}}}`
-	err := ninchatProps.UnMarshalJSON(propsString)
+	err := ninchatProps.UnmarshalJSON(propsString)
 	if err != nil {
 		t.Error("should be able to unmarshal ninchat string", err)
 	}
