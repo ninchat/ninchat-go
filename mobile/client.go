@@ -171,26 +171,6 @@ func (os *Objects) Get(i int) *Props { return os.a[i] }
 func (os *Objects) Length() int      { return len(os.a) }
 func (os *Objects) String() string   { return fmt.Sprint(os.a) }
 
-type PropsUtil struct {
-}
-
-func (pu PropsUtil) JSONString(props Props) string {
-	if props.m == nil {
-		return ""
-	}
-	if bt, err := props.MarshalJSON(); err == nil {
-		return bt
-	}
-	return ""
-}
-func (pu PropsUtil) FromJsonString(propsString string) Props {
-	var props Props
-	if err := props.UnmarshalJSON(propsString); err != nil {
-		return Props{}
-	}
-	return props
-}
-
 type PropVisitor interface {
 	VisitBool(string, bool) error
 	VisitNumber(string, float64) error
@@ -211,6 +191,9 @@ func (ps *Props) Accept(callback PropVisitor) (err error) {
 		switch v := x.(type) {
 		case bool:
 			err = callback.VisitBool(k, v)
+
+		case int:
+			err = callback.VisitNumber(k, float64(v))
 
 		case float64:
 			err = callback.VisitNumber(k, v)
