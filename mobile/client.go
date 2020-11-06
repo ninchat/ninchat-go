@@ -31,9 +31,6 @@ type JSON struct {
 	x json.RawMessage
 }
 
-func (js *JSON) MarshalJSON() ([]byte, error)    { return json.Marshal(js.x) }
-func (js *JSON) UnMarshalJSON(data string) error { return json.Unmarshal([]byte(data), &js.x) }
-
 func NewJSON(s string) *JSON { return &JSON{json.RawMessage(s)} }
 
 type Strings struct {
@@ -42,12 +39,10 @@ type Strings struct {
 
 func NewStrings() *Strings { return &Strings{[]string{}} }
 
-func (ss *Strings) Append(val string)               { ss.a = append(ss.a, val) }
-func (ss *Strings) Get(i int) string                { return ss.a[i] }
-func (ss *Strings) Length() int                     { return len(ss.a) }
-func (ss *Strings) String() string                  { return fmt.Sprint(ss.a) }
-func (ss *Strings) MarshalJSON() ([]byte, error)    { return json.Marshal(ss.a) }
-func (ss *Strings) UnMarshalJSON(data string) error { return json.Unmarshal([]byte(data), &ss.a) }
+func (ss *Strings) Append(val string) { ss.a = append(ss.a, val) }
+func (ss *Strings) Get(i int) string  { return ss.a[i] }
+func (ss *Strings) Length() int       { return len(ss.a) }
+func (ss *Strings) String() string    { return fmt.Sprint(ss.a) }
 
 type Props struct {
 	m map[string]interface{}
@@ -192,7 +187,6 @@ func (pu PropsUtil) FromJsonString(propsString string) Props {
 
 type PropVisitor interface {
 	VisitBool(string, bool) error
-	VisitInt(string, int) error
 	VisitNumber(string, float64) error
 	VisitString(string, string) error
 	VisitStringArray(string, *Strings) error
@@ -211,9 +205,6 @@ func (ps *Props) Accept(callback PropVisitor) (err error) {
 		switch v := x.(type) {
 		case bool:
 			err = callback.VisitBool(k, v)
-
-		case int:
-			err = callback.VisitInt(k, v)
 
 		case float64:
 			err = callback.VisitNumber(k, v)

@@ -4,149 +4,103 @@ import (
 	"testing"
 )
 
-func TestStrings_MarshalJSON(t *testing.T) {
-	t.Run("Test with non empty string array", func(t *testing.T) {
+func TestProps_Marshal(t *testing.T) {
+	t.Run("Convert a full props object", func(t *testing.T) {
+		strJson := `{"data":{"base":"test-base","currency":"EU","amount":99.87}}`
 		stringArr := NewStrings()
 		stringArr.Append("1")
 		stringArr.Append("2")
 		stringArr.Append("3")
-		bt, err := stringArr.MarshalJSON()
-		if err != nil {
-			t.Error("should be able to marshal ninchat string", err)
+		simplePros := &Props{
+			m: map[string]interface{}{
+				"sub-i": "ii",
+				"sub-j": "jj",
+			},
 		}
-		if bt == nil {
-			t.Error("byte representation of the ninchat string will not be empty")
+		ninchatProps := Props{
+			m: map[string]interface{}{},
 		}
+		ninchatProps.SetFloat("foo", 3.14159)
+		ninchatProps.SetString("bar", "asdf")
+		ninchatProps.SetStringArray("baz", stringArr)
+		ninchatProps.SetInt("kaz", 1)
+		ninchatProps.SetBool("taz", true)
+		ninchatProps.SetJSON("uzz", NewJSON(strJson))
+		ninchatProps.SetObject("qux", simplePros)
 
-		err = stringArr.UnMarshalJSON(string(bt))
-		if err != nil {
-			t.Error("should be able to unmarshal ninchat string", err)
-		}
-		if stringArr.a[0] != "1" && stringArr.a[1] != "2" && stringArr.a[2] != "3" {
-			t.Error("should match the original string")
-		}
-		t.Logf("%+v\n", string(bt))
-		t.Logf("%+v\n", stringArr)
-	})
-	t.Run("Test with empty string array", func(t *testing.T) {
-		emptyArr := NewStrings()
-		bt, err := emptyArr.MarshalJSON()
-		if err != nil {
-			t.Error("should be able to marshal ninchat string", err)
-		}
-		if bt == nil {
-			t.Error("byte representation of the ninchat string will not be empty")
-		}
-
-		err = emptyArr.UnMarshalJSON(string(bt))
-		if err != nil {
-			t.Error("should be able to unmarshal ninchat string", err)
-		}
-		t.Logf("%+v\n", string(bt))
-		t.Logf("%+v\n", emptyArr)
-	})
-}
-
-func TestJSON_MarshalJSON(t *testing.T) {
-	t.Run("Test with non empty json", func(t *testing.T) {
-		jsonAsString := `{"data":{"base":"test-base","currency":"EU","amount":99.87}}`
-		ninchatJson := NewJSON(jsonAsString)
-		bt, err := ninchatJson.MarshalJSON()
-		if err != nil {
-			t.Error("should be able to marshal ninchat json")
-		}
-		if bt == nil {
-			t.Error("byte representation of the json will not be empty")
-		}
-		err = ninchatJson.UnMarshalJSON(string(bt))
-		if err != nil {
-			t.Error("should be able to unmarshal ninchat string", err)
-		}
-
-		t.Logf("%+v\n", string(bt))
-		t.Logf("%+v\n", ninchatJson)
-	})
-
-	t.Run("Test with empty json", func(t *testing.T) {
-		jsonAsString := `{}`
-		ninchatJson := NewJSON(jsonAsString)
-		bt, err := ninchatJson.MarshalJSON()
+		bt, err := ninchatProps.MarshalJSON()
 		if err != nil {
 			t.Error("should be able to marshal ninchat json", err)
 		}
 		if bt == nil {
 			t.Error("byte representation of the json will not be empty")
 		}
-		err = ninchatJson.UnMarshalJSON(string(bt))
+		err = ninchatProps.UnMarshalJSON(string(bt))
 		if err != nil {
 			t.Error("should be able to unmarshal ninchat string", err)
 		}
+		nextBt, _ := ninchatProps.MarshalJSON()
 		t.Logf("%+v\n", string(bt))
-		t.Logf("%+v\n", ninchatJson)
+		t.Logf("%+v\n", string(nextBt))
+		t.Logf("%+v\n", ninchatProps)
 	})
-	t.Run("Test with invalid json", func(t *testing.T) {
-		jsonAsString := `{`
-		ninchatJson := NewJSON(jsonAsString)
-		bt, err := ninchatJson.MarshalJSON()
+
+	t.Run("Convert a malformed props object", func(t *testing.T) {
+		strJson := `{"data":{"base":"test-base","currency":"EU","amount":}`
+		stringArr := NewStrings()
+		stringArr.Append("1")
+		stringArr.Append("2")
+		stringArr.Append("3")
+		simplePros := &Props{
+			m: map[string]interface{}{
+				"sub-i": "ii",
+				"sub-j": "jj",
+			},
+		}
+		ninchatProps := Props{
+			m: map[string]interface{}{},
+		}
+		ninchatProps.SetFloat("foo", 3.14159)
+		ninchatProps.SetString("bar", "asdf")
+		ninchatProps.SetStringArray("baz", stringArr)
+		ninchatProps.SetInt("kaz", 1)
+		ninchatProps.SetBool("taz", true)
+		ninchatProps.SetJSON("uzz", NewJSON(strJson))
+		ninchatProps.SetObject("qux", simplePros)
+
+		bt, err := ninchatProps.MarshalJSON()
 		if err == nil {
-			t.Error("should failed with invalid json", err)
+			t.Error("should failed to marshal malform json object", err)
 		}
 		if bt != nil {
-			t.Error("byte representation of the invalid json will be empty")
+			t.Error("byte representation of the json will empty")
 		}
-		err = ninchatJson.UnMarshalJSON(string(bt))
+		err = ninchatProps.UnMarshalJSON(string(bt))
 		if err == nil {
-			t.Error("should be able to unmarshal ninchat string", err)
+			t.Error("should failed to unmarshal with malformed json", err)
 		}
-		t.Logf("%+v\n", string(bt))
-		t.Logf("%+v\n", ninchatJson)
 	})
 
 }
 
-func TestProps_Marshal(t *testing.T) {
-	strJson := `{"data":{"base":"test-base","currency":"EU","amount":99.87}}`
-	stringArr := NewStrings()
-	stringArr.Append("1")
-	stringArr.Append("2")
-	stringArr.Append("3")
-	simplePros := &Props{
-		m: map[string]interface{}{
-			"sub-i": "ii",
-			"sub-j": "jj",
-		},
-	}
-	val := map[string]interface{}{
-		"foo":  3.14159,
-		"bar":  "asdf",
-		"baz":  stringArr,
-		"kaz":  1,
-		"taz":  true,
-		"uzz":  NewJSON(strJson),
-		"quux": simplePros,
-	}
-
+func TestProps_UnMarshalJSON(t *testing.T) {
 	ninchatProps := Props{
-		m: val,
+		m: map[string]interface{}{},
 	}
-
-	bt, err := ninchatProps.MarshalJSON()
-	if err != nil {
-		t.Error("should be able to marshal ninchat json", err)
-	}
-	if bt == nil {
-		t.Error("byte representation of the json will not be empty")
-	}
-	err = ninchatProps.UnMarshalJSON(string(bt))
+	propsString := `{"bar":"asdf","baz":["1","2","3"],"foo":3.14159,"kaz":1,"qux":{"sub-i":"ii","sub-j":"jj"},"taz":true,"uzz":{"data":{"amount":99.87,"base":"test-base","currency":"EU"}}}`
+	err := ninchatProps.UnMarshalJSON(propsString)
 	if err != nil {
 		t.Error("should be able to unmarshal ninchat string", err)
 	}
-
-	nextBt, _ := ninchatProps.MarshalJSON()
-	t.Logf("%+v\n", string(bt))
-	t.Logf("%+v\n", string(nextBt))
-	t.Logf("%+v\n", ninchatProps)
-
+	if _, err := ninchatProps.GetObject("uzz"); err != nil {
+		t.Error("should be able to get props object", err)
+	}
+	if _, err := ninchatProps.GetStringArray("baz"); err != nil {
+		t.Error("should be able to get string array", err)
+	}
+	if _, err := ninchatProps.GetObject("qux"); err != nil {
+		t.Error("should be able to get json object", err)
+	}
 }
 
 func TestPropsUtil_JSONString(t *testing.T) {
@@ -162,19 +116,17 @@ func TestPropsUtil_JSONString(t *testing.T) {
 				"sub-j": "jj",
 			},
 		}
-		val := map[string]interface{}{
-			"foo":  3.14159,
-			"bar":  "asdf",
-			"baz":  stringArr,
-			"kaz":  1,
-			"taz":  true,
-			"uzz":  NewJSON(strJson),
-			"quux": simplePros,
-		}
-
 		ninchatProps := Props{
-			m: val,
+			m: map[string]interface{}{},
 		}
+		ninchatProps.SetFloat("foo", 3.14159)
+		ninchatProps.SetString("bar", "asdf")
+		ninchatProps.SetStringArray("baz", stringArr)
+		ninchatProps.SetInt("kaz", 1)
+		ninchatProps.SetBool("taz", true)
+		ninchatProps.SetJSON("uzz", NewJSON(strJson))
+		ninchatProps.SetObject("qux", simplePros)
+
 		value := PropsUtil{}.JSONString(ninchatProps)
 		if value == "" {
 			t.Error("should be able to marshal props")
@@ -196,19 +148,17 @@ func TestPropsUtil_FromJsonString(t *testing.T) {
 				"sub-j": "jj",
 			},
 		}
-		val := map[string]interface{}{
-			"foo":  3.14159,
-			"bar":  "asdf",
-			"baz":  stringArr,
-			"kaz":  1,
-			"taz":  true,
-			"uzz":  NewJSON(strJson),
-			"quux": simplePros,
-		}
-
 		ninchatProps := Props{
-			m: val,
+			m: map[string]interface{}{},
 		}
+		ninchatProps.SetFloat("foo", 3.14159)
+		ninchatProps.SetString("bar", "asdf")
+		ninchatProps.SetStringArray("baz", stringArr)
+		ninchatProps.SetInt("kaz", 1)
+		ninchatProps.SetBool("taz", true)
+		ninchatProps.SetJSON("uzz", NewJSON(strJson))
+		ninchatProps.SetObject("qux", simplePros)
+
 		value := PropsUtil{}.JSONString(ninchatProps)
 		if value == "" {
 			t.Error("should be able to marshal props")
