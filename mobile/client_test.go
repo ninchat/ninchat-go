@@ -5,7 +5,7 @@ import (
 )
 
 func TestProps_Marshal(t *testing.T) {
-	t.Run("Convert a full props object", func(t *testing.T) {
+	t.Run("ConvertPropsFull", func(t *testing.T) {
 		strJson := `{"data":{"base":"test-base","currency":"EU","amount":99.87}}`
 		stringArr := NewStrings()
 		stringArr.Append("1")
@@ -45,7 +45,7 @@ func TestProps_Marshal(t *testing.T) {
 		t.Logf("%+v\n", ninchatProps)
 	})
 
-	t.Run("Convert a malformed props object", func(t *testing.T) {
+	t.Run("ConvertPropsMalformed", func(t *testing.T) {
 		strJson := `{"data":{"base":"test-base","currency":"EU","amount":}`
 		stringArr := NewStrings()
 		stringArr.Append("1")
@@ -104,66 +104,62 @@ func TestProps_UnMarshalJSON(t *testing.T) {
 }
 
 func TestPropsUtil_JSONString(t *testing.T) {
-	t.Run("Convert a props to string", func(t *testing.T) {
-		strJson := `{"data":{"base":"test-base","currency":"EU","amount":99.87}}`
-		stringArr := NewStrings()
-		stringArr.Append("1")
-		stringArr.Append("2")
-		stringArr.Append("3")
-		simplePros := &Props{
-			m: map[string]interface{}{
-				"sub-i": "ii",
-				"sub-j": "jj",
-			},
-		}
-		ninchatProps := Props{
-			m: map[string]interface{}{},
-		}
-		ninchatProps.SetFloat("foo", 3.14159)
-		ninchatProps.SetString("bar", "asdf")
-		ninchatProps.SetStringArray("baz", stringArr)
-		ninchatProps.SetInt("kaz", 1)
-		ninchatProps.SetBool("taz", true)
-		ninchatProps.SetJSON("uzz", NewJSON(strJson))
-		ninchatProps.SetObject("qux", simplePros)
+	strJson := `{"data":{"base":"test-base","currency":"EU","amount":99.87}}`
+	stringArr := NewStrings()
+	stringArr.Append("1")
+	stringArr.Append("2")
+	stringArr.Append("3")
+	simplePros := &Props{
+		m: map[string]interface{}{
+			"sub-i": "ii",
+			"sub-j": "jj",
+		},
+	}
+	ninchatProps := Props{
+		m: map[string]interface{}{},
+	}
+	ninchatProps.SetFloat("foo", 3.14159)
+	ninchatProps.SetString("bar", "asdf")
+	ninchatProps.SetStringArray("baz", stringArr)
+	ninchatProps.SetInt("kaz", 1)
+	ninchatProps.SetBool("taz", true)
+	ninchatProps.SetJSON("uzz", NewJSON(strJson))
+	ninchatProps.SetObject("qux", simplePros)
 
-		value := PropsUtil{}.JSONString(ninchatProps)
-		if value == "" {
-			t.Error("should be able to marshal props")
-		}
-		t.Logf("%+v\n", value)
-	})
+	value := PropsUtil{}.JSONString(ninchatProps)
+	if value == "" {
+		t.Error("should be able to marshal props")
+	}
+	t.Logf("%+v\n", value)
 }
 
 func TestPropsUtil_FromJsonString(t *testing.T) {
-	t.Run("Convert a props string to props object", func(t *testing.T) {
-		strJson := `{"data":{"base":"test-base","currency":"EU","amount":99.87}}`
-		stringArr := NewStrings()
-		stringArr.Append("1")
-		stringArr.Append("2")
-		stringArr.Append("3")
-		simplePros := &Props{
-			m: map[string]interface{}{
-				"sub-i": "ii",
-				"sub-j": "jj",
-			},
-		}
-		ninchatProps := Props{
-			m: map[string]interface{}{},
-		}
-		ninchatProps.SetFloat("foo", 3.14159)
-		ninchatProps.SetString("bar", "asdf")
-		ninchatProps.SetStringArray("baz", stringArr)
-		ninchatProps.SetInt("kaz", 1)
-		ninchatProps.SetBool("taz", true)
-		ninchatProps.SetJSON("uzz", NewJSON(strJson))
-		ninchatProps.SetObject("qux", simplePros)
+	strJson := `{"data":{"base":"test-base","currency":"EU","amount":99.87}}`
+	stringArr := NewStrings()
+	stringArr.Append("1")
+	stringArr.Append("2")
+	stringArr.Append("3")
+	simplePros := &Props{
+		m: map[string]interface{}{
+			"sub-i": "ii",
+			"sub-j": "jj",
+		},
+	}
+	ninchatProps := Props{
+		m: map[string]interface{}{},
+	}
+	ninchatProps.SetFloat("foo", 3.14159)
+	ninchatProps.SetString("bar", "asdf")
+	ninchatProps.SetStringArray("baz", stringArr)
+	ninchatProps.SetInt("kaz", 1)
+	ninchatProps.SetBool("taz", true)
+	ninchatProps.SetJSON("uzz", NewJSON(strJson))
+	ninchatProps.SetObject("qux", simplePros)
 
-		value := PropsUtil{}.JSONString(ninchatProps)
-		if value == "" {
-			t.Error("should be able to marshal props")
-		}
-		propsObject := PropsUtil{}.FromJsonString(value)
-		t.Logf("%+v\n", propsObject)
-	})
+	value := PropsUtil{}.JSONString(ninchatProps)
+	if value == "" {
+		t.Error("should be able to marshal props")
+	}
+	propsObject := PropsUtil{}.FromJsonString(value)
+	t.Logf("%+v\n", propsObject)
 }
