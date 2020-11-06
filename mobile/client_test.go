@@ -18,7 +18,7 @@ func TestStrings_MarshalJSON(t *testing.T) {
 			t.Error("byte representation of the ninchat string will not be empty")
 		}
 
-		err = stringArr.UnMarshalJSON(bt)
+		err = stringArr.UnMarshalJSON(string(bt))
 		if err != nil {
 			t.Error("should be able to unmarshal ninchat string", err)
 		}
@@ -38,7 +38,7 @@ func TestStrings_MarshalJSON(t *testing.T) {
 			t.Error("byte representation of the ninchat string will not be empty")
 		}
 
-		err = emptyArr.UnMarshalJSON(bt)
+		err = emptyArr.UnMarshalJSON(string(bt))
 		if err != nil {
 			t.Error("should be able to unmarshal ninchat string", err)
 		}
@@ -58,7 +58,7 @@ func TestJSON_MarshalJSON(t *testing.T) {
 		if bt == nil {
 			t.Error("byte representation of the json will not be empty")
 		}
-		err = ninchatJson.UnMarshalJSON(bt)
+		err = ninchatJson.UnMarshalJSON(string(bt))
 		if err != nil {
 			t.Error("should be able to unmarshal ninchat string", err)
 		}
@@ -77,7 +77,7 @@ func TestJSON_MarshalJSON(t *testing.T) {
 		if bt == nil {
 			t.Error("byte representation of the json will not be empty")
 		}
-		err = ninchatJson.UnMarshalJSON(bt)
+		err = ninchatJson.UnMarshalJSON(string(bt))
 		if err != nil {
 			t.Error("should be able to unmarshal ninchat string", err)
 		}
@@ -94,7 +94,7 @@ func TestJSON_MarshalJSON(t *testing.T) {
 		if bt != nil {
 			t.Error("byte representation of the invalid json will be empty")
 		}
-		err = ninchatJson.UnMarshalJSON(bt)
+		err = ninchatJson.UnMarshalJSON(string(bt))
 		if err == nil {
 			t.Error("should be able to unmarshal ninchat string", err)
 		}
@@ -137,7 +137,7 @@ func TestProps_Marshal(t *testing.T) {
 	if bt == nil {
 		t.Error("byte representation of the json will not be empty")
 	}
-	err = ninchatProps.UnMarshalJSON(bt)
+	err = ninchatProps.UnMarshalJSON(string(bt))
 	if err != nil {
 		t.Error("should be able to unmarshal ninchat string", err)
 	}

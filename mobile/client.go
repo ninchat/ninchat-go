@@ -32,7 +32,7 @@ type JSON struct {
 }
 
 func (js *JSON) MarshalJSON() ([]byte, error)    { return json.Marshal(js.x) }
-func (js *JSON) UnMarshalJSON(data []byte) error { return json.Unmarshal(data, &js.x) }
+func (js *JSON) UnMarshalJSON(data string) error { return json.Unmarshal([]byte(data), &js.x) }
 
 func NewJSON(s string) *JSON { return &JSON{json.RawMessage(s)} }
 
@@ -47,7 +47,7 @@ func (ss *Strings) Get(i int) string                { return ss.a[i] }
 func (ss *Strings) Length() int                     { return len(ss.a) }
 func (ss *Strings) String() string                  { return fmt.Sprint(ss.a) }
 func (ss *Strings) MarshalJSON() ([]byte, error)    { return json.Marshal(ss.a) }
-func (ss *Strings) UnMarshalJSON(data []byte) error { return json.Unmarshal(data, &ss.a) }
+func (ss *Strings) UnMarshalJSON(data string) error { return json.Unmarshal([]byte(data), &ss.a) }
 
 type Props struct {
 	m map[string]interface{}
@@ -57,7 +57,7 @@ func NewProps() *Props { return &Props{make(map[string]interface{})} }
 
 func (ps *Props) String() string                  { return fmt.Sprint(ps.m) }
 func (ps *Props) MarshalJSON() ([]byte, error)    { return json.Marshal(ps.m) }
-func (ps *Props) UnMarshalJSON(data []byte) error { return json.Unmarshal(data, &ps.m) }
+func (ps *Props) UnMarshalJSON(data string) error { return json.Unmarshal([]byte(data), &ps.m) }
 
 func (ps *Props) SetBool(key string, val bool)            { ps.m[key] = val }
 func (ps *Props) SetInt(key string, val int)              { ps.m[key] = val }
@@ -184,7 +184,7 @@ func (pu PropsUtil) JSONString(props Props) string {
 }
 func (pu PropsUtil) FromJsonString(propsString string) Props {
 	var props Props
-	if err := props.UnMarshalJSON([]byte(propsString)); err != nil {
+	if err := props.UnMarshalJSON(propsString); err != nil {
 		return Props{}
 	}
 	return props
