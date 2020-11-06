@@ -50,8 +50,14 @@ type Props struct {
 
 func NewProps() *Props { return &Props{make(map[string]interface{})} }
 
-func (ps *Props) String() string                  { return fmt.Sprint(ps.m) }
-func (ps *Props) MarshalJSON() ([]byte, error)    { return json.Marshal(ps.m) }
+func (ps *Props) String() string { return fmt.Sprint(ps.m) }
+func (ps *Props) MarshalJSON() (string, error) {
+	bt, err := json.Marshal(ps.m)
+	if err != nil {
+		return "", err
+	}
+	return string(bt), err
+}
 func (ps *Props) UnmarshalJSON(data string) error { return json.Unmarshal([]byte(data), &ps.m) }
 
 func (ps *Props) SetBool(key string, val bool)            { ps.m[key] = val }
@@ -173,7 +179,7 @@ func (pu PropsUtil) JSONString(props Props) string {
 		return ""
 	}
 	if bt, err := props.MarshalJSON(); err == nil {
-		return string(bt)
+		return bt
 	}
 	return ""
 }

@@ -32,10 +32,10 @@ func TestProps_Marshal(t *testing.T) {
 		if err != nil {
 			t.Error("should be able to marshal ninchat json", err)
 		}
-		if bt == nil {
+		if bt == "" {
 			t.Error("byte representation of the json will not be empty")
 		}
-		err = ninchatProps.UnmarshalJSON(string(bt))
+		err = ninchatProps.UnmarshalJSON(bt)
 		if err != nil {
 			t.Error("should be able to unmarshal ninchat string", err)
 		}
@@ -72,10 +72,10 @@ func TestProps_Marshal(t *testing.T) {
 		if err == nil {
 			t.Error("should failed to marshal malform json object", err)
 		}
-		if bt != nil {
+		if bt != "" {
 			t.Error("byte representation of the json will empty")
 		}
-		err = ninchatProps.UnmarshalJSON(string(bt))
+		err = ninchatProps.UnmarshalJSON(bt)
 		if err == nil {
 			t.Error("should failed to unmarshal with malformed json", err)
 		}
