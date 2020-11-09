@@ -51,6 +51,14 @@ type Props struct {
 func NewProps() *Props { return &Props{make(map[string]interface{})} }
 
 func (ps *Props) String() string { return fmt.Sprint(ps.m) }
+func (ps *Props) MarshalJSON() (string, error) {
+	bt, err := json.Marshal(ps.m)
+	if err != nil {
+		return "", err
+	}
+	return string(bt), err
+}
+func (ps *Props) UnmarshalJSON(data string) error { return json.Unmarshal([]byte(data), &ps.m) }
 
 func (ps *Props) SetBool(key string, val bool)            { ps.m[key] = val }
 func (ps *Props) SetInt(key string, val int)              { ps.m[key] = val }
@@ -183,6 +191,9 @@ func (ps *Props) Accept(callback PropVisitor) (err error) {
 		switch v := x.(type) {
 		case bool:
 			err = callback.VisitBool(k, v)
+
+		case int:
+			err = callback.VisitNumber(k, float64(v))
 
 		case float64:
 			err = callback.VisitNumber(k, v)
