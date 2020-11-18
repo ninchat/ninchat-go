@@ -3,6 +3,7 @@ module github.com/ninchat/ninchat-go
 go 1.11
 
 require (
+	github.com/dvsekhvalnov/jose2go v0.0.0-20201001154944-b09cfaf05951
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
 	github.com/gorilla/websocket v1.4.1

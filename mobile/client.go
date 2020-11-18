@@ -2,12 +2,14 @@ package client
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"runtime"
 
+	"github.com/dvsekhvalnov/jose2go"
 	ninchat "github.com/ninchat/ninchat-go"
 )
 
@@ -62,6 +64,7 @@ func (ps *Props) UnmarshalJSON(data string) error { return json.Unmarshal([]byte
 
 func (ps *Props) SetBool(key string, val bool)            { ps.m[key] = val }
 func (ps *Props) SetInt(key string, val int)              { ps.m[key] = val }
+func (ps *Props) SetInt64(key string, val int64)          { ps.m[key] = val }
 func (ps *Props) SetFloat(key string, val float64)        { ps.m[key] = val }
 func (ps *Props) SetString(key string, val string)        { ps.m[key] = val }
 func (ps *Props) SetStringArray(key string, ref *Strings) { ps.m[key] = ref.a }
@@ -85,6 +88,19 @@ func (ps *Props) GetInt(key string) (val int, err error) {
 			val = i
 		} else if f, ok := x.(float64); ok {
 			val = int(f)
+		} else {
+			err = fmt.Errorf("Prop type: %q is not a number", key)
+		}
+	}
+	return
+}
+
+func (ps *Props) GetInt64(key string) (val int64, err error) {
+	if x, found := ps.m[key]; found {
+		if i64, ok := x.(int64); ok {
+			val = i64
+		} else if i, ok := x.(int); ok {
+			val = int64(i)
 		} else {
 			err = fmt.Errorf("Prop type: %q is not a number", key)
 		}
@@ -161,6 +177,30 @@ func (ps *Props) GetObjectArray(key string) (ref *Objects, err error) {
 		}
 	}
 	return
+}
+
+func (ps *Props) EncryptToJWT(key, secret string, expire int64) (string, error) {
+	if len(key) == 0 || len(secret) == 0 || expire < 0 {
+		return "", errors.New("invalid parameters")
+	}
+
+	// Set "ninchat.com/metadata"
+	ps.SetInt64("exp", expire)
+
+	// Decode base64 secret to hex
+	decodedSecret, err := base64.StdEncoding.DecodeString(secret)
+	if err != nil {
+		return "", err
+	}
+
+	// Marshal Props
+	payload, err := ps.MarshalJSON()
+	if err != nil {
+		return "", err
+	}
+
+	// Encrypt
+	return jose.Encrypt(payload, jose.DIR, jose.A256GCM, decodedSecret, jose.Header("typ", "JWT"), jose.Header("kid", key))
 }
 
 type Objects struct {

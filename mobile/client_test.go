@@ -1,7 +1,10 @@
 package client
 
 import (
+	"encoding/base64"
 	"testing"
+
+	"github.com/dvsekhvalnov/jose2go"
 )
 
 func TestProps_Marshal(t *testing.T) {
@@ -100,5 +103,73 @@ func TestProps_UnMarshalJSON(t *testing.T) {
 	}
 	if _, err := ninchatProps.GetObject("qux"); err != nil {
 		t.Error("should be able to get json object", err)
+	}
+}
+
+func TestProps_Int64Support(t *testing.T) {
+	props := NewProps()
+	props.SetInt64("t", 1)
+	val, err := props.GetInt64("t")
+	if err != nil {
+		t.Error(err)
+	}
+	if val != 1 {
+		t.Error("expected to receive given int64 value")
+	}
+}
+
+func TestProps_EncryptJWT_InvalidParams(t *testing.T) {
+	props := NewProps()
+
+	token, err := props.EncryptToJWT("", "", -1.0)
+	if err == nil {
+		t.Error("expected to receive an error in caes of an invalid secret")
+	}
+	if token != "" {
+		t.Error("expected to receive an empty token in caes of an invalid secret")
+	}
+}
+
+func TestProps_EncryptJWT_InvalidSecret(t *testing.T) {
+	props := NewProps()
+
+	token, err := props.EncryptToJWT("", "ABC123", -1.0)
+	if err == nil {
+		t.Error("expected to receive an error in caes of an invalid secret")
+	}
+	if token != "" {
+		t.Error("expected to receive an empty token in caes of an invalid secret")
+	}
+}
+
+func TestProps_EncryptJWT(t *testing.T) {
+	props := NewProps()
+	err := props.UnmarshalJSON("{\"ninchat.com/metadata\":{\"key\":\"value\"}}")
+	if err != nil {
+		t.Error(err)
+	}
+
+	token, err := props.EncryptToJWT("123456789ABC", "VGhpcyBpcyBhIGZha2Uga2V5IGdlbmVyYXRlZCBmb3I=", 1)
+	if err != nil {
+		t.Error(err)
+	}
+	if len(token) == 0 {
+		t.Error("expected to receive a valid token")
+	}
+
+	decodedSecret, err := base64.StdEncoding.DecodeString("VGhpcyBpcyBhIGZha2Uga2V5IGdlbmVyYXRlZCBmb3I=")
+	if err != nil {
+		t.Error(err)
+	}
+
+	decoded, _, err := jose.Decode(token, decodedSecret)
+	if err != nil {
+		t.Error(err)
+	}
+	if len(decoded) == 0 {
+		t.Error("expected to decode successfully")
+	}
+	if decoded != "{\"exp\":1,\"ninchat.com/metadata\":{\"key\":\"value\"}}" {
+		t.Error("expected to decode to the given props")
 	}
 }
