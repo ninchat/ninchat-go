@@ -184,10 +184,10 @@ func (ps *Props) EncryptToJWT(key, secret string, expire int64) (string, error) 
 		return "", errors.New("invalid parameters")
 	}
 
-	// Set "ninchat.com/metadata"
+	// Set "exp" field
 	ps.SetInt64("exp", expire)
 
-	// Decode base64 secret to hex
+	// Decode base64 secret to byteArray
 	decodedSecret, err := base64.StdEncoding.DecodeString(secret)
 	if err != nil {
 		return "", err
