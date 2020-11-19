@@ -2,12 +2,14 @@ package client
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"runtime"
 
+	"github.com/dvsekhvalnov/jose2go"
 	ninchat "github.com/ninchat/ninchat-go"
 )
 
@@ -161,6 +163,24 @@ func (ps *Props) GetObjectArray(key string) (ref *Objects, err error) {
 		}
 	}
 	return
+}
+
+func (ps *Props) EncryptToJWT(key, secret string) (string, error) {
+	if len(key) == 0 || len(secret) == 0 {
+		return "", errors.New("invalid parameters")
+	}
+
+	decodedSecret, err := base64.StdEncoding.DecodeString(secret)
+	if err != nil {
+		return "", err
+	}
+
+	payload, err := ps.MarshalJSON()
+	if err != nil {
+		return "", err
+	}
+
+	return jose.Encrypt(payload, jose.DIR, jose.A256GCM, decodedSecret, jose.Header("typ", "JWT"), jose.Header("kid", key))
 }
 
 type Objects struct {
