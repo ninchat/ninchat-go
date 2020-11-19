@@ -106,18 +106,6 @@ func TestProps_UnMarshalJSON(t *testing.T) {
 	}
 }
 
-func TestProps_Int64Support(t *testing.T) {
-	props := NewProps()
-	props.SetInt64("t", 1)
-	val, err := props.GetInt64("t")
-	if err != nil {
-		t.Error(err)
-	}
-	if val != 1 {
-		t.Error("expected to receive given int64 value")
-	}
-}
-
 func TestProps_EncryptJWT_InvalidParams(t *testing.T) {
 	props := NewProps()
 
