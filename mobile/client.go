@@ -165,8 +165,8 @@ func (ps *Props) GetObjectArray(key string) (ref *Objects, err error) {
 	return
 }
 
-func (ps *Props) EncryptToJWT(key, secret string, expire float64) (string, error) {
-	if len(key) == 0 || len(secret) == 0 || expire < 0 {
+func (ps *Props) EncryptToJWT(key, secret string) (string, error) {
+	if len(key) == 0 || len(secret) == 0 {
 		return "", errors.New("invalid parameters")
 	}
 
@@ -175,7 +175,6 @@ func (ps *Props) EncryptToJWT(key, secret string, expire float64) (string, error
 		return "", err
 	}
 
-	ps.SetFloat("exp", expire)
 	payload, err := ps.MarshalJSON()
 	if err != nil {
 		return "", err

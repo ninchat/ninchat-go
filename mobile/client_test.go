@@ -109,7 +109,7 @@ func TestProps_UnMarshalJSON(t *testing.T) {
 func TestProps_EncryptJWT_InvalidParams(t *testing.T) {
 	props := NewProps()
 
-	token, err := props.EncryptToJWT("", "", -1.0)
+	token, err := props.EncryptToJWT("", "")
 	if err == nil {
 		t.Error("expected to receive an error in caes of an invalid secret")
 	}
@@ -121,7 +121,7 @@ func TestProps_EncryptJWT_InvalidParams(t *testing.T) {
 func TestProps_EncryptJWT_InvalidSecret(t *testing.T) {
 	props := NewProps()
 
-	token, err := props.EncryptToJWT("", "ABC123", -1.0)
+	token, err := props.EncryptToJWT("", "ABC123")
 	if err == nil {
 		t.Error("expected to receive an error in caes of an invalid secret")
 	}
@@ -132,12 +132,12 @@ func TestProps_EncryptJWT_InvalidSecret(t *testing.T) {
 
 func TestProps_EncryptJWT(t *testing.T) {
 	props := NewProps()
-	err := props.UnmarshalJSON("{\"ninchat.com/metadata\":{\"key\":\"value\"}}")
+	err := props.UnmarshalJSON("{\"exp\":1, \"ninchat.com/metadata\":{\"key\":\"value\"}}")
 	if err != nil {
 		t.Error(err)
 	}
 
-	token, err := props.EncryptToJWT("123456789ABC", "VGhpcyBpcyBhIGZha2Uga2V5IGdlbmVyYXRlZCBmb3I=", 1)
+	token, err := props.EncryptToJWT("123456789ABC", "VGhpcyBpcyBhIGZha2Uga2V5IGdlbmVyYXRlZCBmb3I=")
 	if err != nil {
 		t.Error(err)
 	}
