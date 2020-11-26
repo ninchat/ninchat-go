@@ -6,8 +6,8 @@ import (
 )
 
 type Webhook struct {
-	// Kid and Exp are specified only interfaces which use signatures
-	// (i.e. they are not specified for AWS Lambda functions).
+	// Kid and Exp are specified only for transports which use signatures
+	// (i.e. they are specified for HTTP, but not for AWS Lambda functions).
 	Kid string `json:"kid,omitempty"`
 	Exp int64  `json:"exp,omitempty"`
 
