@@ -9,7 +9,7 @@ var messageData = []byte("{\"text\":\"hello\"}")
 
 var imageData = []byte("\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x00\x00\x00\x00:~\x9bU\x00\x00\x00\nIDAT\x08\xd7c`\x00\x00\x00\x02\x00\x01\xe2!\xbc3\x00\x00\x00\x00IEND\xaeB`\x82")
 
-func openSession(t *testing.T, forceLongPoll bool, params map[string]interface{}) (session *Session, events chan *Event) {
+func openSession(t *testing.T, poll bool, params map[string]interface{}) (session *Session, events chan *Event) {
 	events = make(chan *Event, 10)
 
 	session = &Session{
@@ -39,7 +39,8 @@ func openSession(t *testing.T, forceLongPoll bool, params map[string]interface{}
 			"User-Agent": []string{"test"},
 		},
 
-		forceLongPoll: forceLongPoll,
+		DisableLongPoll: !poll,
+		forceLongPoll:   poll,
 	}
 
 	session.SetParams(params)
@@ -55,14 +56,14 @@ func TestSessionLongPoll(t *testing.T) {
 	testSession(t, true)
 }
 
-func testSession(t *testing.T, forceLongPoll bool) {
+func testSession(t *testing.T, poll bool) {
 	params := map[string]interface{}{
 		"message_types": []string{
 			"*",
 		},
 	}
 
-	session, events := openSession(t, forceLongPoll, params)
+	session, events := openSession(t, poll, params)
 	defer session.Close()
 
 	var (
@@ -134,7 +135,7 @@ func TestLoginFailureLongPoll(t *testing.T) {
 	testLoginFailure(t, true)
 }
 
-func testLoginFailure(t *testing.T, forceLongPoll bool) {
+func testLoginFailure(t *testing.T, poll bool) {
 	params := map[string]interface{}{
 		"identity_type": "email",
 		"identity_name": "nonexistent@example.invalid",
@@ -142,7 +143,7 @@ func testLoginFailure(t *testing.T, forceLongPoll bool) {
 		"message_types": []string{},
 	}
 
-	session, events := openSession(t, forceLongPoll, params)
+	session, events := openSession(t, poll, params)
 	defer session.Close()
 
 	event := <-events

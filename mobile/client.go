@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"runtime"
 
-	"github.com/dvsekhvalnov/jose2go"
+	jose "github.com/dvsekhvalnov/jose2go"
 	ninchat "github.com/ninchat/ninchat-go"
 )
 
@@ -378,6 +378,10 @@ func (s *Session) SetHeader(key, value string) {
 
 func (s *Session) SetAddress(address string) {
 	s.s.Address = address
+}
+
+func (s *Session) SetDisableLongPoll(disabled bool) {
+	s.s.DisableLongPoll = disabled
 }
 
 func (s *Session) SetParams(params *Props) (err error) {

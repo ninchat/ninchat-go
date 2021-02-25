@@ -78,7 +78,8 @@ type Session struct {
 
 	Address string
 
-	forceLongPoll bool // only for testing
+	DisableLongPoll bool
+	forceLongPoll   bool // only for testing
 
 	mutex sync.Mutex // guards all variables below
 
@@ -156,6 +157,10 @@ func (s *Session) Open() {
 
 	if s.sessionParams == nil {
 		panic("session parameters not defined")
+	}
+
+	if s.DisableLongPoll && !webSocketSupported {
+		panic("websocket not supported by browser")
 	}
 
 	s.sendNotify = make(chan struct{}, 1)
@@ -312,7 +317,9 @@ func (s *Session) discover() {
 					}
 				}
 
-				s.connect(longPollTransport, hosts, &backoff)
+				if !s.DisableLongPoll {
+					s.connect(longPollTransport, hosts, &backoff)
+				}
 			} else {
 				s.log("endpoint discovery:", err)
 			}

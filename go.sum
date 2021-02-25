@@ -1,3 +1,4 @@
+github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802 h1:1BDTz0u9nC3//pOCMdNH+CiXJVYJh5UQNCOBG7jbELc=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/dvsekhvalnov/jose2go v0.0.0-20201001154944-b09cfaf05951 h1:U+H8oUNmugZTzB9c3EZQzdC2B9rXCqROImRSxnwh4Ck=
 github.com/dvsekhvalnov/jose2go v0.0.0-20201001154944-b09cfaf05951/go.mod h1:QsHjhyTlD/lAVqn/NSbVZmSCGeDehTB/mPZadG+mhXU=
