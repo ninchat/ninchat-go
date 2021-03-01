@@ -10,7 +10,7 @@ import (
 
 func jsonMarshal(v map[string]interface{}) (data *js.Object, err error) {
 	defer func() {
-		err = jsError(recover())
+		err = jsError("JSON marshal", recover())
 	}()
 
 	data = js.Global.Get("JSON").Call("stringify", v)
@@ -51,7 +51,7 @@ func jsonUnmarshalObject(data *js.Object, v *map[string]interface{}) (err error)
 
 func jsonParse(data *js.Object) (x interface{}, err error) {
 	defer func() {
-		err = jsError(recover())
+		err = jsError("JSON parse", recover())
 	}()
 
 	x = js.Global.Get("JSON").Call("parse", data).Interface()

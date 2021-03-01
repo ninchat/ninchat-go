@@ -115,7 +115,11 @@ func newWebSocket(url string, header map[string][]string, timeout duration) (ws 
 		clearTimeout()
 
 		if ws.err == nil {
-			ws.err = errors.New(object.Get("message").String())
+			if msg := object.Get("message"); msg != js.Undefined {
+				ws.err = errors.New("websocket onerror: message: " + msg.String())
+			} else {
+				ws.err = errors.New("websocket onerror: " + object.String())
+			}
 		}
 
 		closeNotify()
@@ -133,7 +137,7 @@ func (ws *webSocket) sendInitialJSON(object map[string]interface{}) error {
 
 func (ws *webSocket) send(data *js.Object) (err error) {
 	defer func() {
-		err = jsError(recover())
+		err = jsError("websocket send", recover())
 	}()
 
 	ws.impl.Call("send", data)
@@ -152,7 +156,7 @@ func (ws *webSocket) sendJSON(object map[string]interface{}) (err error) {
 
 func (ws *webSocket) sendPayload(action *Action) (err error) {
 	defer func() {
-		err = jsError(recover())
+		err = jsError("websocket send payload", recover())
 	}()
 
 	decodeDataURI := (action.String() == "update_user")

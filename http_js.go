@@ -67,7 +67,7 @@ func getResponseData(req *httpRequest, timeout duration) (*js.Object, error) {
 // IE 8 or 9.
 func putResponseToChannel(req *httpRequest, timeout duration, c chan<- httpResponse) {
 	defer func() {
-		if err := jsError(recover()); err != nil {
+		if err := jsError("XHR", recover()); err != nil {
 			c <- httpResponse{err: err}
 		}
 	}()

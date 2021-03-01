@@ -6,17 +6,17 @@ import (
 	"errors"
 )
 
-func jsError(x interface{}) (err error) {
+func jsError(function string, x interface{}) (err error) {
 	if x != nil {
 		switch t := x.(type) {
 		case error:
-			err = t
+			err = errors.New(function + ": " + t.Error())
 
 		case string:
-			err = errors.New(t)
+			err = errors.New(function + ": " + t)
 
 		default:
-			err = errors.New("?")
+			err = errors.New(function + ": ?")
 		}
 	}
 
