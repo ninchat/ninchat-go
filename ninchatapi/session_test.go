@@ -4,10 +4,9 @@ import (
 	"bytes"
 	"testing"
 
+	ninchat "github.com/ninchat/ninchat-go"
+	"github.com/ninchat/ninchat-go/ninchatapi"
 	"github.com/tsavola/pointer"
-
-	"."
-	"github.com/ninchat/ninchat-go"
 )
 
 var messageData = []byte("{\"text\":\"hello\"}")

@@ -7,7 +7,7 @@ build-client-go:
 
 all: build-client-go lib/libninchat.a lib/ninchat-client.aar lib/NinchatLowLevelClient.framework/NinchatLowLevelClient
 
-check: all check-client check-api check-message check-c
+check: check-client check-api check-message check-c
 
 check-client: check-client-go check-client-js
 

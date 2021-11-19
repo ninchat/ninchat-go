@@ -3,9 +3,8 @@ package ninchatapi_test
 import (
 	"testing"
 
+	"github.com/ninchat/ninchat-go/ninchatapi"
 	"github.com/tsavola/pointer"
-
-	"."
 )
 
 func TestCall(t *testing.T) {

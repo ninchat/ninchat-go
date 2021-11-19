@@ -3,7 +3,7 @@ package ninchatmessage_test
 import (
 	"testing"
 
-	"."
+	"github.com/ninchat/ninchat-go/ninchatmessage"
 )
 
 func TestOriginalContent(t *testing.T) {
