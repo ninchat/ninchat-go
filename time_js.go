@@ -35,7 +35,7 @@ type timer struct {
 
 func newTimer(timeout duration) (t *timer) {
 	t = &timer{
-		C: make(chan struct{}),
+		C: make(chan struct{}, 1),
 	}
 
 	if timeout >= 0 {
@@ -54,10 +54,7 @@ func (timer *timer) Reset(timeout duration) {
 
 	timer.id = js.Global.Call("setTimeout", func() {
 		timer.id = nil
-
-		go func() {
-			timer.C <- struct{}{}
-		}()
+		timer.C <- struct{}{}
 	}, timeout)
 }
 
