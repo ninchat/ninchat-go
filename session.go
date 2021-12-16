@@ -100,6 +100,8 @@ type Session struct {
 	closed      bool
 	running     bool
 
+	reconnect chan<- struct{}
+
 	test testSupport
 }
 
@@ -195,6 +197,19 @@ func (s *Session) Close() {
 		s.closeNotify <- struct{}{}
 		close(s.sendNotify)
 	}()
+}
+
+// Reconnect now, if reconnection process is currently waiting to retry.  This
+// gives a hint that network conditions have changed.  It is safe to call this
+// at any time.
+func (s *Session) Reconnect() {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	if c := s.reconnect; c != nil {
+		s.reconnect = nil
+		close(c)
+	}
 }
 
 // Send an action.
@@ -376,27 +391,37 @@ func (s *Session) connect(transport transport, hosts []string, backoff *backoff)
 
 // backOff sleeps for a time.  False is returned if session was closed while
 // sleeping.
-func (s *Session) backOff(b *backoff) (ok bool) {
+func (s *Session) backOff(b *backoff) bool {
 	delay := b.failure(maxBackoffDelay)
 	if delay == 0 {
-		ok = true
-		return
+		return true
 	}
 
 	s.connState("disconnected")
 	s.log("sleeping")
 
+	reconnect := make(chan struct{}, 1)
+	s.reconnect = reconnect
+
 	s.mutex.Unlock()
-	defer s.mutex.Lock()
+	defer func() {
+		s.mutex.Lock()
+		s.reconnect = nil
+	}()
+
+	timer := newTimer(delay)
+	defer timer.Stop()
 
 	select {
-	case <-newTimer(delay).C:
-		ok = true
+	case <-timer.C:
+		return true
+
+	case <-reconnect:
+		return true
 
 	case <-s.closeNotify:
+		return false
 	}
-
-	return
 }
 
 // canLogin checks whether the makeCreateSessionAction method would make an
