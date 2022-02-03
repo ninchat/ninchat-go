@@ -42,90 +42,155 @@ type webSocket struct {
 	client string
 }
 
-func newWebSocket(url string, header map[string][]string, timeout duration) (ws *webSocket) {
-	ws = &webSocket{
+func newWebSocket(host string, header map[string][]string, timeout duration, log func(...interface{})) *webSocket {
+	deadline := timeAdd(timeNow(), timeout)
+
+	ws := &webSocket{
 		notify: make(chan struct{}, 1),
-		impl:   webSocketClass.New(url),
 		client: getUserAgent(header),
 	}
 
-	ws.impl.Set("binaryType", "arraybuffer")
+	var (
+		poked        bool
+		notifyClosed bool
+		connect      func() *js.Object
+	)
 
-	var notifyClosed bool
+	connect = func() *js.Object {
+		impl := webSocketClass.New("wss://" + host + socketPath)
+		impl.Set("binaryType", "arraybuffer")
 
-	closeNotify := func() {
-		if !notifyClosed {
-			notifyClosed = true
+		stale := false
+
+		closeNotify := func() {
+			if !notifyClosed {
+				notifyClosed = true
+
+				go func() {
+					close(ws.notify)
+				}()
+			}
+		}
+
+		timeoutId := js.Global.Call("setTimeout", func() {
+			if stale {
+				return
+			}
+
+			ws.err = errors.New("timeout")
+			closeNotify()
+		}, timeout)
+
+		clearTimeout := func() {
+			if timeoutId != nil {
+				js.Global.Call("clearTimeout", timeoutId)
+				timeoutId = nil
+			}
+		}
+
+		impl.Set("onopen", func(*js.Object) {
+			clearTimeout()
+			if stale {
+				return
+			}
+			if ws.err != nil {
+				impl.Call("close")
+				return
+			}
+
+			ws.open = true
 
 			go func() {
-				close(ws.notify)
-			}()
-		}
-	}
-
-	timeoutId := js.Global.Call("setTimeout", func() {
-		ws.err = errors.New("timeout")
-		closeNotify()
-	}, timeout)
-
-	clearTimeout := func() {
-		if timeoutId != nil {
-			js.Global.Call("clearTimeout", timeoutId)
-			timeoutId = nil
-		}
-	}
-
-	ws.impl.Set("onopen", func(*js.Object) {
-		clearTimeout()
-
-		if ws.err != nil {
-			ws.impl.Call("close")
-			return
-		}
-
-		ws.open = true
-
-		go func() {
-			if !notifyClosed {
-				ws.notify <- struct{}{}
-			}
-		}()
-	})
-
-	ws.impl.Set("onmessage", func(object *js.Object) {
-		ws.buf = append(ws.buf, object.Get("data"))
-
-		go func() {
-			if !notifyClosed {
-				select {
-				case ws.notify <- struct{}{}:
-				default:
+				if !notifyClosed {
+					ws.notify <- struct{}{}
 				}
+			}()
+		})
+
+		impl.Set("onmessage", func(object *js.Object) {
+			if stale {
+				return
 			}
-		}()
-	})
 
-	ws.impl.Set("onclose", func(object *js.Object) {
-		ws.goingAway = (object.Get("code").Int() == 1001)
-		ws.open = false
-		closeNotify()
-	})
+			ws.buf = append(ws.buf, object.Get("data"))
 
-	ws.impl.Set("onerror", func(object *js.Object) {
-		clearTimeout()
+			go func() {
+				if !notifyClosed {
+					select {
+					case ws.notify <- struct{}{}:
+					default:
+					}
+				}
+			}()
+		})
 
-		if ws.err == nil {
+		impl.Set("onclose", func(object *js.Object) {
+			if stale {
+				return
+			}
+
+			ws.goingAway = (object.Get("code").Int() == 1001)
+			ws.open = false
+			closeNotify()
+		})
+
+		impl.Set("onerror", func(object *js.Object) {
+			clearTimeout()
+			if stale {
+				return
+			}
+			if ws.err != nil {
+				closeNotify()
+				return
+			}
+
+			var pendingErr error
 			if msg := object.Get("message"); msg != js.Undefined {
-				ws.err = errors.New("websocket onerror: message: " + msg.String())
+				pendingErr = errors.New("websocket onerror: message: " + msg.String())
 			} else {
-				ws.err = errors.New("websocket onerror: " + object.String())
+				pendingErr = errors.New("websocket onerror: " + object.String())
 			}
-		}
 
-		closeNotify()
-	})
+			timeout = timeSub(deadline, timeNow())
+			if poked || timeout <= 0 {
+				ws.err = pendingErr
+				closeNotify()
+				return
+			}
 
-	return
+			origin := "https://" + host
+			log("poking", origin)
+
+			req, err := newGetRequest(origin+endpointPath, nil)
+			if err != nil {
+				panic(err)
+			}
+
+			poked = true
+			stale = true
+
+			go func() {
+				if _, err := getResponseData(req, timeout); err == nil {
+					timeout = timeSub(deadline, timeNow())
+					if timeout > 0 {
+						log("retrying same websocket host once more")
+						ws.impl = connect()
+						return
+					}
+				} else {
+					log("poke error:", err)
+				}
+
+				ws.err = pendingErr
+				closeNotify()
+			}()
+		})
+
+		return impl
+	}
+
+	ws.impl = connect()
+	return ws
 }
 
 func (ws *webSocket) sendInitialJSON(object map[string]interface{}) error {

@@ -705,3 +705,10 @@ func (s *Session) log(tokens ...interface{}) {
 
 	s.OnLog(tokens...)
 }
+
+// nonunlockingLog can be called in contexts which do not hold Session.mutex.
+func (s *Session) nonunlockingLog(tokens ...interface{}) {
+	if s.OnLog != nil {
+		s.OnLog(tokens...)
+	}
+}

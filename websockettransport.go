@@ -22,9 +22,9 @@ func webSocketTransport(s *Session, host string) (connWorked, gotOnline bool) {
 		gotOnline = false
 		hostHealthy := false
 
-		s.log("connecting to", host)
+		s.log("connecting to", "wss://"+host)
 
-		ws = newWebSocket("wss://"+host+socketPath, s.Header, jitterDuration(connectTimeout, 0.1))
+		ws = newWebSocket(host, s.Header, jitterDuration(connectTimeout, 0.1), s.nonunlockingLog)
 		s.test.setWebSocket(ws)
 
 		s.mutex.Unlock()
