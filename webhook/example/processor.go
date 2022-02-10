@@ -200,6 +200,12 @@ func handleNinchatWebhook(w http.ResponseWriter, r *http.Request) {
 
 		handleAudienceComplete(w, params)
 
+	case webhook.EventMessageSent:
+		if _, err := document.MessageSent(); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
 	case webhook.EventDataAccess:
 		params, err := document.DataAccess()
 		if err != nil {

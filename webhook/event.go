@@ -11,6 +11,7 @@ const (
 	EventAudienceRequested   EventType = "audience_requested"
 	EventAudienceAccepted    EventType = "audience_accepted"
 	EventAudienceComplete    EventType = "audience_complete"
+	EventMessageSent         EventType = "message_sent"
 	EventDataAccess          EventType = "data_access"
 )
 
@@ -39,6 +40,14 @@ type AudienceComplete struct {
 	ChannelID             string              `json:"channel_id,omitempty"`
 	MemberMessageMetadata map[string]Metadata `json:"member_message_metadata"`
 	Messages              []Message           `json:"messages,omitempty"`
+}
+
+type MessageSent struct {
+	RealmID    string  `json:"realm_id"`
+	QueueID    string  `json:"queue_id,omitempty"`
+	AudienceID string  `json:"audience_id,omitempty"`
+	ChannelID  string  `json:"channel_id,omitempty"`
+	Message    Message `json:"audience"`
 }
 
 type DataAccess struct {
