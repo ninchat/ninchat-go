@@ -1,7 +1,5 @@
 // Use "go run processor.go" to run this example program.
 
-// +build ignore
-
 package main
 
 import (
@@ -15,6 +13,7 @@ import (
 	"log"
 	"math"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -24,24 +23,39 @@ import (
 
 // HTTPS server program.
 func main() {
+	server := http.Server{
+		Addr: ":443",
+		TLSConfig: &tls.Config{
+			MinVersion: tls.VersionTLS12,
+		},
+	}
+
 	var (
-		server = http.Server{
-			Addr: ":443",
-			TLSConfig: &tls.Config{
-				MinVersion: tls.VersionTLS12,
-			},
-		}
 		cert    = "cert.pem"
 		certKey = "certkey.pem"
 	)
 
-	flag.StringVar(&server.Addr, "-addr", server.Addr, "Listening [host]:port")
-	flag.StringVar(&cert, "-cert", cert, "TLS certificate filename")
-	flag.StringVar(&certKey, "-certkey", certKey, "TLS certificate's private key filename")
+	flag.StringVar(&server.Addr, "addr", server.Addr, "Listening [host]:port")
+	flag.StringVar(&cert, "cert", cert, "TLS certificate filename")
+	flag.StringVar(&certKey, "certkey", certKey, "TLS certificate's private key filename")
 	flag.Parse()
 
+	// Specify additional public keys on command-line.
+	for _, s := range flag.Args() {
+		parts := strings.SplitN(s, "=", 2)
+		if len(parts) != 2 {
+			os.Exit(2)
+		}
+		ninchatPublicKeys[parts[0]] = parts[1]
+	}
+
 	http.HandleFunc("/ninchat-webhook", handleNinchatWebhook)
-	log.Fatal(server.ListenAndServeTLS(cert, certKey))
+
+	if cert == "" && certKey == "" {
+		log.Fatal(server.ListenAndServe())
+	} else {
+		log.Fatal(server.ListenAndServeTLS(cert, certKey))
+	}
 }
 
 // Add new key here when one is announced.  Remove the old one after it has
@@ -176,22 +190,24 @@ func handleNinchatWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 
 	case webhook.EventAudienceRequested:
+		log.Printf("Audience requested webhook: %s", document.AudienceRequestedJSON)
+
 		if _, err := document.AudienceRequested(); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
-		log.Println("audience requested")
-
 	case webhook.EventAudienceAccepted:
+		log.Printf("Audience accepted webhook: %s", document.AudienceAcceptedJSON)
+
 		if _, err := document.AudienceAccepted(); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
-		log.Println("audience accepted")
-
 	case webhook.EventAudienceComplete:
+		log.Printf("Audience complete webhook: %s", document.AudienceCompleteJSON)
+
 		params, err := document.AudienceComplete()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -201,12 +217,16 @@ func handleNinchatWebhook(w http.ResponseWriter, r *http.Request) {
 		handleAudienceComplete(w, params)
 
 	case webhook.EventMessageSent:
+		log.Printf("Message sent webhook: %s", document.MessageSentJSON)
+
 		if _, err := document.MessageSent(); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
 	case webhook.EventDataAccess:
+		log.Printf("Data access webhook: %s", document.DataAccessJSON)
+
 		params, err := document.DataAccess()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
