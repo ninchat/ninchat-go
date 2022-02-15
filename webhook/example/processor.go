@@ -197,6 +197,14 @@ func handleNinchatWebhook(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+	case webhook.EventAudienceRequestDropped:
+		log.Printf("Audience request dropped webhook: %s", document.AudienceRequestDroppedJSON)
+
+		if _, err := document.AudienceRequestDropped(); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
 	case webhook.EventAudienceAccepted:
 		log.Printf("Audience accepted webhook: %s", document.AudienceAcceptedJSON)
 

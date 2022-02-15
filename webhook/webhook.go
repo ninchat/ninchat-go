@@ -16,12 +16,13 @@ type Webhook struct {
 	EventID string    `json:"event_id"`
 
 	// Raw JSON event fields can be used to store the data in lossless form.
-	WebhookVerificationJSON json.RawMessage `json:"webhook_verification,omitempty"`
-	AudienceRequestedJSON   json.RawMessage `json:"audience_requested,omitempty"`
-	AudienceAcceptedJSON    json.RawMessage `json:"audience_accepted,omitempty"`
-	AudienceCompleteJSON    json.RawMessage `json:"audience_complete,omitempty"`
-	MessageSentJSON         json.RawMessage `json:"message_sent,omitempty"`
-	DataAccessJSON          json.RawMessage `json:"data_access,omitempty"`
+	WebhookVerificationJSON    json.RawMessage `json:"webhook_verification,omitempty"`
+	AudienceRequestedJSON      json.RawMessage `json:"audience_requested,omitempty"`
+	AudienceRequestDroppedJSON json.RawMessage `json:"audience_request_dropped,omitempty"`
+	AudienceAcceptedJSON       json.RawMessage `json:"audience_accepted,omitempty"`
+	AudienceCompleteJSON       json.RawMessage `json:"audience_complete,omitempty"`
+	MessageSentJSON            json.RawMessage `json:"message_sent,omitempty"`
+	DataAccessJSON             json.RawMessage `json:"data_access,omitempty"`
 }
 
 func (doc *Webhook) WebhookVerificationResponse() (content []byte) {
@@ -34,6 +35,11 @@ func (doc *Webhook) WebhookVerificationResponse() (content []byte) {
 
 func (doc *Webhook) AudienceRequested() (event AudienceRequested, err error) {
 	err = json.Unmarshal(doc.AudienceRequestedJSON, &event)
+	return
+}
+
+func (doc *Webhook) AudienceRequestDropped() (event AudienceRequestDropped, err error) {
+	err = json.Unmarshal(doc.AudienceRequestDroppedJSON, &event)
 	return
 }
 

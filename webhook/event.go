@@ -7,15 +7,23 @@ import (
 type EventType string
 
 const (
-	EventWebhookVerification EventType = "webhook_verification"
-	EventAudienceRequested   EventType = "audience_requested"
-	EventAudienceAccepted    EventType = "audience_accepted"
-	EventAudienceComplete    EventType = "audience_complete"
-	EventMessageSent         EventType = "message_sent"
-	EventDataAccess          EventType = "data_access"
+	EventWebhookVerification    EventType = "webhook_verification"
+	EventAudienceRequested      EventType = "audience_requested"
+	EventAudienceRequestDropped EventType = "audience_request_dropped"
+	EventAudienceAccepted       EventType = "audience_accepted"
+	EventAudienceComplete       EventType = "audience_complete"
+	EventMessageSent            EventType = "message_sent"
+	EventDataAccess             EventType = "data_access"
 )
 
 type AudienceRequested struct {
+	RealmID    string   `json:"realm_id"`
+	QueueID    string   `json:"queue_id"`
+	AudienceID string   `json:"audience_id"`
+	Audience   Audience `json:"audience"`
+}
+
+type AudienceRequestDropped struct {
 	RealmID    string   `json:"realm_id"`
 	QueueID    string   `json:"queue_id"`
 	AudienceID string   `json:"audience_id"`
@@ -58,11 +66,12 @@ type DataAccess struct {
 
 type Audience struct {
 	RequestTime  float64                   `json:"request_time,omitempty"` // Always present in event; never in response.
+	DropTime     float64                   `json:"drop_time,omitempty"`
 	AcceptTime   float64                   `json:"accept_time,omitempty"`
 	FinishTime   float64                   `json:"finish_time,omitempty"`
 	CompleteTime float64                   `json:"complete_time,omitempty"`
 	Members      map[string]AudienceMember `json:"members,omitempty"` // Always present in event; never in response.
-	Metadata     Metadata                  `json:"metadata"`
+	Metadata     Metadata                  `json:"metadata,omitempty"`
 }
 
 type AudienceMember struct {
