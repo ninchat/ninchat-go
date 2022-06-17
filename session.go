@@ -429,6 +429,12 @@ func (s *Session) backOff(b *backoff) bool {
 // The answer is no if the action could succeed, but would create a new
 // user.
 func (s *Session) canLogin() bool {
+	if x, found := s.sessionParams["user_existing"]; found && x != nil {
+		if value, ok := x.(bool); ok && !value {
+			return false
+		}
+	}
+
 	if s.sessionParams["access_key"] != nil {
 		return true
 	}
@@ -455,6 +461,8 @@ func (s *Session) makeCreateSessionAction() (params map[string]interface{}) {
 	} else {
 		// This might be automatic session recreation, try to be smart.
 
+		params["user_existing"] = true
+
 		if userAuth := s.sessionParams["user_auth"]; userAuth != nil {
 			params["user_id"] = userId
 			params["user_auth"] = userAuth
@@ -474,7 +482,7 @@ func (s *Session) makeCreateSessionAction() (params map[string]interface{}) {
 
 		for key, value := range s.sessionParams {
 			switch key {
-			case "user_id", "user_auth", "identity_type", "identity_name", "identity_auth", "access_key", "master_sign":
+			case "user_id", "user_auth", "user_existing", "identity_type", "identity_name", "identity_auth", "access_key", "master_sign":
 				// skipped
 
 			default:
@@ -537,6 +545,7 @@ func (s *Session) handleSessionEvent(params map[string]interface{}) (ok bool) {
 	delete(s.sessionParams, "access_key")
 	delete(s.sessionParams, "master_sign")
 
+	s.sessionParams["user_existing"] = true
 	s.sessionParams["user_id"] = event.Params["user_id"]
 
 	if x := event.Params["user_auth"]; x != nil {
