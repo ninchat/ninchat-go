@@ -17,10 +17,11 @@ const (
 )
 
 type AudienceRequested struct {
-	RealmID    string   `json:"realm_id"`
-	QueueID    string   `json:"queue_id"`
-	AudienceID string   `json:"audience_id"`
-	Audience   Audience `json:"audience"`
+	RealmID      string        `json:"realm_id"`
+	QueueID      string        `json:"queue_id"`
+	QueueMembers []QueueMember `json:"queue_members"`
+	AudienceID   string        `json:"audience_id"`
+	Audience     Audience      `json:"audience"`
 }
 
 type AudienceRequestDropped struct {
@@ -31,23 +32,30 @@ type AudienceRequestDropped struct {
 }
 
 type AudienceAccepted struct {
-	RealmID    string   `json:"realm_id"`
-	QueueID    string   `json:"queue_id"`
-	AudienceID string   `json:"audience_id"`
-	Audience   Audience `json:"audience"`
-	DialogueID []string `json:"dialogue_id,omitempty"`
-	ChannelID  string   `json:"channel_id,omitempty"`
+	RealmID     string      `json:"realm_id"`
+	QueueID     string      `json:"queue_id"`
+	QueueMember QueueMember `json:"queue_member"`
+	AudienceID  string      `json:"audience_id"`
+	Audience    Audience    `json:"audience"`
+	DialogueID  []string    `json:"dialogue_id,omitempty"`
+	ChannelID   string      `json:"channel_id,omitempty"`
 }
 
 type AudienceComplete struct {
 	RealmID               string              `json:"realm_id"`
 	QueueID               string              `json:"queue_id"`
+	QueueMember           *QueueMember        `json:"queue_member"`
 	AudienceID            string              `json:"audience_id"`
 	Audience              Audience            `json:"audience"`
 	DialogueID            []string            `json:"dialogue_id,omitempty"`
 	ChannelID             string              `json:"channel_id,omitempty"`
 	MemberMessageMetadata map[string]Metadata `json:"member_message_metadata"`
 	Messages              []Message           `json:"messages,omitempty"`
+}
+
+type QueueMember struct {
+	UserID      string              `json:"user_id"`
+	Identifiers map[string][]string `json:"identifiers"`
 }
 
 type MessageSent struct {
