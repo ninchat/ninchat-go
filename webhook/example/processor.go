@@ -161,7 +161,7 @@ func handleNinchatWebhook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
-	publicKey, err := base64.RawURLEncoding.DecodeString(publicKeyString)
+	publicKey, err := base64.RawStdEncoding.DecodeString(publicKeyString)
 	if err != nil {
 		panic(err)
 	}
