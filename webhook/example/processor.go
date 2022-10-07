@@ -3,7 +3,7 @@
 package main
 
 import (
-	"crypto/ed25519" // golang.org/x/crypto/ed25519 supports old Go versions.
+	"crypto/ed25519"
 	"crypto/tls"
 	"encoding/base64"
 	"encoding/hex"
