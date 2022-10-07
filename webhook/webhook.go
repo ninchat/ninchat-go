@@ -5,6 +5,13 @@ import (
 	"encoding/json"
 )
 
+// WrappedWebhook is the alternative content format.
+type WrappedWebhook struct {
+	Signature string `json:"signature"`
+	JSON      []byte `json:"base64"`
+}
+
+// Webhook is the default content format.
 type Webhook struct {
 	// Kid and Exp are specified only for transports which use signatures
 	// (i.e. they are specified for HTTP, but not for AWS Lambda functions).
