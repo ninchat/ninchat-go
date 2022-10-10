@@ -27,6 +27,7 @@ type Webhook struct {
 	AudienceRequestedJSON      json.RawMessage `json:"audience_requested,omitempty"`
 	AudienceRequestDroppedJSON json.RawMessage `json:"audience_request_dropped,omitempty"`
 	AudienceAcceptedJSON       json.RawMessage `json:"audience_accepted,omitempty"`
+	AudienceAgentReleasedJSON  json.RawMessage `json:"audience_agent_released,omitempty"`
 	AudienceCompleteJSON       json.RawMessage `json:"audience_complete,omitempty"`
 	MessageSentJSON            json.RawMessage `json:"message_sent,omitempty"`
 	DataAccessJSON             json.RawMessage `json:"data_access,omitempty"`
@@ -52,6 +53,11 @@ func (doc *Webhook) AudienceRequestDropped() (event AudienceRequestDropped, err 
 
 func (doc *Webhook) AudienceAccepted() (event AudienceAccepted, err error) {
 	err = json.Unmarshal(doc.AudienceAcceptedJSON, &event)
+	return
+}
+
+func (doc *Webhook) AudienceAgentReleased() (event AudienceAgentReleased, err error) {
+	err = json.Unmarshal(doc.AudienceAgentReleasedJSON, &event)
 	return
 }
 

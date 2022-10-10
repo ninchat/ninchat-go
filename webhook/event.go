@@ -11,6 +11,7 @@ const (
 	EventAudienceRequested      EventType = "audience_requested"
 	EventAudienceRequestDropped EventType = "audience_request_dropped"
 	EventAudienceAccepted       EventType = "audience_accepted"
+	EventAudienceAgentReleased  EventType = "audience_agent_released"
 	EventAudienceComplete       EventType = "audience_complete"
 	EventMessageSent            EventType = "message_sent"
 	EventDataAccess             EventType = "data_access"
@@ -39,6 +40,15 @@ type AudienceAccepted struct {
 	Audience    Audience    `json:"audience"`
 	DialogueID  []string    `json:"dialogue_id,omitempty"`
 	ChannelID   string      `json:"channel_id,omitempty"`
+}
+
+type AudienceAgentReleased struct {
+	RealmID     string      `json:"realm_id"`
+	QueueID     string      `json:"queue_id"`
+	QueueMember QueueMember `json:"queue_member"`
+	AudienceID  string      `json:"audience_id"`
+	Audience    Audience    `json:"audience"`
+	ChannelID   string      `json:"channel_id"`
 }
 
 type AudienceComplete struct {
