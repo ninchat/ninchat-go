@@ -115,8 +115,10 @@ func handleNinchatWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !strings.HasPrefix(r.Header.Get("User-Agent"), "ninchat-webhook/") {
-		w.WriteHeader(http.StatusForbidden)
+	log.Println("User agent:", r.Header.Get("User-Agent"))
+
+	if r.Header.Get("X-Ninchat-Format") != "default" {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
