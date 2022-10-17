@@ -7,14 +7,18 @@ import (
 
 // WrappedWebhook is the alternative content format.
 type WrappedWebhook struct {
+	// If this is false, then the webhook request content was not wrapped.
+	Wrapped bool `json:"wrapped"`
+
 	Signature string `json:"signature"`
 	JSON      []byte `json:"base64"`
 }
 
 // Webhook is the default content format.
 type Webhook struct {
-	// Kid and Exp are specified only for transports which use signatures
-	// (i.e. they are specified for HTTP, but not for AWS Lambda functions).
+	// Kid and Exp are specified only with transports or formats which use
+	// signatures (they are specified with HTTP, and with AWS Lambda if the
+	// webhook was wrapped).
 	Kid string `json:"kid,omitempty"`
 	Exp int64  `json:"exp,omitempty"`
 
