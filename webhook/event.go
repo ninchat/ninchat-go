@@ -19,7 +19,9 @@ const (
 
 type AudienceRequested struct {
 	RealmID      string        `json:"realm_id"`
+	Realm        Realm         `json:"realm"`
 	QueueID      string        `json:"queue_id"`
+	Queue        Queue         `json:"queue"`
 	QueueMembers []QueueMember `json:"queue_members"`
 	AudienceID   string        `json:"audience_id"`
 	Audience     Audience      `json:"audience"`
@@ -27,14 +29,18 @@ type AudienceRequested struct {
 
 type AudienceRequestDropped struct {
 	RealmID    string   `json:"realm_id"`
+	Realm      Realm    `json:"realm"`
 	QueueID    string   `json:"queue_id"`
+	Queue      Queue    `json:"queue"`
 	AudienceID string   `json:"audience_id"`
 	Audience   Audience `json:"audience"`
 }
 
 type AudienceAccepted struct {
 	RealmID     string      `json:"realm_id"`
+	Realm       Realm       `json:"realm"`
 	QueueID     string      `json:"queue_id"`
+	Queue       Queue       `json:"queue"`
 	QueueMember QueueMember `json:"queue_member"`
 	AudienceID  string      `json:"audience_id"`
 	Audience    Audience    `json:"audience"`
@@ -44,7 +50,9 @@ type AudienceAccepted struct {
 
 type AudienceAgentReleased struct {
 	RealmID     string      `json:"realm_id"`
+	Realm       Realm       `json:"realm"`
 	QueueID     string      `json:"queue_id"`
+	Queue       Queue       `json:"queue"`
 	QueueMember QueueMember `json:"queue_member"`
 	AudienceID  string      `json:"audience_id"`
 	Audience    Audience    `json:"audience"`
@@ -53,7 +61,9 @@ type AudienceAgentReleased struct {
 
 type AudienceComplete struct {
 	RealmID               string              `json:"realm_id"`
+	Realm                 Realm               `json:"realm"`
 	QueueID               string              `json:"queue_id"`
+	Queue                 Queue               `json:"queue"`
 	QueueMember           *QueueMember        `json:"queue_member"`
 	AudienceID            string              `json:"audience_id"`
 	Audience              Audience            `json:"audience"`
@@ -61,6 +71,14 @@ type AudienceComplete struct {
 	ChannelID             string              `json:"channel_id,omitempty"`
 	MemberMessageMetadata map[string]Metadata `json:"member_message_metadata"`
 	Messages              []Message           `json:"messages,omitempty"`
+}
+
+type Realm struct {
+	Name string `json:"name"`
+}
+
+type Queue struct {
+	Name string `json:"name"`
 }
 
 type QueueMember struct {
