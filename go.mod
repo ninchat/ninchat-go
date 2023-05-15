@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/aws/aws-lambda-go v1.41.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/neelance/astrewrite v0.0.0-20160511093645-99348263ae86 // indirect
