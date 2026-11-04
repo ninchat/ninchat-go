@@ -12,6 +12,7 @@ const (
 	EventAudienceRequestDropped EventType = "audience_request_dropped"
 	EventAudienceAccepted       EventType = "audience_accepted"
 	EventAudienceAgentReleased  EventType = "audience_agent_released"
+	EventAudienceFinished       EventType = "audience_finished"
 	EventAudienceComplete       EventType = "audience_complete"
 	EventMessageSent            EventType = "message_sent"
 	EventDataAccess             EventType = "data_access"
@@ -57,6 +58,20 @@ type AudienceAgentReleased struct {
 	AudienceID  string      `json:"audience_id"`
 	Audience    Audience    `json:"audience"`
 	ChannelID   string      `json:"channel_id"`
+}
+
+// AudienceFinished is emitted when a channel-based conversation ends, before
+// audience_complete post-processing.
+type AudienceFinished struct {
+	RealmID                string              `json:"realm_id"`
+	Realm                  Realm               `json:"realm"`
+	QueueID                string              `json:"queue_id"`
+	Queue                  Queue               `json:"queue"`
+	QueueMember            *QueueMember        `json:"queue_member,omitempty"`
+	AudienceID             string              `json:"audience_id"`
+	Audience               Audience            `json:"audience"`
+	ChannelID              string              `json:"channel_id"`
+	ChannelMembersMetadata map[string]Metadata `json:"channel_members_metadata,omitempty"`
 }
 
 type AudienceComplete struct {
