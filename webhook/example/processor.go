@@ -215,6 +215,14 @@ func handleNinchatWebhook(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+	case webhook.EventAudienceFinished:
+		log.Printf("Audience finished webhook: %s", document.AudienceFinishedJSON)
+
+		if _, err := document.AudienceFinished(); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
 	case webhook.EventAudienceComplete:
 		log.Printf("Audience complete webhook: %s", document.AudienceCompleteJSON)
 
